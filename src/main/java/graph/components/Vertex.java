@@ -3,17 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Graph;
+package graph.components;
 
 import java.util.ArrayList;
+import lombok.Getter;
 
 /**
  *
  * @author ASUS
  */
 public class Vertex {
-    int id;
-    ArrayList<Edge> adjacentEdges;
+    @Getter
+    private final int id;
+    @Getter
+    private final ArrayList<Edge> adjacentEdges;
     
     public Vertex(int id){
         this.id = id;
@@ -35,7 +38,7 @@ public class Vertex {
     public void print(){
         System.out.print("Vertex " + id + " : ");
         for(Edge e: adjacentEdges){
-            System.out.print(e.id + " ");
+            System.out.print(e.getId() + " ");
         }
         System.out.println();
     }

@@ -3,9 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Graph;
+package graph;
 
-import java.util.*;
+import graph.components.Edge;
+import graph.components.Face;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  *
@@ -13,7 +18,7 @@ import java.util.*;
  */
 public class ItemPriorityQueue {
     
-    private ArrayList<Item> queue = new ArrayList<>();
+    private final ArrayList<Item> queue = new ArrayList<>();
     
     class Item{
         public Item previous;
@@ -72,8 +77,8 @@ public class ItemPriorityQueue {
                 if (stack.get(i) > other.stack.get(i)) return false;
             }
             
-            if (stack.size() == other.stack.size() && this.associatedEdges.get(0).getUntagedFace().priority != other.associatedEdges.get(0).getUntagedFace().priority) {
-                return this.associatedEdges.get(0).getUntagedFace().priority > other.associatedEdges.get(0).getUntagedFace().priority ? true : false;
+            if (stack.size() == other.stack.size() && this.associatedEdges.get(0).getUntagedFace().getPriority() != other.associatedEdges.get(0).getUntagedFace().getPriority()) {
+                return this.associatedEdges.get(0).getUntagedFace().getPriority() > other.associatedEdges.get(0).getUntagedFace().getPriority() ? true : false;
             }   
             return stack.size() < other.stack.size() ? false : true;
         }
@@ -97,15 +102,15 @@ public class ItemPriorityQueue {
     
     public void addFace(int id, Face f){
         int deg = f.size();
-        f.tag = true;
+        f.setTagged(true);
 
         if (queue.size() == 0){
             for (int i=0; i< deg; i++){
                 if (i == 0){
-                    queue.add(new Item(null, null, 0,f.adjacentEdges.get(0)));
+                    queue.add(new Item(null, null, 0,f.getAdjacentEdges().get(0)));
                 }
                 else{
-                    queue.add(new Item(queue.get(queue.size() - 1), queue.get(0), 0, f.adjacentEdges.get(i)));
+                    queue.add(new Item(queue.get(queue.size() - 1), queue.get(0), 0, f.getAdjacentEdges().get(i)));
                     queue.get(i-1).following = queue.get(i);
                 }
                 queue.get(i).queuePos = i;
@@ -226,7 +231,7 @@ public class ItemPriorityQueue {
     
     public void printDegreesOfUntagged(){
         for(Item i: this.queue){
-            System.out.print(i.associatedEdges.get(0).getUntagedFace().id + " ");
+            System.out.print(i.associatedEdges.get(0).getUntagedFace().getId() + " ");
         }
         System.out.println();
         
@@ -236,7 +241,7 @@ public class ItemPriorityQueue {
         System.out.println();
         
         for(Item i: this.queue){         
-            System.out.print(i.associatedEdges.get(0).getUntagedFace().priority + " ");
+            System.out.print(i.associatedEdges.get(0).getUntagedFace().getPriority() + " ");
         }
         System.out.println();
     }
@@ -266,19 +271,12 @@ public class ItemPriorityQueue {
             System.out.print(i.queuePos + " ");
         }
         System.out.println("\nEdge IDs: ");
-        /*for(Item i: this.queue){
-            System.out.print("[");
-            for (Edge e: i.associatedEdges){
-                System.out.print(e.id + " ");
-            }
-            System.out.print("] ");
-        }*/
         
         try{
             Item start = queue.get(0);
             System.out.print("[");
                 for (Edge e: start.associatedEdges){
-                    System.out.print(e.id + " ");
+                    System.out.print(e.getId() + " ");
                 }
                 System.out.print("] ");
 
@@ -286,7 +284,7 @@ public class ItemPriorityQueue {
             while (next != start){
                 System.out.print("[");
                 for (Edge e: next.associatedEdges){
-                    System.out.print(e.id + " ");
+                    System.out.print(e.getId() + " ");
                 }
                 System.out.print("] ");
                 next = next.following;

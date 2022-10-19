@@ -3,8 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Graph;
+package graph;
 
+import graph.components.Edge;
+import graph.components.Face;
+import graph.components.Graph;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -14,7 +17,7 @@ import java.util.Collections;
  */
 public class LexCoder {
     
-    public ArrayList<Integer> getLexCodeForFace(Face f, Graph g){
+    public static ArrayList<Integer> getLexCodeForFace(Face f, Graph g){
         ArrayList<Edge> edges = f.getAdjacentEdgesCOPY();
         ArrayList<Integer> lexCode = null;
         Collections.sort(edges, (Edge e1, Edge e2) -> e1.getOppositeFace(f).size() - e2.getOppositeFace(f).size());
@@ -25,14 +28,14 @@ public class LexCoder {
         while(edges.get(i).getOppositeFace(f).size() == smallestSize){
             //System.out.println("iter");
             Edge edge = edges.get(i);
-            Face mutualNeigh1 = edge.vFrom.getThirdFace(edge.leftFace, edge.rightFace);
-            Face mutualNeigh2 = edge.vTo.getThirdFace(edge.leftFace, edge.rightFace);
+            Face mutualNeigh1 = edge.getVFrom().getThirdFace(edge.getLeftFace(), edge.getRightFace());
+            Face mutualNeigh2 = edge.getVTo().getThirdFace(edge.getLeftFace(), edge.getRightFace());
             
             Face primaryFace = edge.getOppositeFace(f);
-            primaryFace.priority = 2;
+            primaryFace.setPriority(2);
             
             if (mutualNeigh1.size() <= mutualNeigh2.size()){
-                mutualNeigh1.priority = 1;
+                mutualNeigh1.setPriority(1);
 
                 if (lexCode == null){
                     
@@ -42,10 +45,10 @@ public class LexCoder {
                     lexCode = toBeat(f, lexCode);
                 }
                 g.untagFaces();
-                mutualNeigh1.priority = 0;
+                mutualNeigh1.setPriority(0);
             }
             if (mutualNeigh2.size() <= mutualNeigh1.size()){
-                mutualNeigh2.priority = 1;
+                mutualNeigh2.setPriority(1);
            
                 if (lexCode == null){
                     lexCode = getSimpleLexCode(f);
@@ -54,10 +57,10 @@ public class LexCoder {
                     lexCode = toBeat(f, lexCode);
                 }
                 g.untagFaces();
-                mutualNeigh2.priority = 0;
+                mutualNeigh2.setPriority(0);
             }
             
-            primaryFace.priority = 0;
+            primaryFace.setPriority(0);
             i++;
             if (i >= edges.size()) break;
             
@@ -65,7 +68,7 @@ public class LexCoder {
         return lexCode;
     }
     
-    public ArrayList<Integer> getSimpleLexCode(Face f){
+    public static ArrayList<Integer> getSimpleLexCode(Face f){
         
         ArrayList<Integer> lexCode = new ArrayList<>();
         ItemPriorityQueue ipq = new ItemPriorityQueue();
@@ -84,7 +87,7 @@ public class LexCoder {
         return lexCode;
     }
     
-    public ArrayList<Integer> toBeat(Face f, ArrayList<Integer> codeToBeat){
+    public static ArrayList<Integer> toBeat(Face f, ArrayList<Integer> codeToBeat){
 
         ArrayList<Integer> lexCode = new ArrayList<>();
         ItemPriorityQueue ipq = new ItemPriorityQueue();
@@ -107,5 +110,20 @@ public class LexCoder {
         return lexCode;
     }
     
-    
+    public static boolean isMinimal(Graph g, ArrayList<Integer> codeInQuestion){
+        int minimalFaceSize = g.minimalFaceSize();
+        if (codeInQuestion.get(0) > minimalFaceSize) return false;
+
+        for (Face f: g.getFaces()){
+            if (f.size() == minimalFaceSize){
+                ArrayList<Integer> competitor = LexCoder.getLexCodeForFace(f, g);
+                assert competitor.size() == codeInQuestion.size();
+                for (int i = 0; i<competitor.size(); i++){
+                    if (competitor.get(i) < codeInQuestion.get(i)) return false;
+                    if (competitor.get(i) > codeInQuestion.get(i)) break;
+                }
+            }
+        }
+        return true;
+    }
 }
