@@ -3,9 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Graph;
+package graph;
 
-import java.util.*;
+import graph.components.Edge;
+import graph.components.Face;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  *
@@ -13,7 +18,7 @@ import java.util.*;
  */
 public class ItemPriorityQueue {
     
-    private ArrayList<Item> queue = new ArrayList<>();
+    private final ArrayList<Item> queue = new ArrayList<>();
     
     class Item{
         public Item previous;
@@ -52,7 +57,52 @@ public class ItemPriorityQueue {
             this.associatedEdges.addFirst(e);
             this.stack.add(id);
         }
-        
+
+        public void removeEdge(Edge e){
+            for (int i=0; i< associatedEdges.size(); i++){
+                if (associatedEdges.get(i) == e){
+                    items.remove(i);
+                    associatedEdges.remove(i);
+                    stack.remove(i);
+                    break;
+                }
+            }
+        }
+
+        public boolean hangsOnTrail(){
+            if (this.previous.size() == 1 &&
+                    this.following.size() == 2 &&
+                    this.following.associatedEdges.contains(previous.associatedEdges.get(0))) {
+                return true;
+            }
+            if (this.following.size() == 1 &&
+                    this.previous.size() == 2 &&
+                    this.previous.associatedEdges.contains(following.associatedEdges.get(0))){
+                return true;
+            }
+            return false;
+        }
+
+        public void stripOfDoubles(){
+            if (this.size() == 3) {
+                Edge corruptedEdge = null;
+                if (associatedEdges.get(0) == associatedEdges.get(1)) {
+                    corruptedEdge = associatedEdges.get(0);
+                }
+                else if (associatedEdges.get(0) == associatedEdges.get(2)) {
+                    corruptedEdge = associatedEdges.get(1);
+                }
+                else if (associatedEdges.get(1) == associatedEdges.get(2)) {
+                    corruptedEdge = associatedEdges.get(2);
+                }
+
+                if (corruptedEdge != null) {
+                    removeEdge(corruptedEdge);
+                    removeEdge(corruptedEdge);
+                }
+            }
+        }
+
         public void removeFollowingAndMerge(){
             if (this != this.following.following){
                 this.items.addAll(this.following.following.items);
@@ -66,14 +116,17 @@ public class ItemPriorityQueue {
         //return true if this item is higher priority if the other item
         public boolean compare(Item other){
             int len = stack.size() < other.stack.size() ? stack.size() : other.stack.size();
+
+            if (associatedEdges.get(0).getUntagedFace() == null) return false;
+            if (other.associatedEdges.get(0).getUntagedFace() == null) return true;
             
             for(int i = 0; i< len; i++){
                 if (stack.get(i) < other.stack.get(i)) return true;
                 if (stack.get(i) > other.stack.get(i)) return false;
             }
-            
-            if (stack.size() == other.stack.size() && this.associatedEdges.get(0).getUntagedFace().priority != other.associatedEdges.get(0).getUntagedFace().priority) {
-                return this.associatedEdges.get(0).getUntagedFace().priority > other.associatedEdges.get(0).getUntagedFace().priority ? true : false;
+
+            if (stack.size() == other.stack.size() && this.associatedEdges.get(0).getUntagedFace().getPriority() != other.associatedEdges.get(0).getUntagedFace().getPriority()) {
+                return this.associatedEdges.get(0).getUntagedFace().getPriority() > other.associatedEdges.get(0).getUntagedFace().getPriority() ? true : false;
             }   
             return stack.size() < other.stack.size() ? false : true;
         }
@@ -97,15 +150,15 @@ public class ItemPriorityQueue {
     
     public void addFace(int id, Face f){
         int deg = f.size();
-        f.tag = true;
+        f.setTagged(true);
 
         if (queue.size() == 0){
             for (int i=0; i< deg; i++){
                 if (i == 0){
-                    queue.add(new Item(null, null, 0,f.adjacentEdges.get(0)));
+                    queue.add(new Item(null, null, 0,f.getAdjacentEdges().get(0)));
                 }
                 else{
-                    queue.add(new Item(queue.get(queue.size() - 1), queue.get(0), 0, f.adjacentEdges.get(i)));
+                    queue.add(new Item(queue.get(queue.size() - 1), queue.get(0), 0, f.getAdjacentEdges().get(i)));
                     queue.get(i-1).following = queue.get(i);
                 }
                 queue.get(i).queuePos = i;
@@ -121,8 +174,33 @@ public class ItemPriorityQueue {
             int sizeOfF = f.size();
             
             if (indexOfTheFirstEdgeInF < 0) System.err.println("Edge not found");
-            
+            /*
+            *     o
+            *     |\      /
+            *     | o----o
+            *     |/      \
+            *     o
+            *     one hanging both-side-enclosed edge
+            * */
             if (queue.get(0).size() == deg){
+
+
+                while(ex.hangsOnTrail()) {
+                    if (ex.previous.size() == 1) {
+                        Edge corruptedEdge = ex.previous.associatedEdges.get(0);
+                        ex.following.removeEdge(corruptedEdge);
+                        this.remove(ex.previous.queuePos);
+                        ex.previous = ex.previous.previous;
+                    }
+                    else {
+                        Edge corruptedEdge = ex.following.associatedEdges.get(0);
+                        ex.previous.removeEdge(corruptedEdge);
+                        this.remove(ex.following.queuePos);
+                        ex.following = ex.following.following;
+                    }
+
+                }
+
                 while(ex.previous.size() == 1 && ex.following.size() == 1 && ex.previous.associatedEdges.get(0) == ex.following.associatedEdges.get(0)){
                     this.remove(ex.following.queuePos);
                     this.remove(ex.previous.queuePos);
@@ -226,7 +304,7 @@ public class ItemPriorityQueue {
     
     public void printDegreesOfUntagged(){
         for(Item i: this.queue){
-            System.out.print(i.associatedEdges.get(0).getUntagedFace().id + " ");
+            System.out.print(i.associatedEdges.get(0).getUntagedFace().getId() + " ");
         }
         System.out.println();
         
@@ -236,7 +314,7 @@ public class ItemPriorityQueue {
         System.out.println();
         
         for(Item i: this.queue){         
-            System.out.print(i.associatedEdges.get(0).getUntagedFace().priority + " ");
+            System.out.print(i.associatedEdges.get(0).getUntagedFace().getPriority() + " ");
         }
         System.out.println();
     }
@@ -266,19 +344,12 @@ public class ItemPriorityQueue {
             System.out.print(i.queuePos + " ");
         }
         System.out.println("\nEdge IDs: ");
-        /*for(Item i: this.queue){
-            System.out.print("[");
-            for (Edge e: i.associatedEdges){
-                System.out.print(e.id + " ");
-            }
-            System.out.print("] ");
-        }*/
         
         try{
             Item start = queue.get(0);
             System.out.print("[");
                 for (Edge e: start.associatedEdges){
-                    System.out.print(e.id + " ");
+                    System.out.print(e.getId() + " ");
                 }
                 System.out.print("] ");
 
@@ -286,7 +357,7 @@ public class ItemPriorityQueue {
             while (next != start){
                 System.out.print("[");
                 for (Edge e: next.associatedEdges){
-                    System.out.print(e.id + " ");
+                    System.out.print(e.getId() + " ");
                 }
                 System.out.print("] ");
                 next = next.following;

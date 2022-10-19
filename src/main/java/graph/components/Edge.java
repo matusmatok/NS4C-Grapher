@@ -3,18 +3,25 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Graph;
+package graph.components;
+
+import lombok.Getter;
 
 /**
  *
  * @author ASUS
  */
 public class Edge {
-    Vertex vFrom;
-    Vertex vTo;
-    Face rightFace;
-    Face leftFace;    
-    int id;
+    @Getter
+    private Vertex vFrom;
+    @Getter
+    private Vertex vTo;
+    @Getter
+    private Face rightFace;
+    @Getter
+    private Face leftFace;
+    @Getter
+    private final int id;
     
     public Edge(int id, Vertex from, Vertex to){
         this.id = id;
@@ -29,8 +36,8 @@ public class Edge {
     }
     
     public void removeSelfFromOutterFace(Face innerFace){
-        if (leftFace == innerFace) rightFace.adjacentEdges.remove(this);
-        else leftFace.adjacentEdges.remove(this);                   
+        if (leftFace == innerFace) rightFace.removeEdge(this);
+        else leftFace.removeEdge(this);
     }
     
     public void exchange(Vertex oldV, Vertex newV){
@@ -52,9 +59,8 @@ public class Edge {
     }
     
     public Face getUntagedFace(){
-        if (!rightFace.tag) return rightFace;
-        if (!leftFace.tag) return leftFace;
-        System.err.println("Face.getUntagedFace() : both Faces are untaged.");
+        if (!rightFace.isTagged()) return rightFace;
+        if (!leftFace.isTagged()) return leftFace;
         return null;
     }
     
@@ -64,6 +70,6 @@ public class Edge {
     }
     
     public void print(){
-        System.out.println("Edge " + id + " : " + vFrom.id + " " + vTo.id + " L: " + leftFace.id + " R: " + rightFace.id);
+        System.out.println("Edge " + id + " : " + vFrom.getId() + " " + vTo.getId() + " L: " + leftFace.getId() + " R: " + rightFace.getId());
     }
 }
