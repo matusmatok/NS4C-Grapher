@@ -3,23 +3,26 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package graph;
+package graph.canoniccoders;
 
 import graph.components.Edge;
 import graph.components.Face;
 import graph.components.Graph;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  *
- * @author ASUS
+ * @author matusmatok
  */
-public class LexCoder {
+
+@Deprecated
+public class LexCoder extends AbstractCanonicCoder{
     
-    public static ArrayList<Integer> getLexCodeForFace(Face f, Graph g){
+    @Override
+    public List<Integer> getLexCodeForFace(Face f, Graph g, List<Integer> lexCode){
         ArrayList<Edge> edges = f.getAdjacentEdgesCOPY();
-        ArrayList<Integer> lexCode = null;
         Collections.sort(edges, (Edge e1, Edge e2) -> e1.getOppositeFace(f).size() - e2.getOppositeFace(f).size());
         
         int smallestSize = edges.get(0).getOppositeFace(f).size();
@@ -71,10 +74,10 @@ public class LexCoder {
         }
         return lexCode;
     }
-    
-    public static ArrayList<Integer> getSimpleLexCode(Face f, Graph g) {
+
+    private List<Integer> getSimpleLexCode(Face f, Graph g) {
         
-        ArrayList<Integer> lexCode = new ArrayList<>();
+        List<Integer> lexCode = new ArrayList<>();
         ItemPriorityQueue ipq = new ItemPriorityQueue();
         
         int faceId = 0;
@@ -98,10 +101,10 @@ public class LexCoder {
         //System.out.println("Simple " + lexCode);
         return lexCode;
     }
-    
-    public static ArrayList<Integer> toBeat(Face f, ArrayList<Integer> codeToBeat, Graph g){
 
-        ArrayList<Integer> lexCode = new ArrayList<>();
+    private List<Integer> toBeat(Face f, List<Integer> codeToBeat, Graph g){
+
+        List<Integer> lexCode = new ArrayList<>();
         ItemPriorityQueue ipq = new ItemPriorityQueue();
         if (f.size() > codeToBeat.get(0)) return codeToBeat;        
         
@@ -129,21 +132,4 @@ public class LexCoder {
         return lexCode;
     }
     
-    public static boolean isMinimal(Graph g, ArrayList<Integer> codeInQuestion){
-        int minimalFaceSize = g.minimalFaceSize();
-        if (codeInQuestion.get(0) > minimalFaceSize) return false;
-
-        for (Face f: g.getFaces()){
-            if (f.size() == minimalFaceSize){
-                /*Introduce try catch block and print the graph you are dealing with*/
-                ArrayList<Integer> competitor = LexCoder.getLexCodeForFace(f, g);
-                assert competitor.size() == codeInQuestion.size();
-                for (int i = 0; i<competitor.size(); i++){
-                    if (competitor.get(i) < codeInQuestion.get(i)) return false;
-                    if (competitor.get(i) > codeInQuestion.get(i)) break;
-                }
-            }
-        }
-        return true;
-    }
 }

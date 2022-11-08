@@ -8,6 +8,9 @@ package graph;
 import graph.components.Graph;
 import graph.generators.SimpleGenerator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author ASUS
@@ -46,7 +49,6 @@ public class Main {
         SimpleGenerator generator = new SimpleGenerator();
         generator.generate(g);
         generator.printMap();
-        
         
       
     }

@@ -6,6 +6,9 @@
 package graph.components;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -53,14 +56,6 @@ public class Face {
         return null;
     }
     
-    public ArrayList<Face> getNeighbours(){
-        ArrayList<Face> result = new ArrayList<>();
-        for (Edge e: adjacentEdges){
-            result.add(e.getOppositeFace(this));
-        }
-        return result;
-    }
-    
     public ArrayList<Edge> getAdjacentEdgesCOPY(){
         return new ArrayList<>(this.adjacentEdges);
     }
@@ -93,6 +88,18 @@ public class Face {
         else{
             return (v2.getId() < v3.getId()) ? v2.getId() : v3.getId();
         }
+    }
+
+    public List<Face> getIncidentFaces(){
+        return adjacentEdges.stream().map((e) -> {return e.getOppositeFace(this);}).collect(Collectors.toList());
+    }
+
+    public int getIndexOfIncidentFace(Face f){
+        List<Face> incidentFaces = getIncidentFaces();
+        for (int i=0; i<incidentFaces.size(); i++){
+            if (incidentFaces.get(i) == f) return i;
+        }
+        throw new RuntimeException("Face not found");
     }
 
     public void removeEdge(Edge e){
