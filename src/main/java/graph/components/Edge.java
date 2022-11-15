@@ -6,15 +6,16 @@
 package graph.components;
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
  * @author ASUS
  */
 public class Edge {
-    @Getter
+    @Getter @Setter
     private Vertex vFrom;
-    @Getter
+    @Getter @Setter
     private Vertex vTo;
     @Getter
     private Face rightFace;
@@ -22,7 +23,16 @@ public class Edge {
     private Face leftFace;
     @Getter
     private final int id;
-    
+
+    public enum hamCycleEdgeState {
+        UNDISCOVERED,
+        INCLUDED,
+        EXCLUDED
+    }
+
+    @Getter @Setter
+    private hamCycleEdgeState hamCycleState = hamCycleEdgeState.UNDISCOVERED;
+
     public Edge(int id, Vertex from, Vertex to){
         this.id = id;
         this.vFrom = from;
@@ -71,5 +81,10 @@ public class Edge {
     
     public void print(){
         System.out.println("Edge " + id + " : " + vFrom.getId() + " " + vTo.getId() + " L: " + leftFace.getId() + " R: " + rightFace.getId());
+    }
+
+    public Vertex getOppositeVertex(Vertex v) {
+        if (vFrom == v) return vTo;
+        return vFrom;
     }
 }

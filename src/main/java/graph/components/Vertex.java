@@ -6,7 +6,9 @@
 package graph.components;
 
 import java.util.ArrayList;
+
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -17,6 +19,25 @@ public class Vertex {
     private final int id;
     @Getter
     private final ArrayList<Edge> adjacentEdges;
+
+    /*UNION FIND variables*/
+    @Getter @Setter
+    private Vertex parent = null;
+    @Getter @Setter
+    private int subtreeDepth = 0;
+    /*------*/
+
+    public enum HamCycleVertexState {
+        UNDISCOVERED,
+        CHOICE,
+        DETERMINISTIC_INCLUDE_REST,
+        DETERMINISTIC_INCLUDE_REMAINING,
+        DETERMINISTIC_EXCLUDE_REMAINING,
+        COVERED
+    }
+
+    @Getter @Setter
+    private HamCycleVertexState hamCycleState = HamCycleVertexState.UNDISCOVERED;
     
     public Vertex(int id){
         this.id = id;
@@ -51,5 +72,12 @@ public class Vertex {
         
         System.err.println("No noninternal edge.");
         return null;
+    }
+
+    public Edge getAnyUndiscoveredEdge(){
+        for (Edge e: adjacentEdges) {
+            if (e.getHamCycleState() == Edge.hamCycleEdgeState.UNDISCOVERED) return e;
+        }
+        throw new RuntimeException("Vertex has no undiscovered edge.");
     }
 }

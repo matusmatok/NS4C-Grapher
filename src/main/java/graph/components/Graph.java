@@ -135,8 +135,44 @@ public class Graph {
         for (int i=0; i<3; i++) edges.remove(edges.size() -1);
         vertices.remove(vertices.size() - 1);
         vertices.remove(vertices.size() - 1);
-        
-        
+    }
+    public Edge op4_5(int type, Face f, Edge e1, Edge e2){
+        final int facesToTake = type - 3;
+        final Vertex firstNewVertex = new Vertex(vertices.size());
+        final Vertex secondNewVertex = new Vertex(vertices.size() + 1);
+
+        final Vertex formerVertexOne;
+        final Vertex formerVertexTwo;
+        if (e1.getRightFace() == f) {
+            formerVertexOne = e1.getVTo();
+            e1.setVTo(firstNewVertex);
+        }
+        else {
+            formerVertexOne = e1.getVFrom();
+            e1.setVFrom(firstNewVertex);
+        }
+
+        if (e2.getRightFace() == f) {
+            formerVertexTwo = e2.getVFrom();
+            e2.setVFrom(secondNewVertex);
+        }
+        else {
+            formerVertexTwo = e2.getVTo();
+            e2.setVTo(secondNewVertex);
+        }
+        return null;
+    }
+
+    public Edge operation(int type, Face formerFace, Edge initialEdge) {
+        final Vertex firstNewVertex = new Vertex(vertices.size());
+        final Vertex secondNewVertex = new Vertex(vertices.size() + 1);
+
+        final int indexOfInitialEdge = formerFace.getIndexOfE(initialEdge);
+
+        for(int i = indexOfInitialEdge; i < indexOfInitialEdge + type - 3; i++){
+
+        }
+        return null;
     }
     
     public void untagFaces(){
