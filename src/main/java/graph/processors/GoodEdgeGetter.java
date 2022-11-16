@@ -1,6 +1,7 @@
 package graph.processors;
 
 import graph.components.Edge;
+import graph.components.Edge.hamCycleEdgeState;
 import graph.components.Graph;
 import graph.components.Vertex;
 import graph.components.Vertex.HamCycleVertexState;
@@ -60,9 +61,17 @@ public class GoodEdgeGetter {
     public List<Edge> getGoodEdges(){
         List<Edge> goodEdges = new ArrayList<>();
         for (Edge e: graph.getEdges()) {
+            System.out.println("----LOOKING FOR HAMCYCLES EXCLUDING EDGE " + e.getId());
             excludeEdge(e);
-            if (!hamCycleConstructible()) goodEdges.add(e);
+            if (!hamCycleConstructible()) {
+                System.out.println("SUCCESS");
+                goodEdges.add(e);
+            }
+            else System.out.println("FAIL");
             undoExcludeEdge(e);
+            for (Edge edge: graph.getEdges()){
+                if (e.getHamCycleState() != hamCycleEdgeState.UNDISCOVERED) System.out.println("Edge remained set " + e.getId());
+            }
         }
         return goodEdges;
     }
@@ -75,7 +84,20 @@ public class GoodEdgeGetter {
             else return true;
         }
         final Vertex vertex = vertexOpt.get();
-        final Edge edge = vertex.getAnyUndiscoveredEdge();
+        Edge edge = null;
+        try {
+            edge = vertex.getAnyUndiscoveredEdge();
+        }
+        catch (RuntimeException e) {
+            System.out.println("Operand vertex: " + vertex.getId());
+            vertex.print();
+            for (Vertex v: graph.getVertices()) {
+                System.out.println("Vertex " + v.getId() + " State: " + v.getHamCycleState());
+            }
+            for(Edge ei : graph.getEdges()){
+                System.out.println("Edge " + ei.getId() + " State: " + ei.getHamCycleState());
+            }
+        }
         final Vertex otherVertex = edge.getOppositeVertex(vertex);
 
         final Vertex vColor = unionFindSet.find(vertex);
@@ -84,18 +106,18 @@ public class GoodEdgeGetter {
 
         final HamCycleVertexState otherVertexState = otherVertex.getHamCycleState();
 
-        boolean result = false;
+        boolean result = true;
 
-        unionFindSet.union(vertex, otherVertex);
         switch (vertex.getHamCycleState()) {
             case DETERMINISTIC_EXCLUDE_REMAINING :
                 switch (otherVertexState){
                     case UNDISCOVERED:
                     case DETERMINISTIC_EXCLUDE_REMAINING:
                     case CHOICE:
-                        excludeEdge(edge);
-                        result = hamCycleConstructible();
-                        undoExcludeEdge(edge);
+                        if (excludeEdge(edge)) {
+                            result = hamCycleConstructible();
+                            undoExcludeEdge(edge);
+                        }
                         break;
                     case COVERED:
                     case DETERMINISTIC_INCLUDE_REST:
@@ -111,11 +133,12 @@ public class GoodEdgeGetter {
                         case DETERMINISTIC_INCLUDE_REST:
                         case DETERMINISTIC_INCLUDE_REMAINING:
                         case CHOICE:
-                            includeEdge(edge);
-                            unionFindSet.union(vertex,otherVertex);
-                            result = hamCycleConstructible();
-                            unionFindSet.disunion();
-                            undoIncludeEdge(edge);
+                            if (includeEdge(edge)) {
+                                unionFindSet.union(vColor, oColor);
+                                result = hamCycleConstructible();
+                                unionFindSet.disunion();
+                                undoIncludeEdge(edge);
+                            }
                             break;
                         case COVERED:
                         case DETERMINISTIC_EXCLUDE_REMAINING:
@@ -128,16 +151,18 @@ public class GoodEdgeGetter {
                 switch (otherVertexState) {
                     case UNDISCOVERED:
                     case CHOICE:
-                        excludeEdge(edge);
-                        result = hamCycleConstructible();
-                        undoExcludeEdge(edge);
+                        if (excludeEdge(edge)) {
+                            result = hamCycleConstructible();
+                            undoExcludeEdge(edge);
+                        }
 
                         if (canInclude) {
-                            includeEdge(edge);
-                            unionFindSet.union(vertex,otherVertex);
-                            result &= hamCycleConstructible();
-                            unionFindSet.disunion();
-                            undoIncludeEdge(edge);
+                            if (includeEdge(edge)) {
+                                unionFindSet.union(vColor, oColor);
+                                result |= hamCycleConstructible();
+                                unionFindSet.disunion();
+                                undoIncludeEdge(edge);
+                            }
                         }
                         break;
                     case DETERMINISTIC_EXCLUDE_REMAINING:
@@ -156,15 +181,23 @@ public class GoodEdgeGetter {
     }
 
     private boolean includeEdge(Edge e) {
+        e.setHamCycleState(hamCycleEdgeState.INCLUDED);
+        System.out.println("Including " + e.getId());
         return edgeOperation(e, INCLUDE_EDGE_MAP);
     }
     private boolean undoIncludeEdge(Edge e) {
+        e.setHamCycleState(hamCycleEdgeState.UNDISCOVERED);
+        System.out.println("Undoing include " + e.getId());
         return edgeOperation(e, UNDO_INCLUDE_EDGE_MAP);
     }
     private boolean excludeEdge(Edge e) {
+        e.setHamCycleState(hamCycleEdgeState.EXCLUDED);
+        System.out.println("Excluding " + e.getId());
         return edgeOperation(e, EXCLUDE_EDGE_MAP);
     }
     private boolean undoExcludeEdge(Edge e) {
+        e.setHamCycleState(hamCycleEdgeState.UNDISCOVERED);
+        System.out.println("Undoing exclude " + e.getId());
         return edgeOperation(e, UNDO_EXCLUDE_EDGE_MAP);
     }
 

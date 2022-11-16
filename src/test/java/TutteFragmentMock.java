@@ -103,8 +103,8 @@ public class TutteFragmentMock extends Graph {
         vertices.get(14).addEdge(edges.get(23));
         vertices.get(14).addEdge(edges.get(21));
 
-        vertices.get(15).addEdge(edges.get(17));
-        vertices.get(15).addEdge(edges.get(20));
+        vertices.get(15).addEdge(edges.get(0));
         vertices.get(15).addEdge(edges.get(22));
+        vertices.get(15).addEdge(edges.get(23));
     }
 }
