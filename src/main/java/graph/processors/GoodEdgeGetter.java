@@ -61,7 +61,7 @@ public class GoodEdgeGetter {
     public List<Edge> getGoodEdges(){
         List<Edge> goodEdges = new ArrayList<>();
         for (Edge e: graph.getEdges()) {
-            System.out.println("----LOOKING FOR HAMCYCLES EXCLUDING EDGE " + e.getId());
+            System.out.println("----LOOKING FOR HAMCYCLES EXCLUDING EDGE " + e.getId() + "---");
             excludeEdge(e);
             if (!hamCycleConstructible()) {
                 System.out.println("SUCCESS");
@@ -69,44 +69,54 @@ public class GoodEdgeGetter {
             }
             else System.out.println("FAIL");
             undoExcludeEdge(e);
-            for (Edge edge: graph.getEdges()){
-                if (e.getHamCycleState() != hamCycleEdgeState.UNDISCOVERED) System.out.println("Edge remained set " + e.getId());
-            }
         }
         return goodEdges;
     }
 
+    public boolean isEdgeGood(int id) {
+        excludeEdge(graph.getEdges().get(id));
+        boolean result = !hamCycleConstructible();
+        undoExcludeEdge(graph.getEdges().get(id));
+        return result;
+    }
+
     private boolean hamCycleConstructible(){
         Optional<Vertex> vertexOpt = deterministicVertices.stream().findAny();
-        if (!vertexOpt.isPresent()) vertexOpt = choiceVertices.stream().findAny();
         if (!vertexOpt.isPresent()) {
-            if (undiscoveredVertices.size() > 0) return false;
-            else return true;
+            System.out.println("Choosing");
+            vertexOpt = choiceVertices.stream().findAny();
         }
+        if (!vertexOpt.isPresent()) {
+            System.out.println("down");
+            if (undiscoveredVertices.size() > 0) {
+                System.out.println("returned false");
+                return false;
+            }
+            else {
+                System.out.println("returned true");
+                return true;
+            }
+        }
+
         final Vertex vertex = vertexOpt.get();
         Edge edge = null;
         try {
             edge = vertex.getAnyUndiscoveredEdge();
         }
-        catch (RuntimeException e) {
-            System.out.println("Operand vertex: " + vertex.getId());
+        catch (Exception e) {
             vertex.print();
-            for (Vertex v: graph.getVertices()) {
-                System.out.println("Vertex " + v.getId() + " State: " + v.getHamCycleState());
-            }
-            for(Edge ei : graph.getEdges()){
-                System.out.println("Edge " + ei.getId() + " State: " + ei.getHamCycleState());
-            }
+            graph.printHamCycleStates();
+            throw new RuntimeException(e.getMessage());
         }
         final Vertex otherVertex = edge.getOppositeVertex(vertex);
-
+        //System.out.println("Vertex " + vertex.getId() + " State: " + vertex.getHamCycleState());
+        //System.out.println("  Edge " + edge.getId() + " State: " + edge.getHamCycleState());
         final Vertex vColor = unionFindSet.find(vertex);
         final Vertex oColor = unionFindSet.find(otherVertex);
         final boolean canInclude = vColor != oColor;
+        final boolean canCloseCycle = vColor.getSubtreeSize() == graph.getVertices().size();
 
         final HamCycleVertexState otherVertexState = otherVertex.getHamCycleState();
-
-        boolean result = true;
 
         switch (vertex.getHamCycleState()) {
             case DETERMINISTIC_EXCLUDE_REMAINING :
@@ -115,89 +125,90 @@ public class GoodEdgeGetter {
                     case DETERMINISTIC_EXCLUDE_REMAINING:
                     case CHOICE:
                         if (excludeEdge(edge)) {
-                            result = hamCycleConstructible();
+                            System.out.println("Excluded " + edge.getId());
+                            boolean result = hamCycleConstructible();
                             undoExcludeEdge(edge);
+                            System.out.println("UndoExcluded " + edge.getId());
+                            return result;
                         }
-                        break;
-                    case COVERED:
-                    case DETERMINISTIC_INCLUDE_REST:
-                    case DETERMINISTIC_INCLUDE_REMAINING:
-                        return false;
+                    default: return false;
                 }
-                break;
             case DETERMINISTIC_INCLUDE_REMAINING:
             case DETERMINISTIC_INCLUDE_REST:
-                if (canInclude) {
                     switch (otherVertexState) {
                         case UNDISCOVERED:
                         case DETERMINISTIC_INCLUDE_REST:
                         case DETERMINISTIC_INCLUDE_REMAINING:
                         case CHOICE:
-                            if (includeEdge(edge)) {
-                                unionFindSet.union(vColor, oColor);
-                                result = hamCycleConstructible();
-                                unionFindSet.disunion();
-                                undoIncludeEdge(edge);
+                            if (canInclude) {
+                                if (includeEdge(edge)) {
+                                    System.out.println("Included " + edge.getId());
+                                    unionFindSet.union(vColor, oColor);
+                                    boolean result = hamCycleConstructible();
+                                    unionFindSet.disunion();
+                                    undoIncludeEdge(edge);
+                                    System.out.println("UndoIncluded " + edge.getId());
+                                    return result;
+                                }
+                            } else if (canCloseCycle){
+                                if (includeEdge(edge)){
+                                    System.out.println("FINAL INCLUDE " + edge.getId());
+                                    undoIncludeEdge(edge);
+                                    return true;
+                                }
                             }
-                            break;
-                        case COVERED:
-                        case DETERMINISTIC_EXCLUDE_REMAINING:
-                            return false;
+                        default: return false;
                     }
-                }
-                else return false;
-                break;
             case CHOICE:
                 switch (otherVertexState) {
                     case UNDISCOVERED:
                     case CHOICE:
                         if (excludeEdge(edge)) {
-                            result = hamCycleConstructible();
+                            System.out.println("Excluded " + edge.getId());
+                            boolean result = hamCycleConstructible();
                             undoExcludeEdge(edge);
+                            System.out.println("UndoExcluded " + edge.getId());
+                            if (result) return true;
                         }
 
                         if (canInclude) {
                             if (includeEdge(edge)) {
+                                System.out.println("Included " + edge.getId());
                                 unionFindSet.union(vColor, oColor);
-                                result |= hamCycleConstructible();
+                                boolean result = hamCycleConstructible();
                                 unionFindSet.disunion();
                                 undoIncludeEdge(edge);
+                                System.out.println("UndoIncluded " + edge.getId());
+                                return result;
                             }
                         }
-                        break;
-                    case DETERMINISTIC_EXCLUDE_REMAINING:
-                    case DETERMINISTIC_INCLUDE_REMAINING:
-                    case DETERMINISTIC_INCLUDE_REST:
-                    case COVERED:
-                        return false;
-                    //nothing else possible because it would imply we are doing a non-deterministic action when a deterministic was available.
+                        else if (canCloseCycle) {
+                            if (includeEdge(edge)){
+                                System.out.println("FINAL INCLUDE " + edge.getId());
+                                undoIncludeEdge(edge);
+                                return true;
+                            }
+                        }
+                    default: return false;
                 }
-                break;
-            case COVERED:
-            case UNDISCOVERED:
-                return false;
+            default: return false;
         }
-        return result;
     }
 
     private boolean includeEdge(Edge e) {
         e.setHamCycleState(hamCycleEdgeState.INCLUDED);
-        System.out.println("Including " + e.getId());
         return edgeOperation(e, INCLUDE_EDGE_MAP);
     }
     private boolean undoIncludeEdge(Edge e) {
         e.setHamCycleState(hamCycleEdgeState.UNDISCOVERED);
-        System.out.println("Undoing include " + e.getId());
         return edgeOperation(e, UNDO_INCLUDE_EDGE_MAP);
     }
     private boolean excludeEdge(Edge e) {
         e.setHamCycleState(hamCycleEdgeState.EXCLUDED);
-        System.out.println("Excluding " + e.getId());
         return edgeOperation(e, EXCLUDE_EDGE_MAP);
     }
     private boolean undoExcludeEdge(Edge e) {
         e.setHamCycleState(hamCycleEdgeState.UNDISCOVERED);
-        System.out.println("Undoing exclude " + e.getId());
         return edgeOperation(e, UNDO_EXCLUDE_EDGE_MAP);
     }
 

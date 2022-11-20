@@ -190,6 +190,11 @@ public class Graph {
         for (Face f: faces) f.print();
     }
 
+    public void printHamCycleStates() {
+        for (Vertex v: vertices) System.out.println("Vertex " + v.getId() + " State: " + v.getHamCycleState());
+        for (Edge e: edges) System.out.println("Edge " + e.getId() + " State: " + e.getHamCycleState());
+    }
+
     public int minimalFaceSize(){
         return faces.stream().map(Face::size).min(Integer::compareTo).get();
     }

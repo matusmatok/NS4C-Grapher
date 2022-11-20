@@ -19,15 +19,18 @@ public class UnionFindSet {
         if (element1.getSubtreeDepth() > element2.getSubtreeDepth()) {
             element2.setParent(element1);
             unionLog.push(new LogEntry(element1, element2, element1.getSubtreeDepth()));
+            element1.setSubtreeSize(element1.getSubtreeSize() + element2.getSubtreeSize());
         }
         else if (element2.getSubtreeDepth() > element1.getSubtreeDepth()) {
             element1.setParent(element2);
             unionLog.push(new LogEntry(element2, element1, element2.getSubtreeDepth()));
+            element2.setSubtreeSize(element1.getSubtreeSize() + element2.getSubtreeSize());
         }
         else {
             element2.setParent(element1);
             unionLog.push(new LogEntry(element1, element2, element1.getSubtreeDepth()));
             element1.setSubtreeDepth(element1.getSubtreeDepth() + 1);
+            element1.setSubtreeSize(element1.getSubtreeSize() + element2.getSubtreeSize());
         }
     }
 
@@ -35,6 +38,7 @@ public class UnionFindSet {
         final LogEntry logEntry = unionLog.pop();
         logEntry.root.setSubtreeDepth(logEntry.rootFormerSubtreeDepth);
         logEntry.subordinate.setParent(null);
+        logEntry.root.setSubtreeSize(logEntry.root.getSubtreeSize() - logEntry.subordinate.getSubtreeSize());
     }
 
     public Vertex find(Vertex element) {

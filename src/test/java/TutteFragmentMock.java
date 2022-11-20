@@ -29,7 +29,7 @@ public class TutteFragmentMock extends Graph {
         edges.add(new Edge(8, vertices.get(4), vertices.get(5)));
         edges.add(new Edge(9, vertices.get(4), vertices.get(9)));
         edges.add(new Edge(10, vertices.get(5), vertices.get(6)));
-        edges.add(new Edge(11, vertices.get(5), vertices.get(11)));
+        edges.add(new Edge(11, vertices.get(5), vertices.get(10)));
         edges.add(new Edge(12, vertices.get(6), vertices.get(7)));
         edges.add(new Edge(13, vertices.get(7), vertices.get(8)));
         edges.add(new Edge(14, vertices.get(7), vertices.get(11)));

@@ -31,12 +31,13 @@ public class Edge {
     }
 
     @Getter @Setter
-    private hamCycleEdgeState hamCycleState = hamCycleEdgeState.UNDISCOVERED;
+    private hamCycleEdgeState hamCycleState;
 
     public Edge(int id, Vertex from, Vertex to){
         this.id = id;
         this.vFrom = from;
         this.vTo = to;
+        setHamCycleState(hamCycleEdgeState.UNDISCOVERED);
     }
     
     public Edge(int id, Vertex from, Vertex to, Face right, Face left){

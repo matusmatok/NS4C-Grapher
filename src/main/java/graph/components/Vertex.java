@@ -25,6 +25,8 @@ public class Vertex {
     private Vertex parent = null;
     @Getter @Setter
     private int subtreeDepth = 0;
+    @Getter @Setter
+    private int subtreeSize = 1;
     /*------*/
 
     public enum HamCycleVertexState {

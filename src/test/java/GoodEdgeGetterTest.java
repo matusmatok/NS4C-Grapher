@@ -17,4 +17,8 @@ public class GoodEdgeGetterTest {
         }
     }
 
+    @Test
+    public void testIsEdgeGood() {
+        System.out.println(goodEdgeGetter.isEdgeGood(1));
+    }
 }
