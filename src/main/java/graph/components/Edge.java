@@ -5,6 +5,7 @@
  */
 package graph.components;
 
+import java.util.Collections;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -100,8 +101,28 @@ public class Edge {
         System.out.println("Edge " + id + " : " + vFrom.getId() + " " + vTo.getId() + " L: " + leftFace.getId() + " R: " + rightFace.getId());
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Edge ").append(id).append(" : ").append(vFrom.getId()).append(" ").append(vTo.getId())
+                .append(" Left: ").append(leftFace.getId()).append(" Right: ").append(rightFace.getId()).append("\n");
+        return sb.toString();
+    }
+
     public Vertex getOppositeVertex(Vertex v) {
         if (vFrom == v) return vTo;
         return vFrom;
+    }
+
+    /*normal form implies that vFrom.id() < vTo.id()*/
+    public void toNormalForm() {
+        if (vFrom.getId() > vTo.getId()) {
+            Vertex tmp = vFrom;
+            vFrom = vTo;
+            vTo = tmp;
+            Face tmpf = leftFace;
+            leftFace = rightFace;
+            rightFace = tmpf;
+        }
     }
 }

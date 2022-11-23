@@ -58,7 +58,7 @@ public class GoodEdgeGetter {
         undiscoveredVertices.addAll(g.getVertices());
     }
 
-    public List<Edge> getGoodEdges(){
+    public List<Edge> getGoodEdges() {
         List<Edge> goodEdges = new ArrayList<>();
         for (Edge e: graph.getEdges()) {
             System.out.println("----LOOKING FOR HAMCYCLES EXCLUDING EDGE " + e.getId() + "---");

@@ -246,22 +246,14 @@ public class Graph {
         int indexOfMiddleEdgeInNewFace = newFace.getIndexOfE(middleEdge);
 
         final Edge newPreviousEdge = newFace.getEdge((indexOfMiddleEdgeInNewFace + 1) % newFace.size());
-        System.out.println("newPreviousEdge " + newPreviousEdge.getId());
         final Edge newFollowingEdge = newFace.getEdge((indexOfMiddleEdgeInNewFace - 1 + newFace.size()) % newFace.size());
-        System.out.println("newFollowingEdge " + newFollowingEdge.getId());
         final Edge oldPreviousEdge = oldFace.getEdge((indexOfMiddleEdgeInOldFace - 1 + oldFace.size()) % oldFace.size());
-
-        System.out.println("oldPreviousEdge  " + oldPreviousEdge.getId());
         final Edge oldFollowingEdge = oldFace.getEdge((indexOfMiddleEdgeInOldFace + 1) % oldFace.size());
-        System.out.println("oldFollowingEdge " + oldFollowingEdge.getId());
 
         final Vertex newStartVertex = middleEdge.getLeftFromPOVofFace(oldFace);
-        System.out.println("newStartVertex " + newStartVertex.getId());
         final Vertex newEndVertex = middleEdge.getRightFromPOVofFace(oldFace);
-        System.out.println("newEndVertex " + newEndVertex.getId());
 
         final Edge oppositeEdge = newFace.getEdge((indexOfMiddleEdgeInNewFace + 2) % newFace.size());
-        System.out.println("oppositeEdge " + oppositeEdge.getId());
         oppositeEdge.exchangeFace(newFace, oldFace);
         final Vertex mostLeftVertexOfOldEdges = oppositeEdge.getLeftFromPOVofFace(oldFace);
         mostLeftVertexOfOldEdges.exchangeEdge(newPreviousEdge, oldPreviousEdge);
@@ -306,6 +298,19 @@ public class Graph {
         for (Face f: faces) f.print();
     }
 
+    @Override
+    public String toString() {
+       StringBuilder sb = new StringBuilder();
+       sb.append("--BEGIN--\n").append("VERTICES:\n");
+       for (Vertex v: vertices) sb.append(v.toString());
+       sb.append("EDGES:\n");
+       for (Edge e: edges) sb.append(e.toString());
+       sb.append("FACES:\n");
+       for (Face f: faces) sb.append(f.toString());
+       sb.append("--END--");
+       return sb.toString();
+    }
+
     public void printHamCycleStates() {
         for (Vertex v: vertices) System.out.println("Vertex " + v.getId() + " State: " + v.getHamCycleState());
         for (Edge e: edges) System.out.println("Edge " + e.getId() + " State: " + e.getHamCycleState());
@@ -313,5 +318,12 @@ public class Graph {
 
     public int minimalFaceSize(){
         return faces.stream().map(Face::size).min(Integer::compareTo).get();
+    }
+
+    /*Normal form implies that each vertex, edge or face is in normal form.*/
+    public void toNormalForm() {
+        for (Vertex v : vertices) v.toNormalForm();
+        for (Edge e : edges) e.toNormalForm();
+        for (Face f : faces) f.toNormalForm();
     }
 }

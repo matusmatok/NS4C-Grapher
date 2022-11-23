@@ -84,6 +84,15 @@ public class Face {
         }
         System.out.println();
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Face ").append(id).append(" : ");
+        for (Edge e: adjacentEdges) sb.append(e.getId()).append(" ");
+        sb.append("\n");
+        return sb.toString();
+    }
     
     public int getVertexOfSmallestId(){
         Vertex v1 = adjacentEdges.get(0).getVFrom();
@@ -112,6 +121,14 @@ public class Face {
 
     public void removeEdge(Edge e){
         adjacentEdges.remove(e);
+    }
+
+    /*Normal form implies that the sequence representing the cyclical sequence of edges starts with an edge of smallest id.*/
+    public void toNormalForm() {
+        Edge minimal = adjacentEdges.stream().min((e1,e2) -> e1.getId() < e2.getId() ? 0 : 1).get();
+        while (adjacentEdges.get(0) != minimal) {
+            adjacentEdges.add(adjacentEdges.remove(0));
+        }
     }
     
 }

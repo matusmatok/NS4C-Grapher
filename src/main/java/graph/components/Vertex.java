@@ -66,6 +66,15 @@ public class Vertex {
         }
         System.out.println();
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Vertex ").append(id).append(" : ");
+        for (Edge e: adjacentEdges) sb.append(e.getId()).append(" ");
+        sb.append("\n");
+        return sb.toString();
+    }
     
     public Edge getNonInternalEdge(List<Edge> internalEdges){
         
@@ -92,5 +101,13 @@ public class Vertex {
             }
         }
         throw new RuntimeException("Trying to exchange a non-present edge.");
+    }
+
+    /*Normal form implies that the sequence representing the cyclical sequence of edges adjacent to this vertex starts with an edge of the lowest id*/
+    public void toNormalForm() {
+        Edge minimal = adjacentEdges.stream().min((e1,e2) -> e1.getId() < e2.getId() ? 0 : 1).get();
+        while (adjacentEdges.get(0) != minimal) {
+            adjacentEdges.add(adjacentEdges.remove(0));
+        }
     }
 }

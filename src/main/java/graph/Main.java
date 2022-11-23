@@ -46,6 +46,7 @@ public class Main {
         res3 = LexCoder.getLexCodeForFace(g.faces.get(0), g);
         System.out.println(res3);*/
         assert 0 == 1 : "YEBEE";
+        g.getFaces().get(0).toNormalForm();
         SimpleGenerator generator = new SimpleGenerator();
         generator.generate(g);
         generator.printMap();
