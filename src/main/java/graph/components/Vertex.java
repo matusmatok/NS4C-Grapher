@@ -7,6 +7,7 @@ package graph.components;
 
 import java.util.ArrayList;
 
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -66,7 +67,7 @@ public class Vertex {
         System.out.println();
     }
     
-    public Edge getNonInternalEdge(ArrayList<Edge> internalEdges){
+    public Edge getNonInternalEdge(List<Edge> internalEdges){
         
         for (Edge e: adjacentEdges){
             if (!internalEdges.contains(e)) return e;
@@ -81,5 +82,15 @@ public class Vertex {
             if (e.getHamCycleState() == Edge.hamCycleEdgeState.UNDISCOVERED) return e;
         }
         throw new RuntimeException("Vertex has no undiscovered edge.");
+    }
+
+    public void exchangeEdge(Edge oldE, Edge newE) {
+        for (int i=0; i<adjacentEdges.size(); i++) {
+            if (adjacentEdges.get(i) == oldE) {
+                adjacentEdges.set(i, newE);
+                return;
+            }
+        }
+        throw new RuntimeException("Trying to exchange a non-present edge.");
     }
 }

@@ -6,6 +6,7 @@
 package graph.components;
 
 import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 
 /**
@@ -94,7 +95,7 @@ public class Graph {
             newE.addFaces(leftFace, newFace);
             leftFace.addEdgeAfter(v.getAdjacentEdges().get(i), newE);
             edges.add(newE);
-            v.getAdjacentEdges().get(i).exchange(v, newV.get(i));
+            v.getAdjacentEdges().get(i).exchangeVertex(v, newV.get(i));
             newV.get(i).addEdge(newE);
             newV.get(i).addEdge(v.getAdjacentEdges().get(i));
         }
@@ -114,13 +115,13 @@ public class Graph {
         Vertex newVertex = vertices.get(smallestId);
 
         /*edges might have gotten mixed thix way. refactor it*/
-        ArrayList<Edge> internalEdges = f.getAdjacentEdges();
+        List<Edge> internalEdges = f.getAdjacentEdges();
         Edge e1 = vertices.get(smallestId).getNonInternalEdge(internalEdges);
-        e1.exchange(vertices.get(smallestId), newVertex);
+        e1.exchangeVertex(vertices.get(smallestId), newVertex);
         Edge e2 = vertices.get(vertices.size() - 2).getNonInternalEdge(internalEdges);
-        e2.exchange(vertices.get(vertices.size() - 2), newVertex);
+        e2.exchangeVertex(vertices.get(vertices.size() - 2), newVertex);
         Edge e3 = vertices.get(vertices.size() - 1).getNonInternalEdge(internalEdges);
-        e3.exchange(vertices.get(vertices.size() - 1), newVertex);
+        e3.exchangeVertex(vertices.get(vertices.size() - 1), newVertex);
 
         newVertex.getAdjacentEdges().removeAll(newVertex.getAdjacentEdges());
         newVertex.addEdge(e1);
@@ -136,43 +137,158 @@ public class Graph {
         vertices.remove(vertices.size() - 1);
         vertices.remove(vertices.size() - 1);
     }
-    public Edge op4_5(int type, Face f, Edge e1, Edge e2){
-        final int facesToTake = type - 3;
-        final Vertex firstNewVertex = new Vertex(vertices.size());
-        final Vertex secondNewVertex = new Vertex(vertices.size() + 1);
 
-        final Vertex formerVertexOne;
-        final Vertex formerVertexTwo;
-        if (e1.getRightFace() == f) {
-            formerVertexOne = e1.getVTo();
-            e1.setVTo(firstNewVertex);
-        }
-        else {
-            formerVertexOne = e1.getVFrom();
-            e1.setVFrom(firstNewVertex);
-        }
-
-        if (e2.getRightFace() == f) {
-            formerVertexTwo = e2.getVFrom();
-            e2.setVFrom(secondNewVertex);
-        }
-        else {
-            formerVertexTwo = e2.getVTo();
-            e2.setVTo(secondNewVertex);
-        }
-        return null;
+    public Edge op4(Face formerFace, int idOfInitialEdge) {
+        return operation(4, formerFace, idOfInitialEdge);
     }
 
-    public Edge operation(int type, Face formerFace, Edge initialEdge) {
-        final Vertex firstNewVertex = new Vertex(vertices.size());
-        final Vertex secondNewVertex = new Vertex(vertices.size() + 1);
+    public void undoOp4(Edge middleEdge) {
+        undoOperation(4, middleEdge);
+    }
 
-        final int indexOfInitialEdge = formerFace.getIndexOfE(initialEdge);
+    public Edge op5(Face formerFace, int idOfInitialEdge) {
+        return operation(5, formerFace, idOfInitialEdge);
+    }
 
-        for(int i = indexOfInitialEdge; i < indexOfInitialEdge + type - 3; i++){
+    public void undoOp5(Edge middleEdge) {
+        undoOperation(5, middleEdge);
+    }
 
+    public Edge operation(int type, Face formerFace, int idOfInitialEdge) {
+        if (type<4 || type>5) throw new RuntimeException("Unsupported type");
+        if (type > formerFace.size()) throw new RuntimeException("The face is too small to perform this operation on.");
+        final Vertex newStartVertex = new Vertex(vertices.size());
+        vertices.add(newStartVertex);
+        final Vertex newEndVertex = new Vertex(vertices.size());
+        vertices.add(newEndVertex);
+
+        List<Edge> formerFaceEdges = formerFace.getAdjacentEdges();
+        final Edge newMiddleEdge = new Edge(edges.size(), newStartVertex,newEndVertex);
+        edges.add(newMiddleEdge);
+
+        int indexOfInitialEdge = 0;
+        for(Edge e: formerFaceEdges) {
+            if (e.getId() == idOfInitialEdge) break;
+            indexOfInitialEdge++;
         }
-        return null;
+        final Edge oldPreviousEdge = formerFaceEdges.get(indexOfInitialEdge);
+        List<Edge> newFaceEdges = new ArrayList<>();
+
+        newFaceEdges.add(formerFaceEdges.get((indexOfInitialEdge +1) % formerFaceEdges.size()));
+        formerFaceEdges.set((indexOfInitialEdge +1) % formerFaceEdges.size(), newMiddleEdge);
+        if (type == 5) {
+            newFaceEdges.add(formerFaceEdges.remove((indexOfInitialEdge + 2) % formerFaceEdges.size()));
+        }
+
+        final Edge oldFollowingEdge = formerFaceEdges.get((indexOfInitialEdge + 2) % formerFaceEdges.size());
+        oldPreviousEdge.exchangeVertex(oldPreviousEdge.getRightFromPOVofFace(formerFace), newStartVertex);
+        oldFollowingEdge.exchangeVertex(oldFollowingEdge.getLeftFromPOVofFace(formerFace), newEndVertex);
+
+        final Vertex mostLeftOldVertex = newFaceEdges.get(0).getLeftFromPOVofFace(formerFace);
+        final Vertex mostRightOldVertex = newFaceEdges.get(newFaceEdges.size() -1).getRightFromPOVofFace(formerFace);
+        final Edge newFollowingEdge = new Edge(edges.size(), mostRightOldVertex, newEndVertex);
+        edges.add(newFollowingEdge);
+        newFaceEdges.add(newFollowingEdge);
+        newFaceEdges.add(newMiddleEdge);
+        final Edge newPreviousEdge = new Edge(edges.size(), newStartVertex, mostLeftOldVertex);
+        edges.add(newPreviousEdge);
+        newFaceEdges.add(newPreviousEdge);
+
+        mostLeftOldVertex.exchangeEdge(oldPreviousEdge, newPreviousEdge);
+        mostRightOldVertex.exchangeEdge(oldFollowingEdge, newFollowingEdge);
+
+        newPreviousEdge.exchangeVertex(mostLeftOldVertex, newStartVertex);
+        newFollowingEdge.exchangeVertex(mostRightOldVertex, newEndVertex);
+
+        newStartVertex.addEdge(newPreviousEdge);
+        newStartVertex.addEdge(newMiddleEdge);
+        newStartVertex.addEdge(oldPreviousEdge);
+
+        newEndVertex.addEdge(oldFollowingEdge);
+        newEndVertex.addEdge(newMiddleEdge);
+        newEndVertex.addEdge(newFollowingEdge);
+
+        final Face newFace = new Face(faces.size(), newFaceEdges);
+        faces.add(newFace);
+        final Face previousOtherFace = oldPreviousEdge.getOppositeFace(formerFace);
+        final Face followingOtherFace = oldFollowingEdge.getOppositeFace(formerFace);
+        previousOtherFace.addEdgeBefore(oldPreviousEdge,newPreviousEdge);
+        followingOtherFace.addEdgeAfter(oldFollowingEdge,newFollowingEdge);
+
+        newMiddleEdge.setLeftFace(newFace);
+        newMiddleEdge.setRightFace(formerFace);
+
+        newFollowingEdge.setRightFace(newFace);
+        newFollowingEdge.setLeftFace(followingOtherFace);
+
+        newPreviousEdge.setRightFace(newFace);
+        newPreviousEdge.setLeftFace(previousOtherFace);
+
+        newFaceEdges.get(0).exchangeFace(formerFace, newFace);
+        if (type == 5) newFaceEdges.get(1).exchangeFace(formerFace, newFace);
+
+        return newMiddleEdge;
+    }
+
+    public void undoOperation(int type, Edge middleEdge) {
+        final Face newFace;
+        final Face oldFace;
+        if (middleEdge.getLeftFace().getId() < middleEdge.getRightFace().getId()) {
+            oldFace = middleEdge.getLeftFace();
+            newFace = middleEdge.getRightFace();
+        }
+        else {
+            oldFace = middleEdge.getRightFace();
+            newFace = middleEdge.getLeftFace();
+        }
+
+        int indexOfMiddleEdgeInOldFace = oldFace.getIndexOfE(middleEdge);
+        int indexOfMiddleEdgeInNewFace = newFace.getIndexOfE(middleEdge);
+
+        final Edge newPreviousEdge = newFace.getEdge((indexOfMiddleEdgeInNewFace + 1) % newFace.size());
+        System.out.println("newPreviousEdge " + newPreviousEdge.getId());
+        final Edge newFollowingEdge = newFace.getEdge((indexOfMiddleEdgeInNewFace - 1 + newFace.size()) % newFace.size());
+        System.out.println("newFollowingEdge " + newFollowingEdge.getId());
+        final Edge oldPreviousEdge = oldFace.getEdge((indexOfMiddleEdgeInOldFace - 1 + oldFace.size()) % oldFace.size());
+
+        System.out.println("oldPreviousEdge  " + oldPreviousEdge.getId());
+        final Edge oldFollowingEdge = oldFace.getEdge((indexOfMiddleEdgeInOldFace + 1) % oldFace.size());
+        System.out.println("oldFollowingEdge " + oldFollowingEdge.getId());
+
+        final Vertex newStartVertex = middleEdge.getLeftFromPOVofFace(oldFace);
+        System.out.println("newStartVertex " + newStartVertex.getId());
+        final Vertex newEndVertex = middleEdge.getRightFromPOVofFace(oldFace);
+        System.out.println("newEndVertex " + newEndVertex.getId());
+
+        final Edge oppositeEdge = newFace.getEdge((indexOfMiddleEdgeInNewFace + 2) % newFace.size());
+        System.out.println("oppositeEdge " + oppositeEdge.getId());
+        oppositeEdge.exchangeFace(newFace, oldFace);
+        final Vertex mostLeftVertexOfOldEdges = oppositeEdge.getLeftFromPOVofFace(oldFace);
+        mostLeftVertexOfOldEdges.exchangeEdge(newPreviousEdge, oldPreviousEdge);
+        oldPreviousEdge.exchangeVertex(newStartVertex, mostLeftVertexOfOldEdges);
+        oldFace.getAdjacentEdges().set(indexOfMiddleEdgeInOldFace, oppositeEdge);
+        final Vertex mostRightVertexOfOldEdges;
+        if (type == 5) {
+            final Edge oppositeEdge2 = newFace.getEdge((indexOfMiddleEdgeInNewFace - 2 +newFace.size()) % newFace.size());
+            oppositeEdge2.exchangeFace(newFace, oldFace);
+            oldFace.addEdgeAfter(oppositeEdge, oppositeEdge2);
+            mostRightVertexOfOldEdges = oppositeEdge2.getRightFromPOVofFace(oldFace);
+        }
+        else {
+            mostRightVertexOfOldEdges = oppositeEdge.getRightFromPOVofFace(oldFace);
+        }
+        mostRightVertexOfOldEdges.exchangeEdge(newFollowingEdge, oldFollowingEdge);
+        oldFollowingEdge.exchangeVertex(newEndVertex, mostRightVertexOfOldEdges);
+
+        newPreviousEdge.removeSelfFromOutterFace(newFace);
+        newFollowingEdge.removeSelfFromOutterFace(newFace);
+
+        faces.remove(faces.size() - 1);
+        vertices.remove(vertices.size() - 1);
+        vertices.remove(vertices.size() - 1);
+        edges.remove(edges.size() - 1);
+        edges.remove(edges.size() - 1);
+        edges.remove(edges.size() - 1);
     }
     
     public void untagFaces(){

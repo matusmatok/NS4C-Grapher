@@ -19,7 +19,7 @@ import lombok.Setter;
 public class Face {
     
     @Getter
-    private ArrayList<Edge> adjacentEdges = new ArrayList<>();
+    private List<Edge> adjacentEdges = new ArrayList<>();
     @Getter @Setter
     private boolean tagged = false;
     @Getter
@@ -29,6 +29,11 @@ public class Face {
     
     public Face(int id){
         this.id = id;
+    }
+
+    public Face(int id, List<Edge> edges) {
+        this(id);
+        adjacentEdges = edges;
     }
     
     public void addEdge(Edge e){
@@ -50,21 +55,24 @@ public class Face {
         return this.adjacentEdges.get(index);
     }
     
-    //TODO
-    public ArrayList<Face> getCommonNeighbours(Face other){
-        
-        return null;
-    }
-    
     public ArrayList<Edge> getAdjacentEdgesCOPY(){
         return new ArrayList<>(this.adjacentEdges);
     }
     
     public void addEdgeAfter(Edge currentEdge, Edge newEdge){
-        ArrayList<Edge> newList = new ArrayList<>();
+        List<Edge> newList = new ArrayList<>();
         for(Edge e: this.adjacentEdges){
             newList.add(e);
             if (e == currentEdge) newList.add(newEdge);
+        }
+        this.adjacentEdges = newList;
+    }
+
+    public void addEdgeBefore(Edge currentEdge, Edge newEdge ) {
+        List<Edge> newList = new ArrayList<>();
+        for(Edge e: this.adjacentEdges){
+            if (e == currentEdge) newList.add(newEdge);
+            newList.add(e);
         }
         this.adjacentEdges = newList;
     }
