@@ -1,19 +1,9 @@
 package graph.processors;
 
 import graph.components.Vertex;
-import lombok.AllArgsConstructor;
 
-import java.util.Stack;
-
-public class UnionFindSet {
-    @AllArgsConstructor
-    private class LogEntry {
-        private final Vertex root;
-        private final Vertex subordinate;
-        private final int rootFormerSubtreeDepth;
-    }
-    private final Stack<LogEntry> unionLog = new Stack<>();
-
+public class SimpleUnionFindSet extends AbstractUnionFindSet {
+    @Override
     public void union(Vertex element1, Vertex element2) {
         if (element1.getParent() != null || element2.getParent() != null) throw new RuntimeException("Trying to unify two non-root elements.");
         if (element1.getSubtreeDepth() > element2.getSubtreeDepth()) {
@@ -34,6 +24,7 @@ public class UnionFindSet {
         }
     }
 
+    @Override
     public void disunion() {
         final LogEntry logEntry = unionLog.pop();
         logEntry.root.setSubtreeDepth(logEntry.rootFormerSubtreeDepth);
@@ -41,6 +32,7 @@ public class UnionFindSet {
         logEntry.root.setSubtreeSize(logEntry.root.getSubtreeSize() - logEntry.subordinate.getSubtreeSize());
     }
 
+    @Override
     public Vertex find(Vertex element) {
         Vertex parent = element.getParent();
         while (parent != null) {
