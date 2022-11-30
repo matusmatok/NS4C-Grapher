@@ -84,10 +84,17 @@ public class ConsistentTwoFactorBuilder {
     private final int numberOfPositiveVertices;
     private int currentWeight = 0;
 
-    public ConsistentTwoFactorBuilder(Graph graph, int numberOfPositiveVertices, Edge goodEdge) {
+    public ConsistentTwoFactorBuilder(Graph graph, Edge goodEdge) {
         this.graph = graph;
-        this.numberOfPositiveVertices = numberOfPositiveVertices;
+        this.numberOfPositiveVertices = (int)graph.getVertices().stream().filter((vertex -> vertex.getWeight() == 1)).count();
         this.goodEdge = goodEdge;
+    }
+
+    public boolean canBuild() {
+        excludeEdge(goodEdge);
+        final boolean result = canBuildConsistentTwoFactor();
+        undoExcludeEdge(goodEdge);
+        return result;
     }
 
     private boolean canBuildConsistentTwoFactor() {
@@ -134,7 +141,7 @@ public class ConsistentTwoFactorBuilder {
                         }
                     }
                     else {
-                        unionFindSet.union(vertex, otherVertex);
+                        unionFindSet.union(unionFindSet.find(vertex), unionFindSet.find(otherVertex));
                         includeEdge(edge);
                         final boolean result = canBuildConsistentTwoFactor();
                         undoIncludeEdge(edge);
@@ -146,11 +153,12 @@ public class ConsistentTwoFactorBuilder {
             case P_CHOICE:
             case N_IN_EX_CHOICE:
             case N_END_PATH_CHOICE:
+                boolean result = false;
                 if (otherVertexPostExcludeState != null) {
                     excludeEdge(edge);
-                    final boolean result = canBuildConsistentTwoFactor();
+                    result = canBuildConsistentTwoFactor();
                     undoExcludeEdge(edge);
-                    return result;
+                    if (result) return true;
                 }
                 if (otherVertexPostIncludeState != null) {
                     if (unionFindSet.find(vertex) == unionFindSet.find(otherVertex)) {
@@ -158,40 +166,42 @@ public class ConsistentTwoFactorBuilder {
                         if (weightOfCycle % 2 == 0) {
                             includeEdge(edge);
                             currentWeight += weightOfCycle;
-                            final boolean result = canBuildConsistentTwoFactor();
+                            result = canBuildConsistentTwoFactor();
                             currentWeight -= weightOfCycle;
                             undoIncludeEdge(edge);
-                            return result;
                         }
                     }
                     else {
-                        unionFindSet.union(vertex, otherVertex);
+                        unionFindSet.union(unionFindSet.find(vertex), unionFindSet.find(otherVertex));
                         includeEdge(edge);
-                        final boolean result = canBuildConsistentTwoFactor();
+                        result = canBuildConsistentTwoFactor();
                         undoIncludeEdge(edge);
                         unionFindSet.disunion();
-                        return result;
                     }
                 }
-                break;
+                return result;
             default: return false;
         }
         return false;
     }
 
     protected void includeEdge(Edge e) {
+        // System.out.println("INCLUDE " + e.getId());
         e.setHamCycleState(Edge.hamCycleEdgeState.INCLUDED);
         edgeOperation(e, INCLUDE_EDGE_MAP);
     }
     protected void undoIncludeEdge(Edge e) {
+        // System.out.println("UNDO INCLUDE " + e.getId());
         e.setHamCycleState(Edge.hamCycleEdgeState.UNDISCOVERED);
         edgeOperation(e, UNDO_INCLUDE_EDGE_MAP);
     }
     protected void excludeEdge(Edge e) {
+        // System.out.println("EXCLUDE " + e.getId());
         e.setHamCycleState(Edge.hamCycleEdgeState.EXCLUDED);
         edgeOperation(e, EXCLUDE_EDGE_MAP);
     }
     protected void undoExcludeEdge(Edge e) {
+        // System.out.println("UNDO EXCLUDE " + e.getId());
         e.setHamCycleState(Edge.hamCycleEdgeState.UNDISCOVERED);
         edgeOperation(e, UNDO_EXCLUDE_EDGE_MAP);
     }

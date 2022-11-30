@@ -5,6 +5,7 @@
  */
 package graph.components;
 
+import graph.components.Vertex.ConsistentTwoFactorState;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -325,5 +326,16 @@ public class Graph {
         for (Vertex v : vertices) v.toNormalForm();
         for (Edge e : edges) e.toNormalForm();
         for (Face f : faces) f.toNormalForm();
+    }
+
+
+    public void setPositive(Vertex vertex) {
+        vertex.setWeight(1);
+        vertex.setConsistentTwoFactorState(ConsistentTwoFactorState.P_UNDISCOVERED);
+    }
+
+    public void setNegative(Vertex vertex) {
+        vertex.setWeight(0);
+        vertex.setConsistentTwoFactorState(ConsistentTwoFactorState.N_UNDISCOVERED);
     }
 }
