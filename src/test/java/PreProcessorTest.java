@@ -4,11 +4,11 @@ import static org.junit.Assert.assertTrue;
 import graph.components.Edge;
 import graph.components.Graph;
 import graph.components.Vertex;
-import graph.processors.AbstractPreProcessor;
+import graph.preprocessors.AbstractPreProcessor;
 import java.util.List;
 
-import graph.processors.AmbiguousVertexGetter;
-import graph.processors.GoodEdgeGetter;
+import graph.preprocessors.AmbiguousVertexGetter;
+import graph.preprocessors.GoodEdgeGetter;
 import org.junit.Test;
 
 public class PreProcessorTest {

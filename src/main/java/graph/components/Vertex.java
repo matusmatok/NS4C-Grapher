@@ -30,7 +30,7 @@ public class Vertex {
     private int subtreeSize = 1;
     /*------*/
 
-    public enum HamCycleVertexState {
+    public enum CycleVertexState {
         UNDISCOVERED,
         CHOICE,
         DETERMINISTIC_INCLUDE_REST,
@@ -39,9 +39,30 @@ public class Vertex {
         COVERED
     }
 
+    public enum ConsistentTwoFactorState {
+        P_UNDISCOVERED,
+        P_CHOICE,
+        P_DETERMINISTIC_INCLUDE_REST,
+        P_DETERMINISTIC_INCLUDE_REMAINING,
+        P_DETERMINISTIC_EXCLUDE_REMAINING,
+        P_COVERED,
+        N_UNDISCOVERED,
+        N_END_PATH_CHOICE,
+        N_IN_EX_CHOICE,
+        N_DETERMINISTIC_INCLUDE,
+        N_DETERMINISTIC_COVER_EXCLUDE,
+        N_DETERMINISTIC_EXCLUDE,
+        N_COVERED,
+        N_EXCLUDED
+    }
+
     @Getter @Setter
-    private HamCycleVertexState hamCycleState = HamCycleVertexState.UNDISCOVERED;
-    
+    private CycleVertexState cycleState = CycleVertexState.UNDISCOVERED;
+    @Getter @Setter
+    private ConsistentTwoFactorState consistentTwoFactorState;
+    @Getter @Setter
+    private int weight;
+
     public Vertex(int id){
         this.id = id;
         this.adjacentEdges = new ArrayList<>();

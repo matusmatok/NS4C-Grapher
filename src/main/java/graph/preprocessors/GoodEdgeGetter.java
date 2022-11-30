@@ -1,8 +1,9 @@
-package graph.processors;
+package graph.preprocessors;
 
 import graph.components.Edge;
 import graph.components.Graph;
 import graph.components.Vertex;
+import graph.utils.SimpleUnionFindSet;
 
 import java.util.ArrayList;
 import java.util.HashSet;

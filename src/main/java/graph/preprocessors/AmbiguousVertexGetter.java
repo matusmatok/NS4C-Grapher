@@ -1,14 +1,15 @@
-package graph.processors;
+package graph.preprocessors;
 
 import graph.components.Edge;
 import graph.components.Graph;
 import graph.components.Vertex;
+import graph.utils.SimpleUnionFindSet;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static graph.components.Edge.hamCycleEdgeState.EXCLUDED;
-import static graph.components.Vertex.HamCycleVertexState.*;
+import static graph.components.Vertex.CycleVertexState.*;
 
 /*AmbiguousVertexGetter returns a list of ambiguous vertices for a given "good" edge.
  *The definition of an ambiguous vertex is as follows:
@@ -51,14 +52,14 @@ public class AmbiguousVertexGetter extends AbstractPreProcessor<Vertex> {
 
     private void excludeOmittedEdge(Edge edge, Vertex omittedVertex) {
         final Vertex otherVertex = edge.getOppositeVertex(omittedVertex);
-        otherVertex.setHamCycleState(DETERMINISTIC_INCLUDE_REST);
+        otherVertex.setCycleState(DETERMINISTIC_INCLUDE_REST);
         undiscoveredVertices.remove(otherVertex);
         deterministicVertices.add(otherVertex);
         edge.setHamCycleState(EXCLUDED);
     }
     private void undoExcludeOmittedEdge(Edge edge, Vertex omittedVertex) {
         final Vertex otherVertex = edge.getOppositeVertex(omittedVertex);
-        otherVertex.setHamCycleState(UNDISCOVERED);
+        otherVertex.setCycleState(UNDISCOVERED);
         deterministicVertices.remove(otherVertex);
         undiscoveredVertices.add(otherVertex);
         edge.setHamCycleState(Edge.hamCycleEdgeState.UNDISCOVERED);

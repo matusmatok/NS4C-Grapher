@@ -312,7 +312,7 @@ public class Graph {
     }
 
     public void printHamCycleStates() {
-        for (Vertex v: vertices) System.out.println("Vertex " + v.getId() + " State: " + v.getHamCycleState());
+        for (Vertex v: vertices) System.out.println("Vertex " + v.getId() + " State: " + v.getCycleState());
         for (Edge e: edges) System.out.println("Edge " + e.getId() + " State: " + e.getHamCycleState());
     }
 

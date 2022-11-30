@@ -1,45 +1,46 @@
-package graph.processors;
+package graph.preprocessors;
 
 import graph.components.Edge;
 import graph.components.Edge.hamCycleEdgeState;
 import graph.components.Graph;
 import graph.components.Vertex;
-import graph.components.Vertex.HamCycleVertexState;
+import graph.components.Vertex.CycleVertexState;
+import graph.utils.AbstractUnionFindSet;
 
 import java.util.*;
 
 public abstract class AbstractPreProcessor<T> {
 
-    protected static final EnumMap<HamCycleVertexState, HamCycleVertexState> INCLUDE_EDGE_MAP = new EnumMap<>(HamCycleVertexState.class);
+    protected static final EnumMap<CycleVertexState, CycleVertexState> INCLUDE_EDGE_MAP = new EnumMap<>(CycleVertexState.class);
     static {
-        INCLUDE_EDGE_MAP.put(HamCycleVertexState.UNDISCOVERED,HamCycleVertexState.CHOICE);
-        INCLUDE_EDGE_MAP.put(HamCycleVertexState.CHOICE,HamCycleVertexState.DETERMINISTIC_EXCLUDE_REMAINING);
-        INCLUDE_EDGE_MAP.put(HamCycleVertexState.DETERMINISTIC_INCLUDE_REMAINING, HamCycleVertexState.COVERED);
-        INCLUDE_EDGE_MAP.put(HamCycleVertexState.DETERMINISTIC_INCLUDE_REST,HamCycleVertexState.DETERMINISTIC_INCLUDE_REMAINING);
-        INCLUDE_EDGE_MAP.put(HamCycleVertexState.DETERMINISTIC_EXCLUDE_REMAINING, null);
-        INCLUDE_EDGE_MAP.put(HamCycleVertexState.COVERED, null);
+        INCLUDE_EDGE_MAP.put(CycleVertexState.UNDISCOVERED, CycleVertexState.CHOICE);
+        INCLUDE_EDGE_MAP.put(CycleVertexState.CHOICE, CycleVertexState.DETERMINISTIC_EXCLUDE_REMAINING);
+        INCLUDE_EDGE_MAP.put(CycleVertexState.DETERMINISTIC_INCLUDE_REMAINING, CycleVertexState.COVERED);
+        INCLUDE_EDGE_MAP.put(CycleVertexState.DETERMINISTIC_INCLUDE_REST, CycleVertexState.DETERMINISTIC_INCLUDE_REMAINING);
+        INCLUDE_EDGE_MAP.put(CycleVertexState.DETERMINISTIC_EXCLUDE_REMAINING, null);
+        INCLUDE_EDGE_MAP.put(CycleVertexState.COVERED, null);
     }
-    protected static final EnumMap<HamCycleVertexState, HamCycleVertexState> UNDO_INCLUDE_EDGE_MAP = new EnumMap<>(HamCycleVertexState.class);
+    protected static final EnumMap<CycleVertexState, CycleVertexState> UNDO_INCLUDE_EDGE_MAP = new EnumMap<>(CycleVertexState.class);
     static {
-        UNDO_INCLUDE_EDGE_MAP.put(HamCycleVertexState.CHOICE, HamCycleVertexState.UNDISCOVERED);
-        UNDO_INCLUDE_EDGE_MAP.put(HamCycleVertexState.DETERMINISTIC_EXCLUDE_REMAINING, HamCycleVertexState.CHOICE);
-        UNDO_INCLUDE_EDGE_MAP.put(HamCycleVertexState.COVERED, HamCycleVertexState.DETERMINISTIC_INCLUDE_REMAINING);
-        UNDO_INCLUDE_EDGE_MAP.put(HamCycleVertexState.DETERMINISTIC_INCLUDE_REMAINING,HamCycleVertexState.DETERMINISTIC_INCLUDE_REST);
+        UNDO_INCLUDE_EDGE_MAP.put(CycleVertexState.CHOICE, CycleVertexState.UNDISCOVERED);
+        UNDO_INCLUDE_EDGE_MAP.put(CycleVertexState.DETERMINISTIC_EXCLUDE_REMAINING, CycleVertexState.CHOICE);
+        UNDO_INCLUDE_EDGE_MAP.put(CycleVertexState.COVERED, CycleVertexState.DETERMINISTIC_INCLUDE_REMAINING);
+        UNDO_INCLUDE_EDGE_MAP.put(CycleVertexState.DETERMINISTIC_INCLUDE_REMAINING, CycleVertexState.DETERMINISTIC_INCLUDE_REST);
     }
-    protected static final EnumMap<HamCycleVertexState, HamCycleVertexState> EXCLUDE_EDGE_MAP = new EnumMap<>(HamCycleVertexState.class);
+    protected static final EnumMap<CycleVertexState, CycleVertexState> EXCLUDE_EDGE_MAP = new EnumMap<>(CycleVertexState.class);
     static {
-        EXCLUDE_EDGE_MAP.put(HamCycleVertexState.UNDISCOVERED, HamCycleVertexState.DETERMINISTIC_INCLUDE_REST);
-        EXCLUDE_EDGE_MAP.put(HamCycleVertexState.CHOICE, HamCycleVertexState.DETERMINISTIC_INCLUDE_REMAINING);
-        EXCLUDE_EDGE_MAP.put(HamCycleVertexState.DETERMINISTIC_INCLUDE_REST, null);
-        EXCLUDE_EDGE_MAP.put(HamCycleVertexState.DETERMINISTIC_INCLUDE_REMAINING, null);
-        EXCLUDE_EDGE_MAP.put(HamCycleVertexState.DETERMINISTIC_EXCLUDE_REMAINING, HamCycleVertexState.COVERED);
-        EXCLUDE_EDGE_MAP.put(HamCycleVertexState.COVERED, null);
+        EXCLUDE_EDGE_MAP.put(CycleVertexState.UNDISCOVERED, CycleVertexState.DETERMINISTIC_INCLUDE_REST);
+        EXCLUDE_EDGE_MAP.put(CycleVertexState.CHOICE, CycleVertexState.DETERMINISTIC_INCLUDE_REMAINING);
+        EXCLUDE_EDGE_MAP.put(CycleVertexState.DETERMINISTIC_INCLUDE_REST, null);
+        EXCLUDE_EDGE_MAP.put(CycleVertexState.DETERMINISTIC_INCLUDE_REMAINING, null);
+        EXCLUDE_EDGE_MAP.put(CycleVertexState.DETERMINISTIC_EXCLUDE_REMAINING, CycleVertexState.COVERED);
+        EXCLUDE_EDGE_MAP.put(CycleVertexState.COVERED, null);
     }
-    protected static final EnumMap<HamCycleVertexState, HamCycleVertexState> UNDO_EXCLUDE_EDGE_MAP = new EnumMap<>(HamCycleVertexState.class);
+    protected static final EnumMap<CycleVertexState, CycleVertexState> UNDO_EXCLUDE_EDGE_MAP = new EnumMap<>(CycleVertexState.class);
     static {
-        UNDO_EXCLUDE_EDGE_MAP.put(HamCycleVertexState.DETERMINISTIC_INCLUDE_REST, HamCycleVertexState.UNDISCOVERED);
-        UNDO_EXCLUDE_EDGE_MAP.put(HamCycleVertexState.DETERMINISTIC_INCLUDE_REMAINING, HamCycleVertexState.CHOICE);
-        UNDO_EXCLUDE_EDGE_MAP.put(HamCycleVertexState.COVERED, HamCycleVertexState.DETERMINISTIC_EXCLUDE_REMAINING);
+        UNDO_EXCLUDE_EDGE_MAP.put(CycleVertexState.DETERMINISTIC_INCLUDE_REST, CycleVertexState.UNDISCOVERED);
+        UNDO_EXCLUDE_EDGE_MAP.put(CycleVertexState.DETERMINISTIC_INCLUDE_REMAINING, CycleVertexState.CHOICE);
+        UNDO_EXCLUDE_EDGE_MAP.put(CycleVertexState.COVERED, CycleVertexState.DETERMINISTIC_EXCLUDE_REMAINING);
     }
 
     protected final Set<Vertex> undiscoveredVertices = new HashSet<>(50);
@@ -75,11 +76,11 @@ public abstract class AbstractPreProcessor<T> {
         final boolean canInclude = vColor != oColor;
         final boolean canCloseCycle = canCloseCycle(vColor);
 
-        final HamCycleVertexState otherVertexState = otherVertex.getHamCycleState();
+        final CycleVertexState otherCycleVertexState = otherVertex.getCycleState();
 
-        switch (vertex.getHamCycleState()) {
+        switch (vertex.getCycleState()) {
             case DETERMINISTIC_EXCLUDE_REMAINING :
-                switch (otherVertexState){
+                switch (otherCycleVertexState){
                     case UNDISCOVERED:
                     case DETERMINISTIC_EXCLUDE_REMAINING:
                     case CHOICE:
@@ -92,7 +93,7 @@ public abstract class AbstractPreProcessor<T> {
                 }
             case DETERMINISTIC_INCLUDE_REMAINING:
             case DETERMINISTIC_INCLUDE_REST:
-                    switch (otherVertexState) {
+                    switch (otherCycleVertexState) {
                         case UNDISCOVERED:
                         case DETERMINISTIC_INCLUDE_REST:
                         case DETERMINISTIC_INCLUDE_REMAINING:
@@ -115,7 +116,7 @@ public abstract class AbstractPreProcessor<T> {
                         default: return false;
                     }
             case CHOICE:
-                switch (otherVertexState) {
+                switch (otherCycleVertexState) {
                     case UNDISCOVERED:
                     case CHOICE:
                         if (excludeEdge(edge)) {
@@ -165,13 +166,13 @@ public abstract class AbstractPreProcessor<T> {
         return edgeOperation(e, UNDO_EXCLUDE_EDGE_MAP);
     }
 
-    private boolean edgeOperation(Edge e, EnumMap<HamCycleVertexState,HamCycleVertexState> map) {
+    private boolean edgeOperation(Edge e, EnumMap<CycleVertexState, CycleVertexState> map) {
         final Vertex vFrom = e.getVFrom();
         final Vertex vTo = e.getVTo();
-        final HamCycleVertexState vFromState = vFrom.getHamCycleState();
-        final HamCycleVertexState vToState = vTo.getHamCycleState();
-        final HamCycleVertexState vFromNewState = map.get(vFromState);
-        final HamCycleVertexState vToNewState = map.get(vToState);
+        final CycleVertexState vFromState = vFrom.getCycleState();
+        final CycleVertexState vToState = vTo.getCycleState();
+        final CycleVertexState vFromNewState = map.get(vFromState);
+        final CycleVertexState vToNewState = map.get(vToState);
         if (vFromNewState != null && vToNewState != null) {
             unsetState(vFrom, vFromState);
             setState(vFrom, vFromNewState);
@@ -182,7 +183,7 @@ public abstract class AbstractPreProcessor<T> {
         return false;
     }
 
-    private void unsetState(Vertex v, HamCycleVertexState oldState) {
+    private void unsetState(Vertex v, CycleVertexState oldState) {
         switch (oldState) {
             case UNDISCOVERED :
                 undiscoveredVertices.remove(v);
@@ -197,30 +198,30 @@ public abstract class AbstractPreProcessor<T> {
                 break;
         }
     }
-    private void setState(Vertex v, HamCycleVertexState newState) {
+    private void setState(Vertex v, CycleVertexState newState) {
         switch (newState) {
             case CHOICE :
                 choiceVertices.add(v);
-                v.setHamCycleState(HamCycleVertexState.CHOICE);
+                v.setCycleState(CycleVertexState.CHOICE);
                 break;
             case DETERMINISTIC_EXCLUDE_REMAINING :
                 deterministicVertices.add(v);
-                v.setHamCycleState(HamCycleVertexState.DETERMINISTIC_EXCLUDE_REMAINING);
+                v.setCycleState(CycleVertexState.DETERMINISTIC_EXCLUDE_REMAINING);
                 break;
             case DETERMINISTIC_INCLUDE_REMAINING:
                 deterministicVertices.add(v);
-                v.setHamCycleState(HamCycleVertexState.DETERMINISTIC_INCLUDE_REMAINING);
+                v.setCycleState(CycleVertexState.DETERMINISTIC_INCLUDE_REMAINING);
                 break;
             case DETERMINISTIC_INCLUDE_REST:
                 deterministicVertices.add(v);
-                v.setHamCycleState(HamCycleVertexState.DETERMINISTIC_INCLUDE_REST);
+                v.setCycleState(CycleVertexState.DETERMINISTIC_INCLUDE_REST);
                 break;
             case COVERED:
-                v.setHamCycleState(HamCycleVertexState.COVERED);
+                v.setCycleState(CycleVertexState.COVERED);
                 break;
             case UNDISCOVERED:
                 undiscoveredVertices.add(v);
-                v.setHamCycleState(HamCycleVertexState.UNDISCOVERED);
+                v.setCycleState(CycleVertexState.UNDISCOVERED);
                 break;
         }
     }
