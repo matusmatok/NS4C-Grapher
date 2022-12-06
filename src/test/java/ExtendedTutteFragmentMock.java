@@ -8,10 +8,12 @@ public class ExtendedTutteFragmentMock extends TutteFragmentMock{
     public ExtendedTutteFragmentMock() {
         super();
         for (Vertex v: getVertices()) setPositive(v);
-        substituteVertexForGadget(getVertices().get(3));
+        //substituteVertexForGadget(getVertices().get(3));
         substituteVertexForGadget(getVertices().get(4));
         substituteVertexForGadget(getVertices().get(8));
-        substituteVertexForGadget(getVertices().get(13));
+        //substituteVertexForGadget(getVertices().get(13));
+        setNegative(getVertices().get(1));
+        setNegative(getVertices().get(14));
     }
 
     private void substituteVertexForGadget(Vertex vertex) {
