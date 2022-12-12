@@ -5,7 +5,6 @@
  */
 package graph.components;
 
-import java.util.Collections;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -68,7 +67,11 @@ public class Edge {
         else if (v == this.vTo) return this.rightFace;
         else throw new RuntimeException("Trying to get left face from the point of view of a vertex not present in this edge.");
     }
-    
+
+    public Face getFaceOfBiggerId() {
+        return leftFace.getId() > rightFace.getId() ? leftFace : rightFace;
+    }
+
     public void addFaces(Face f1, Face f2){
         this.leftFace = f1;
         this.rightFace = f2;

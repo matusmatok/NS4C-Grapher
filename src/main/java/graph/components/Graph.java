@@ -80,7 +80,10 @@ public class Graph {
         vertices.get(3).addEdge(edges.get(1));
         vertices.get(3).addEdge(edges.get(3));
     }
-    
+
+    public Face op3(int vertexId) {
+        return op3(vertices.get(vertexId));
+    }
     public Face op3(Vertex v){
         ArrayList<Vertex> newV = new ArrayList<>();
         newV.add(new Vertex(v.getId()));
@@ -88,17 +91,24 @@ public class Graph {
         newV.add(new Vertex(vertices.size() + 1));
         
         Face newFace = new Face(faces.size());
-        
-        for(int i=0; i<3; i++){
-            Edge newE = new Edge(edges.size(), newV.get((i+2)%3), newV.get(i));
-            newFace.addEdge(newE);
-            Face leftFace = v.getAdjacentEdges().get(i).getLeftFromPOV(v);
-            newE.addFaces(leftFace, newFace);
-            leftFace.addEdgeAfter(v.getAdjacentEdges().get(i), newE);
-            edges.add(newE);
-            v.getAdjacentEdges().get(i).exchangeVertex(v, newV.get(i));
-            newV.get(i).addEdge(newE);
-            newV.get(i).addEdge(v.getAdjacentEdges().get(i));
+
+        try {
+            for (int i = 0; i < 3; i++) {
+                Edge newE = new Edge(edges.size(), newV.get((i + 2) % 3), newV.get(i));
+                newFace.addEdge(newE);
+                Face leftFace = v.getAdjacentEdges().get(i).getLeftFromPOV(v);
+                newE.addFaces(leftFace, newFace);
+                leftFace.addEdgeAfter(v.getAdjacentEdges().get(i), newE);
+                edges.add(newE);
+                v.getAdjacentEdges().get(i).exchangeVertex(v, newV.get(i));
+                newV.get(i).addEdge(newE);
+                newV.get(i).addEdge(v.getAdjacentEdges().get(i));
+            }
+        }
+        catch (Exception e) {
+            System.out.println("Vertex " + v.getId());
+            print();
+            throw new RuntimeException();
         }
         
         for (int i=0; i<3; i++) newV.get(i).addEdge(edges.get(edges.size() - 3 + (i+1)%3));
@@ -139,6 +149,9 @@ public class Graph {
         vertices.remove(vertices.size() - 1);
     }
 
+    public Edge op4(int faceId, int idOfInitialEdge) {
+        return op4(faces.get(faceId), idOfInitialEdge);
+    }
     public Edge op4(Face formerFace, int idOfInitialEdge) {
         return operation(4, formerFace, idOfInitialEdge);
     }
@@ -147,6 +160,9 @@ public class Graph {
         undoOperation(4, middleEdge);
     }
 
+    public Edge op5(int faceId, int idOfInitialEdge) {
+        return op5(faces.get(faceId),idOfInitialEdge);
+    }
     public Edge op5(Face formerFace, int idOfInitialEdge) {
         return operation(5, formerFace, idOfInitialEdge);
     }
@@ -155,7 +171,7 @@ public class Graph {
         undoOperation(5, middleEdge);
     }
 
-    public Edge operation(int type, Face formerFace, int idOfInitialEdge) {
+    private Edge operation(int type, Face formerFace, int idOfInitialEdge) {
         if (type<4 || type>5) throw new RuntimeException("Unsupported type");
         if (type > formerFace.size()) throw new RuntimeException("The face is too small to perform this operation on.");
         final Vertex newStartVertex = new Vertex(vertices.size());
@@ -167,21 +183,20 @@ public class Graph {
         final Edge newMiddleEdge = new Edge(edges.size(), newStartVertex,newEndVertex);
         edges.add(newMiddleEdge);
 
-        int indexOfInitialEdge = 0;
-        for(Edge e: formerFaceEdges) {
-            if (e.getId() == idOfInitialEdge) break;
-            indexOfInitialEdge++;
-        }
+        final int indexOfInitialEdge = formerFace.getIndexOfE(edges.get(idOfInitialEdge));
+
         final Edge oldPreviousEdge = formerFaceEdges.get(indexOfInitialEdge);
         List<Edge> newFaceEdges = new ArrayList<>();
 
         newFaceEdges.add(formerFaceEdges.get((indexOfInitialEdge +1) % formerFaceEdges.size()));
         formerFaceEdges.set((indexOfInitialEdge +1) % formerFaceEdges.size(), newMiddleEdge);
+
+        final Edge oldFollowingEdge = formerFaceEdges.get((indexOfInitialEdge + type - 2) % formerFaceEdges.size());
+
         if (type == 5) {
             newFaceEdges.add(formerFaceEdges.remove((indexOfInitialEdge + 2) % formerFaceEdges.size()));
         }
 
-        final Edge oldFollowingEdge = formerFaceEdges.get((indexOfInitialEdge + 2) % formerFaceEdges.size());
         oldPreviousEdge.exchangeVertex(oldPreviousEdge.getRightFromPOVofFace(formerFace), newStartVertex);
         oldFollowingEdge.exchangeVertex(oldFollowingEdge.getLeftFromPOVofFace(formerFace), newEndVertex);
 
@@ -197,9 +212,6 @@ public class Graph {
 
         mostLeftOldVertex.exchangeEdge(oldPreviousEdge, newPreviousEdge);
         mostRightOldVertex.exchangeEdge(oldFollowingEdge, newFollowingEdge);
-
-        newPreviousEdge.exchangeVertex(mostLeftOldVertex, newStartVertex);
-        newFollowingEdge.exchangeVertex(mostRightOldVertex, newEndVertex);
 
         newStartVertex.addEdge(newPreviousEdge);
         newStartVertex.addEdge(newMiddleEdge);
@@ -231,7 +243,7 @@ public class Graph {
         return newMiddleEdge;
     }
 
-    public void undoOperation(int type, Edge middleEdge) {
+    private void undoOperation(int type, Edge middleEdge) {
         final Face newFace;
         final Face oldFace;
         if (middleEdge.getLeftFace().getId() < middleEdge.getRightFace().getId()) {

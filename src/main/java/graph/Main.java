@@ -6,7 +6,9 @@
 package graph;
 
 import graph.components.Graph;
+import graph.generators.AbstractGenerator;
 import graph.generators.SimpleGenerator;
+import graph.generators.TopVerifyingGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,7 @@ public class Main {
         
         Graph g = new Graph();
         g.init();
+        g.op3(0);
         //ArrayList<Integer> res = lc.getLexCodeForFace(g.faces.get(1), g);
         //System.out.println(res);
         /*g.op3(g.vertices.get(0));
@@ -45,12 +48,10 @@ public class Main {
         g.op3(g.vertices.get(0));
         res3 = LexCoder.getLexCodeForFace(g.faces.get(0), g);
         System.out.println(res3);*/
-        assert 0 == 1 : "YEBEE";
         g.getFaces().get(0).toNormalForm();
-        SimpleGenerator generator = new SimpleGenerator();
-        generator.generate(g);
-        generator.printMap();
-        
+        AbstractGenerator generator = new TopVerifyingGenerator(g, null, 28 );
+        generator.generate();
+        System.out.println("DONE");
       
     }
     

@@ -1,6 +1,5 @@
 package graph.generators;
 
-import graph.*;
 import graph.canoniccoders.AbstractCanonicCoder;
 import graph.canoniccoders.BFSCoder;
 import graph.components.Face;
@@ -11,33 +10,41 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import graph.canoniccoders.LexCoder;
+import graph.processors.AbstractProcessor;
 
-public class SimpleGenerator {
+public class SimpleGenerator extends AbstractGenerator {
     private final Map<String, Boolean> discoveredGraphs = new HashMap<>();
 
     private static final AbstractCanonicCoder coder = new BFSCoder();
 
-    private final int maxDepth = 22;
+    public SimpleGenerator(Graph graph, AbstractProcessor processor) {
+        super(graph, processor, 22);
+    }
 
-    public void generate(Graph g){
-        int graphDegree = g.getVertices().size();
-        if (graphDegree > maxDepth) return;
+
+    @Override
+    public boolean verifyTwoFactors() {
+        throw new RuntimeException("not implemented yet.");
+    }
+
+    public void generate(){
+        int graphDegree = graph.getVertices().size();
+        if (graphDegree > depth) return;
 
         for (int i = 0; i < graphDegree; i++) {
-            Vertex v = g.getVertices().get(i);
-            Face newFace = g.op3(v);
+            Vertex v = graph.getVertices().get(i);
+            Face newFace = graph.op3(v);
 
-            List<Integer> lexCode = coder.getLexCodeForFace(newFace, g);
-            if (coder.isMinimal(g, lexCode)){
+            List<Integer> lexCode = coder.getLexCodeForFace(newFace, graph);
+            if (coder.isMinimal(graph, lexCode)){
                 String lexCodeString = lexCode.stream().map(Object::toString).collect(
                         Collectors.joining(" "));
                 if (!discoveredGraphs.containsKey(lexCodeString)){
                     discoveredGraphs.put(lexCodeString, true);
-                    generate(g);
+                    generate();
                 }
             }
-            g.undoOp3(g.getFaces().get(g.getFaces().size() - 1));
+            graph.undoOp3(graph.getFaces().get(graph.getFaces().size() - 1));
         }
     }
 
