@@ -72,9 +72,9 @@ public class Edge {
         return leftFace.getId() > rightFace.getId() ? leftFace : rightFace;
     }
 
-    public void addFaces(Face f1, Face f2){
-        this.leftFace = f1;
-        this.rightFace = f2;
+    public void addFaces(Face left, Face right){
+        this.leftFace = left;
+        this.rightFace = right;
     }
 
     public Vertex getLeftFromPOVofFace(Face f) {

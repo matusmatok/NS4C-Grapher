@@ -15,9 +15,9 @@ import lombok.Getter;
  * @author ASUS
  */
 public class Graph {
-    @Getter private final ArrayList<Vertex> vertices;
-    @Getter private final ArrayList<Face> faces;
-    @Getter private final ArrayList<Edge> edges;
+    @Getter protected final ArrayList<Vertex> vertices;
+    @Getter protected final ArrayList<Face> faces;
+    @Getter protected final ArrayList<Edge> edges;
     
     public Graph(){
         vertices = new ArrayList<>();
