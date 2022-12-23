@@ -1,20 +1,19 @@
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import graph.components.Edge;
 import graph.components.Graph;
 import graph.components.Vertex;
-import graph.preprocessors.AbstractPreProcessor;
-import java.util.List;
-
 import graph.preprocessors.AmbiguousVertexGetter;
 import graph.preprocessors.GoodEdgeGetter;
 import org.junit.Test;
 
+import java.util.List;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 public class PreProcessorTest {
 
     private static final Graph graph = new TutteFragmentMock();
-    private static final AbstractPreProcessor goodEdgeGetter = new GoodEdgeGetter(graph);
+    private static final GoodEdgeGetter goodEdgeGetter = new GoodEdgeGetter(graph);
 
     @Test
     public void testGetGoodEdges() {
@@ -27,8 +26,8 @@ public class PreProcessorTest {
 
     @Test
     public void testGetAmbiguousVertices() {
-        final AbstractPreProcessor ambiguousVertexGetter = new AmbiguousVertexGetter(graph, graph.getEdges().get(0));
-        List<Vertex> result = ambiguousVertexGetter.getResult();
+        final AmbiguousVertexGetter ambiguousVertexGetter = new AmbiguousVertexGetter(graph);
+        List<Vertex> result = ambiguousVertexGetter.getResult(graph.getEdges().get(0));
         assertTrue(result.contains((graph.getVertices().get(1))));
         assertTrue(result.contains((graph.getVertices().get(2))));
         assertTrue(result.contains((graph.getVertices().get(6))));

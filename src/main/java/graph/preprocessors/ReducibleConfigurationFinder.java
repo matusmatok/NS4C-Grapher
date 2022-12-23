@@ -4,13 +4,14 @@ import graph.components.Edge;
 import graph.components.Face;
 import graph.components.Graph;
 import graph.components.Vertex;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 public class ReducibleConfigurationFinder {
 
@@ -23,7 +24,7 @@ public class ReducibleConfigurationFinder {
         private List<Vertex> adjacentVertices;
 
         boolean isReducible() {
-            return adjacentVertices.stream().filter(vertex -> vertex.getWeight() == 0).count() % 2 == 1;
+            return adjacentVertices.stream().filter(vertex -> vertex.getWeight() == 0).count() % 2 == 0;
         }
     }
 

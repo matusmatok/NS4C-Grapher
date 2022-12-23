@@ -7,7 +7,10 @@ import graph.components.Vertex;
 import graph.components.Vertex.CycleVertexState;
 import graph.utils.AbstractUnionFindSet;
 
-import java.util.*;
+import java.util.EnumMap;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 public abstract class AbstractPreProcessor<T> {
 
@@ -55,8 +58,6 @@ public abstract class AbstractPreProcessor<T> {
         undiscoveredVertices.addAll(g.getVertices());
         this.unionFindSet = unionFindSet;
     }
-
-    public abstract List<T> getResult();
 
     protected abstract boolean canCloseCycle(Vertex color);
     protected boolean cycleConstructible(){

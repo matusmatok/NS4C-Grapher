@@ -80,17 +80,15 @@ public class ConsistentTwoFactorBuilder {
     private final AbstractUnionFindSet unionFindSet = new CountingUnionFindSet();
 
     private final Graph graph;
-    private final Edge goodEdge;
-    private final int numberOfPositiveVertices;
+    private int numberOfPositiveVertices;
     private int currentWeight = 0;
 
-    public ConsistentTwoFactorBuilder(Graph graph, Edge goodEdge) {
+    public ConsistentTwoFactorBuilder(Graph graph) {
         this.graph = graph;
-        this.numberOfPositiveVertices = (int)graph.getVertices().stream().filter((vertex -> vertex.getWeight() == 1)).count();
-        this.goodEdge = goodEdge;
     }
 
-    public boolean canBuild() {
+    public boolean canBuild(Edge goodEdge) {
+        numberOfPositiveVertices = (int)graph.getVertices().stream().filter((vertex -> vertex.getWeight() == 1)).count();
         excludeEdge(goodEdge);
         final boolean result = canBuildConsistentTwoFactor();
         undoExcludeEdge(goodEdge);

@@ -1,5 +1,5 @@
 package graph.processors;
 
-public class AbstractProcessor {
-
+public abstract class AbstractProcessor {
+    public abstract boolean hasProperty();
 }

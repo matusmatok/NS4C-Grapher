@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static graph.components.Edge.hamCycleEdgeState.EXCLUDED;
-import static graph.components.Vertex.CycleVertexState.*;
+import static graph.components.Vertex.CycleVertexState.DETERMINISTIC_INCLUDE_REST;
+import static graph.components.Vertex.CycleVertexState.UNDISCOVERED;
 
 /*AmbiguousVertexGetter returns a list of ambiguous vertices for a given "good" edge.
  *The definition of an ambiguous vertex is as follows:
@@ -18,15 +19,11 @@ import static graph.components.Vertex.CycleVertexState.*;
  * */
 public class AmbiguousVertexGetter extends AbstractPreProcessor<Vertex> {
 
-    private final Edge goodEdge;
-
-    public AmbiguousVertexGetter(Graph g, Edge goodEdge) {
+    public AmbiguousVertexGetter(Graph g) {
         super(g, new SimpleUnionFindSet());
-        this.goodEdge = goodEdge;
     }
 
-    @Override
-    public List<Vertex> getResult() {
+    public List<Vertex> getResult(Edge goodEdge) {
         List<Vertex> ambiguousVertices = new ArrayList<>();
         for (Vertex v : graph.getVertices()) {
             for (Edge e : v.getAdjacentEdges()) excludeOmittedEdge(e, v);

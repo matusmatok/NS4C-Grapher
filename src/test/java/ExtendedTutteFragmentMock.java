@@ -1,10 +1,11 @@
 import graph.components.Edge;
+import graph.components.Face;
 import graph.components.Vertex;
-import graph.components.Vertex.ConsistentTwoFactorState;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExtendedTutteFragmentMock extends TutteFragmentMock{
+public class ExtendedTutteFragmentMock extends FacedTutteFragmentMock{
     public ExtendedTutteFragmentMock() {
         super();
         for (Vertex v: getVertices()) setPositive(v);
@@ -24,6 +25,10 @@ public class ExtendedTutteFragmentMock extends TutteFragmentMock{
             else setNegative(newVertices.get(i));
         }
 
+        final Face face0 = vertex.getAdjacentEdges().get(0).getLeftFromPOV(vertex);
+        final Face face1 = vertex.getAdjacentEdges().get(1).getLeftFromPOV(vertex);
+        final Face face2 = vertex.getAdjacentEdges().get(2).getLeftFromPOV(vertex);
+
         final List<Edge> newEdges = new ArrayList<>();
         newEdges.add(new Edge(newEdges.size() + getEdges().size(), newVertices.get(0), newVertices.get(1))); //0
         newEdges.add(new Edge(newEdges.size() + getEdges().size(), newVertices.get(1), newVertices.get(2))); //1
@@ -34,6 +39,32 @@ public class ExtendedTutteFragmentMock extends TutteFragmentMock{
         newEdges.add(new Edge(newEdges.size() + getEdges().size(), vertex, newVertices.get(3))); //6
         newEdges.add(new Edge(newEdges.size() + getEdges().size(), newVertices.get(5), newVertices.get(4))); //7
         newEdges.add(new Edge(newEdges.size() + getEdges().size(), newVertices.get(4), newVertices.get(3))); //8
+
+        face0.addEdgeAfter(vertex.getAdjacentEdges().get(0), newEdges.get(2));
+        face0.addEdgeAfter(newEdges.get(2), newEdges.get(7));
+        face1.addEdgeAfter(vertex.getAdjacentEdges().get(1), newEdges.get(1));
+        face1.addEdgeAfter(newEdges.get(1), newEdges.get(0));
+        face2.addEdgeAfter(vertex.getAdjacentEdges().get(2), newEdges.get(8));
+        face2.addEdgeAfter(newEdges.get(8), newEdges.get(4));
+
+        final List<Face> newFaces = new ArrayList<>();
+        newFaces.add(new Face(newFaces.size() + getFaces().size()));
+        newFaces.get(0).addEdge(getEdges().get(0));
+        newFaces.get(0).addEdge(getEdges().get(3));
+        newFaces.get(0).addEdge(getEdges().get(5));
+        newFaces.get(0).addEdge(getEdges().get(2));
+
+        newFaces.add(new Face(newFaces.size() + getFaces().size()));
+        newFaces.get(1).addEdge(getEdges().get(1));
+        newFaces.get(1).addEdge(getEdges().get(4));
+        newFaces.get(1).addEdge(getEdges().get(6));
+        newFaces.get(1).addEdge(getEdges().get(3));
+
+        newFaces.add(new Face(newFaces.size() + getFaces().size()));
+        newFaces.get(2).addEdge(getEdges().get(5));
+        newFaces.get(2).addEdge(getEdges().get(6));
+        newFaces.get(2).addEdge(getEdges().get(8));
+        newFaces.get(2).addEdge(getEdges().get(7));
 
         final List<Edge> vertexEdges = vertex.getAdjacentEdges();
         vertexEdges.get(0).exchangeVertex(vertex, newVertices.get(0));
@@ -67,6 +98,18 @@ public class ExtendedTutteFragmentMock extends TutteFragmentMock{
         vertex.exchangeEdge(vertexEdges.get(0),newEdges.get(3));
         vertex.exchangeEdge(vertexEdges.get(1),newEdges.get(6));
         vertex.exchangeEdge(vertexEdges.get(2),newEdges.get(5));
+
+        newEdges.get(0).addFaces(face1, newFaces.get(0));
+        newEdges.get(1).addFaces(face1, newFaces.get(1));
+        newEdges.get(2).addFaces(newFaces.get(0), face0);
+        newEdges.get(3).addFaces(newFaces.get(1), newFaces.get(0));
+        newEdges.get(4).addFaces(face2, newFaces.get(1));
+        newEdges.get(5).addFaces(newFaces.get(0), newFaces.get(2));
+        newEdges.get(6).addFaces(newFaces.get(1), newFaces.get(2));
+        newEdges.get(7).addFaces(newFaces.get(2), face0);
+        newEdges.get(8).addFaces(newFaces.get(2), face2);
+
+        getFaces().addAll(newFaces);
 
         getVertices().addAll(newVertices);
         getEdges().addAll(newEdges);

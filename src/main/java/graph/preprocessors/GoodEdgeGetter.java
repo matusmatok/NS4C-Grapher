@@ -22,6 +22,7 @@ public class GoodEdgeGetter extends AbstractPreProcessor<Edge>{
     }
 
     public List<Edge> getResult() {
+        badEdges.clear();
         List<Edge> goodEdges = new ArrayList<>();
         for (Edge e: graph.getEdges()) {
             if (!badEdges.contains(e)) {
