@@ -5,11 +5,11 @@
  */
 package graph.components;
 
-import java.util.ArrayList;
-
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -81,11 +81,7 @@ public class Vertex {
     }
     
     public void print(){
-        System.out.print("Vertex " + id + " : ");
-        for(Edge e: adjacentEdges){
-            System.out.print(e.getId() + " ");
-        }
-        System.out.println();
+        System.out.print(this);
     }
 
     @Override
@@ -93,6 +89,7 @@ public class Vertex {
         StringBuilder sb = new StringBuilder();
         sb.append("Vertex ").append(id).append(" : ");
         for (Edge e: adjacentEdges) sb.append(e.getId()).append(" ");
+        if (consistentTwoFactorState != null) sb.append(weight == 0 ? " N" : " P");
         sb.append("\n");
         return sb.toString();
     }

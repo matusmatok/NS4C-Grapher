@@ -3,9 +3,11 @@ import graph.components.Edge;
 import graph.components.Graph;
 import graph.components.Vertex;
 import graph.preprocessors.AmbiguousVertexGetter;
-import graph.preprocessors.GoodEdgeGetter;
+import graph.preprocessors.HamUnavoidableEdgeGetter;
 import graph.preprocessors.VertexPolarityDistributor;
-import graph.processors.Processor;
+import graph.processors.UnavoidableEdgeProcessor;
+import mock.ExtendedTutteFragmentMock;
+import mock.FacedTutteFragmentMock;
 import org.junit.Test;
 
 import java.util.List;
@@ -16,13 +18,13 @@ import static org.junit.Assert.assertTrue;
 public class CompoundGoodEdgeTest {
     private static final Graph badGraph = new FacedTutteFragmentMock();
     private static final Graph goodGraph = new ExtendedTutteFragmentMock();
-    private static final Processor processorForBadGraph = new Processor(badGraph);
-    private static final Processor processorForGoodGraph = new Processor(goodGraph);
+    private static final UnavoidableEdgeProcessor UNAVOIDABLE_EDGE_PROCESSOR_FOR_BAD_GRAPH = new UnavoidableEdgeProcessor(badGraph);
+    private static final UnavoidableEdgeProcessor UNAVOIDABLE_EDGE_PROCESSOR_FOR_GOOD_GRAPH = new UnavoidableEdgeProcessor(goodGraph);
 
     @Test
     public void testCompoundGetGoodEdge() {
-        final GoodEdgeGetter goodEdgeGetter = new GoodEdgeGetter(badGraph);
-        final List<Edge> potentiallyGoodEdges = goodEdgeGetter.getResult();
+        final HamUnavoidableEdgeGetter hamUnavoidableEdgeGetter = new HamUnavoidableEdgeGetter(badGraph);
+        final List<Edge> potentiallyGoodEdges = hamUnavoidableEdgeGetter.getResult();
         for (Edge potentialEdge : potentiallyGoodEdges) {
             final AmbiguousVertexGetter ambiguousVertexGetter = new AmbiguousVertexGetter(badGraph);
             final List<Vertex> ambiguousVertices = ambiguousVertexGetter.getResult(potentialEdge);
@@ -36,8 +38,8 @@ public class CompoundGoodEdgeTest {
 
     @Test
     public void testProcessor() {
-        assertFalse(processorForBadGraph.hasProperty());
-        assertTrue(processorForGoodGraph.hasProperty());
+        assertFalse(UNAVOIDABLE_EDGE_PROCESSOR_FOR_BAD_GRAPH.hasProperty());
+        assertTrue(UNAVOIDABLE_EDGE_PROCESSOR_FOR_GOOD_GRAPH.hasProperty());
     }
 
 }

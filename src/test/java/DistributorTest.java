@@ -1,14 +1,15 @@
-import static org.junit.Assert.assertFalse;
-
 import graph.components.Graph;
 import graph.components.Vertex;
 import graph.preprocessors.VertexPolarityDistributor;
+import mock.TutteFragmentMock;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static org.junit.Assert.assertFalse;
 
 public class DistributorTest {
     final static Graph graph = new TutteFragmentMock();

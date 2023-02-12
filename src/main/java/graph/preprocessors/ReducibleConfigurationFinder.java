@@ -56,6 +56,7 @@ public class ReducibleConfigurationFinder {
         }
     }
 
+    //FIXME
     public boolean containsPolarDependentReducibleConfig() {
         for (FaceAdjacentAmbiguousVertices face : cachedFaces) {
             if (face.isReducible()) return true;

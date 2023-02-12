@@ -1,5 +1,7 @@
 import graph.builders.ConsistentTwoFactorBuilder;
 import graph.components.Graph;
+import mock.ExtendedTutteFragmentMock;
+import mock.TutteFragmentMock;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;

@@ -1,3 +1,5 @@
+package mock;
+
 import graph.components.Edge;
 import graph.components.Face;
 import graph.components.Vertex;
@@ -49,22 +51,22 @@ public class ExtendedTutteFragmentMock extends FacedTutteFragmentMock{
 
         final List<Face> newFaces = new ArrayList<>();
         newFaces.add(new Face(newFaces.size() + getFaces().size()));
-        newFaces.get(0).addEdge(getEdges().get(0));
-        newFaces.get(0).addEdge(getEdges().get(3));
-        newFaces.get(0).addEdge(getEdges().get(5));
-        newFaces.get(0).addEdge(getEdges().get(2));
+        newFaces.get(0).addEdge(newEdges.get(0));
+        newFaces.get(0).addEdge(newEdges.get(3));
+        newFaces.get(0).addEdge(newEdges.get(5));
+        newFaces.get(0).addEdge(newEdges.get(2));
 
         newFaces.add(new Face(newFaces.size() + getFaces().size()));
-        newFaces.get(1).addEdge(getEdges().get(1));
-        newFaces.get(1).addEdge(getEdges().get(4));
-        newFaces.get(1).addEdge(getEdges().get(6));
-        newFaces.get(1).addEdge(getEdges().get(3));
+        newFaces.get(1).addEdge(newEdges.get(1));
+        newFaces.get(1).addEdge(newEdges.get(4));
+        newFaces.get(1).addEdge(newEdges.get(6));
+        newFaces.get(1).addEdge(newEdges.get(3));
 
         newFaces.add(new Face(newFaces.size() + getFaces().size()));
-        newFaces.get(2).addEdge(getEdges().get(5));
-        newFaces.get(2).addEdge(getEdges().get(6));
-        newFaces.get(2).addEdge(getEdges().get(8));
-        newFaces.get(2).addEdge(getEdges().get(7));
+        newFaces.get(2).addEdge(newEdges.get(5));
+        newFaces.get(2).addEdge(newEdges.get(6));
+        newFaces.get(2).addEdge(newEdges.get(8));
+        newFaces.get(2).addEdge(newEdges.get(7));
 
         final List<Edge> vertexEdges = vertex.getAdjacentEdges();
         vertexEdges.get(0).exchangeVertex(vertex, newVertices.get(0));

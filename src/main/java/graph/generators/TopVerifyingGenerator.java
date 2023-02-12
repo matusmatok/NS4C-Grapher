@@ -5,8 +5,8 @@ import graph.canoniccoders.BFSCoder;
 import graph.components.Edge;
 import graph.components.Face;
 import graph.components.Graph;
-import graph.processors.AbstractProcessor;
 import graph.generators.OperandProvider.Operand;
+import graph.processors.AbstractProcessor;
 
 import java.util.HashSet;
 import java.util.List;
@@ -25,6 +25,7 @@ public class TopVerifyingGenerator extends AbstractGenerator{
 
     @Override
     public boolean verifyTwoFactors() {
+        if (processor.hasProperty()) graph.print();
         return false;
     }
 
@@ -32,7 +33,6 @@ public class TopVerifyingGenerator extends AbstractGenerator{
     public void generate() {
 
         if (graph.getVertices().size() >= depth) {
-            //graph.print();
             verifyTwoFactors();
             return;
         }

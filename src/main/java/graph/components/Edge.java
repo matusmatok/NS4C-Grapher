@@ -101,7 +101,7 @@ public class Edge {
     }
     
     public void print(){
-        System.out.println("Edge " + id + " : " + vFrom.getId() + " " + vTo.getId() + " L: " + leftFace.getId() + " R: " + rightFace.getId());
+        System.out.print(this);
     }
 
     @Override

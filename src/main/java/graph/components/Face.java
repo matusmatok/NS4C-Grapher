@@ -5,12 +5,12 @@
  */
 package graph.components;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  *
@@ -78,11 +78,7 @@ public class Face {
     }
     
     public void print(){
-        System.out.print("Face " + id + " : ");
-        for(Edge e: adjacentEdges){
-            System.out.print(e.getId() + " ");
-        }
-        System.out.println();
+        System.out.print(this);
     }
 
     @Override

@@ -6,9 +6,10 @@
 package graph.components;
 
 import graph.components.Vertex.ConsistentTwoFactorState;
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Getter;
 
 /**
  *
@@ -306,9 +307,7 @@ public class Graph {
     }
     
     public void print(){
-        for (Vertex v: vertices) v.print();
-        for (Edge e: edges) e.print();
-        for (Face f: faces) f.print();
+        System.out.print(this);
     }
 
     @Override
@@ -320,7 +319,7 @@ public class Graph {
        for (Edge e: edges) sb.append(e.toString());
        sb.append("FACES:\n");
        for (Face f: faces) sb.append(f.toString());
-       sb.append("--END--");
+       sb.append("--END--\n");
        return sb.toString();
     }
 

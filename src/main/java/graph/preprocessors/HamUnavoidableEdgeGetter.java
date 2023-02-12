@@ -14,10 +14,10 @@ import java.util.Set;
  * Edge E is considered bad if there exists a hamiltonian cycle in G not containing edge E.
  * E is considered good otherwise.
  */
-public class GoodEdgeGetter extends AbstractPreProcessor<Edge>{
+public class HamUnavoidableEdgeGetter extends AbstractPreProcessor<Edge>{
 
     private final Set<Edge> badEdges = new HashSet<>();
-    public GoodEdgeGetter(Graph g) {
+    public HamUnavoidableEdgeGetter(Graph g) {
         super(g, new SimpleUnionFindSet());
     }
 

@@ -1,10 +1,11 @@
-import static org.junit.Assert.assertEquals;
-
 import graph.components.Graph;
 import graph.generators.OperandProvider;
+import mock.TutteFragmentMock;
 import org.junit.Test;
 
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public class OperandProviderTest {
     private static final OperandProvider provider = new OperandProvider();
