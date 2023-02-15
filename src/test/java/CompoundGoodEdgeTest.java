@@ -1,8 +1,8 @@
-import graph.builders.ConsistentTwoFactorBuilder;
+import graph.builders.UnavoidableBuilder;
 import graph.components.Edge;
 import graph.components.Graph;
 import graph.components.Vertex;
-import graph.preprocessors.AmbiguousVertexGetter;
+import graph.preprocessors.UnavoidableAmbiguousVertexGetter;
 import graph.preprocessors.HamUnavoidableEdgeGetter;
 import graph.preprocessors.VertexPolarityDistributor;
 import graph.processors.UnavoidableEdgeProcessor;
@@ -26,11 +26,11 @@ public class CompoundGoodEdgeTest {
         final HamUnavoidableEdgeGetter hamUnavoidableEdgeGetter = new HamUnavoidableEdgeGetter(badGraph);
         final List<Edge> potentiallyGoodEdges = hamUnavoidableEdgeGetter.getResult();
         for (Edge potentialEdge : potentiallyGoodEdges) {
-            final AmbiguousVertexGetter ambiguousVertexGetter = new AmbiguousVertexGetter(badGraph);
+            final UnavoidableAmbiguousVertexGetter ambiguousVertexGetter = new UnavoidableAmbiguousVertexGetter(badGraph);
             final List<Vertex> ambiguousVertices = ambiguousVertexGetter.getResult(potentialEdge);
             final VertexPolarityDistributor distributor = new VertexPolarityDistributor(badGraph, ambiguousVertices);
             for (Graph g : distributor) {
-                final ConsistentTwoFactorBuilder builder = new ConsistentTwoFactorBuilder(badGraph);
+                final UnavoidableBuilder builder = new UnavoidableBuilder(badGraph);
                 assertTrue(builder.canBuild(potentialEdge));
             }
         }
