@@ -15,7 +15,7 @@ import java.util.List;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class CompoundGoodEdgeTest {
+public class UnavoidableEdgeProcessorTest {
     private static final Graph badGraph = new FacedTutteFragmentMock();
     private static final Graph goodGraph = new ExtendedTutteFragmentMock();
     private static final UnavoidableEdgeProcessor UNAVOIDABLE_EDGE_PROCESSOR_FOR_BAD_GRAPH = new UnavoidableEdgeProcessor(badGraph);

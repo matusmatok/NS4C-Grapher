@@ -19,7 +19,7 @@ public class ExtendedTutteFragmentMock extends FacedTutteFragmentMock{
         setNegative(getVertices().get(14));
     }
 
-    private void substituteVertexForGadget(Vertex vertex) {
+    protected void substituteVertexForGadget(Vertex vertex) {
         final List<Vertex> newVertices = new ArrayList<>();
         for (int i=0; i < 6; i++) {
             newVertices.add(new Vertex(getVertices().size() + newVertices.size()));
