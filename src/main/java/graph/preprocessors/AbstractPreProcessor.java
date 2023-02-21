@@ -9,8 +9,6 @@ import graph.utils.AbstractUnionFindSet;
 
 import java.util.EnumMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 public abstract class AbstractPreProcessor<T> {
@@ -62,91 +60,86 @@ public abstract class AbstractPreProcessor<T> {
 
     protected abstract boolean canCloseCycle(Vertex color);
     protected boolean cycleConstructible(){
-        Optional<Vertex> vertexOpt = deterministicVertices.stream().findAny();
-        if (!vertexOpt.isPresent()) {
-            vertexOpt = choiceVertices.stream().findAny();
-        }
-        if (!vertexOpt.isPresent()) {
-            throw new RuntimeException("No operands. Recursion should not have gotten this deep");
+        if (canCloseCycle(unionFindSet.find(graph.getVertices().get(0)))) {
+            finalTask();
+            return true;
         }
 
-        final Vertex vertex = vertexOpt.get();
-        final Edge edge =  vertex.getAnyUndiscoveredEdge();
+        final Vertex vertex;
+        if (deterministicVertices.size() > 0) vertex = deterministicVertices.stream().findAny().get();
+        else if (choiceVertices.size() > 0) vertex = choiceVertices.stream().findAny().get();
+        else {
+            System.out.print(unionFindSet.find(graph.getVertices().get(0)).getSubtreeSize());
+            graph.printHamCycleStates();
+            throw new RuntimeException("No operand, preprocessor failed.");
+        }
+
+        final Edge edge = vertex.getAnyUndiscoveredEdge();
         final Vertex otherVertex = edge.getOppositeVertex(vertex);
-        final Vertex vColor = unionFindSet.find(vertex);
-        final Vertex oColor = unionFindSet.find(otherVertex);
-        final boolean canInclude = vColor != oColor;
-        final boolean canCloseCycle = canCloseCycle(vColor);
 
-        final CycleVertexState otherCycleVertexState = otherVertex.getCycleState();
+        final Vertex.CycleVertexState vertexState = vertex.getCycleState();
 
-        switch (vertex.getCycleState()) {
-            case DETERMINISTIC_EXCLUDE_REMAINING :
-                switch (otherCycleVertexState){
-                    case UNDISCOVERED:
-                    case DETERMINISTIC_EXCLUDE_REMAINING:
-                    case CHOICE:
-                        if (excludeEdge(edge)) {
-                            final boolean result = cycleConstructible();
-                            undoExcludeEdge(edge);
-                            return result;
-                        }
-                    default: return false;
+        final Vertex.CycleVertexState otherVertexState = otherVertex.getCycleState();
+        final Vertex.CycleVertexState otherVertexPostIncludeState = INCLUDE_EDGE_MAP.get(otherVertexState);
+        final Vertex.CycleVertexState otherVertexPostExcludeState = EXCLUDE_EDGE_MAP.get(otherVertexState);
+
+        switch (vertexState) {
+            case DETERMINISTIC_EXCLUDE_REMAINING:
+                if (otherVertexPostExcludeState != null) {
+                    excludeEdge(edge);
+                    final boolean result = cycleConstructible();
+                    undoExcludeEdge(edge);
+                    return result;
                 }
-            case DETERMINISTIC_INCLUDE_REMAINING:
+                break;
             case DETERMINISTIC_INCLUDE_REST:
-                    switch (otherCycleVertexState) {
-                        case UNDISCOVERED:
-                        case DETERMINISTIC_INCLUDE_REST:
-                        case DETERMINISTIC_INCLUDE_REMAINING:
-                        case CHOICE:
-                            if (canInclude) {
-                                if (includeEdge(edge)) {
-                                    unionFindSet.union(vColor, oColor);
-                                    final boolean result = cycleConstructible();
-                                    unionFindSet.disunion();
-                                    undoIncludeEdge(edge);
-                                    return result;
-                                }
-                            } else if (canCloseCycle){
-                                if (includeEdge(edge)){
-                                    finalTask();
-                                    undoIncludeEdge(edge);
-                                    return true;
-                                }
-                            }
-                        default: return false;
-                    }
-            case CHOICE:
-                switch (otherCycleVertexState) {
-                    case UNDISCOVERED:
-                    case CHOICE:
-                        if (excludeEdge(edge)) {
-                            final boolean result = cycleConstructible();
-                            undoExcludeEdge(edge);
-                            if (result) return true;
-                        }
-
-                        if (canInclude) {
-                            if (includeEdge(edge)) {
-                                unionFindSet.union(vColor, oColor);
-                                final boolean result = cycleConstructible();
-                                unionFindSet.disunion();
-                                undoIncludeEdge(edge);
-                                return result;
-                            }
-                        }
-                        else if (canCloseCycle) {
-                            if (includeEdge(edge)){
+            case DETERMINISTIC_INCLUDE_REMAINING:
+                if (otherVertexPostIncludeState != null) {
+                    if (unionFindSet.find(vertex) == unionFindSet.find(otherVertex)) {
+                            if (canCloseCycle(unionFindSet.find(vertex))) {
                                 finalTask();
-                                undoIncludeEdge(edge);
                                 return true;
                             }
-                        }
-                    default: return false;
+                            return false;
+                    }
+                    else {
+                        unionFindSet.union(unionFindSet.find(vertex), unionFindSet.find(otherVertex));
+                        includeEdge(edge);
+                        final boolean result = cycleConstructible();
+                        undoIncludeEdge(edge);
+                        unionFindSet.disunion();
+                        return result;
+                    }
                 }
+                break;
+            case CHOICE:
+                boolean result = false;
+                if (otherVertexPostExcludeState != null) {
+                    excludeEdge(edge);
+                    result = cycleConstructible();
+                    undoExcludeEdge(edge);
+                    if (result) return true;
+                }
+                if (otherVertexPostIncludeState != null) {
+                    if (unionFindSet.find(vertex) == unionFindSet.find(otherVertex)) {
+                        if (canCloseCycle(unionFindSet.find(vertex))) {
+                            finalTask();
+                            return true;
+                        }
+                        return false;
+                    }
+                    else {
+                        unionFindSet.union(unionFindSet.find(vertex), unionFindSet.find(otherVertex));
+                        includeEdge(edge);
+                        result = cycleConstructible();
+                        undoIncludeEdge(edge);
+                        unionFindSet.disunion();
+                    }
+                }
+                return result;
             default: return false;
         }
+        return false;
     }
 
     protected void finalTask(){}

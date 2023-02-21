@@ -37,9 +37,4 @@ public class UnavoidableAmbiguousVertexGetter extends AmbiguousVertexGetter {
         }
         return ambiguousVertices;
     }
-
-    @Override
-    public boolean canCloseCycle(Vertex color) {
-        return color.getSubtreeSize() == graph.getVertices().size() - 1;
-    }
 }

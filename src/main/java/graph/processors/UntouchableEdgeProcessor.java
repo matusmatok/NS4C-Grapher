@@ -11,8 +11,4 @@ public class UntouchableEdgeProcessor extends AbstractProcessor {
         super(graph, new HamUntouchableEdgeGetter(graph), new UntouchableAmbiguousVertexGetter(graph),
                 new UntouchableBuilder(graph));
     }
-    @Override
-    public boolean hasProperty() {
-        return false;
-    }
 }

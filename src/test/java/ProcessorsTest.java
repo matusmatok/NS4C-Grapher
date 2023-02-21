@@ -2,12 +2,15 @@ import graph.builders.UnavoidableBuilder;
 import graph.components.Edge;
 import graph.components.Graph;
 import graph.components.Vertex;
-import graph.preprocessors.UnavoidableAmbiguousVertexGetter;
 import graph.preprocessors.HamUnavoidableEdgeGetter;
+import graph.preprocessors.UnavoidableAmbiguousVertexGetter;
 import graph.preprocessors.VertexPolarityDistributor;
 import graph.processors.UnavoidableEdgeProcessor;
+import graph.processors.UntouchableEdgeProcessor;
+import mock.ExtendedTenTuttovTotoMock;
 import mock.ExtendedTutteFragmentMock;
 import mock.FacedTutteFragmentMock;
+import mock.TenTuttovTotoMock;
 import org.junit.Test;
 
 import java.util.List;
@@ -15,11 +18,17 @@ import java.util.List;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class UnavoidableEdgeProcessorTest {
+public class ProcessorsTest {
     private static final Graph badGraph = new FacedTutteFragmentMock();
     private static final Graph goodGraph = new ExtendedTutteFragmentMock();
+
+    private static final Graph tenTuttovToto = new TenTuttovTotoMock();
+
+    private static final Graph extendedTenTuttovToto = new ExtendedTenTuttovTotoMock();
     private static final UnavoidableEdgeProcessor UNAVOIDABLE_EDGE_PROCESSOR_FOR_BAD_GRAPH = new UnavoidableEdgeProcessor(badGraph);
     private static final UnavoidableEdgeProcessor UNAVOIDABLE_EDGE_PROCESSOR_FOR_GOOD_GRAPH = new UnavoidableEdgeProcessor(goodGraph);
+    private static final UntouchableEdgeProcessor UNTOUCHABLE_EDGE_PROCESSOR_FOR_BAD_GRAPH = new UntouchableEdgeProcessor(tenTuttovToto);
+    private static final UntouchableEdgeProcessor UNTOUCHABLE_EDGE_PROCESSOR_FOR_GOOD_GRAPH = new UntouchableEdgeProcessor(extendedTenTuttovToto);
 
     @Test
     public void testCompoundGetGoodEdge() {
@@ -37,9 +46,15 @@ public class UnavoidableEdgeProcessorTest {
     }
 
     @Test
-    public void testProcessor() {
+    public void testUnavoidableProcessors() {
         assertFalse(UNAVOIDABLE_EDGE_PROCESSOR_FOR_BAD_GRAPH.hasProperty());
         assertTrue(UNAVOIDABLE_EDGE_PROCESSOR_FOR_GOOD_GRAPH.hasProperty());
+    }
+
+    @Test
+    public void testUntouchableProcessors() {
+        assertFalse(UNTOUCHABLE_EDGE_PROCESSOR_FOR_BAD_GRAPH.hasProperty());
+        assertTrue(UNTOUCHABLE_EDGE_PROCESSOR_FOR_GOOD_GRAPH.hasProperty());
     }
 
 }
