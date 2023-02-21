@@ -6,14 +6,13 @@ import graph.components.Vertex;
 import graph.components.Vertex.ConsistentTwoFactorState;
 import graph.utils.AbstractUnionFindSet;
 import graph.utils.CountingUnionFindSet;
-import lombok.NonNull;
-
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Set;
+import lombok.NonNull;
 
-public class ConsistentTwoFactorBuilder {
-    protected static final EnumMap<Vertex.ConsistentTwoFactorState, Vertex.ConsistentTwoFactorState> INCLUDE_EDGE_MAP = new EnumMap<>(Vertex.ConsistentTwoFactorState.class);
+abstract public class AbstractTwoFactorBuilder {
+    protected static final EnumMap<ConsistentTwoFactorState, ConsistentTwoFactorState> INCLUDE_EDGE_MAP = new EnumMap<>(Vertex.ConsistentTwoFactorState.class);
     static {
         INCLUDE_EDGE_MAP.put(Vertex.ConsistentTwoFactorState.P_UNDISCOVERED, Vertex.ConsistentTwoFactorState.P_CHOICE);
         INCLUDE_EDGE_MAP.put(Vertex.ConsistentTwoFactorState.P_CHOICE, Vertex.ConsistentTwoFactorState.P_DETERMINISTIC_EXCLUDE_REMAINING);
@@ -74,28 +73,23 @@ public class ConsistentTwoFactorBuilder {
         UNDO_EXCLUDE_EDGE_MAP.put(Vertex.ConsistentTwoFactorState.N_EXCLUDED, Vertex.ConsistentTwoFactorState.N_DETERMINISTIC_EXCLUDE);
     }
 
+
     private final Set<Vertex> deterministicVertices = new HashSet<>();
     private final Set<Vertex> choiceVertices = new HashSet<>();
 
     private final AbstractUnionFindSet unionFindSet = new CountingUnionFindSet();
 
-    private final Graph graph;
-    private int numberOfPositiveVertices;
+    protected final Graph graph;
+    protected int numberOfPositiveVertices;
     private int currentWeight = 0;
 
-    public ConsistentTwoFactorBuilder(Graph graph) {
+    public AbstractTwoFactorBuilder(Graph graph) {
         this.graph = graph;
     }
 
-    public boolean canBuild(Edge goodEdge) {
-        numberOfPositiveVertices = (int)graph.getVertices().stream().filter((vertex -> vertex.getWeight() == 1)).count();
-        excludeEdge(goodEdge);
-        final boolean result = canBuildConsistentTwoFactor();
-        undoExcludeEdge(goodEdge);
-        return result;
-    }
+    abstract public boolean canBuild(Edge potenatialEdge);
 
-    private boolean canBuildConsistentTwoFactor() {
+    protected boolean canBuildConsistentTwoFactor() {
         if (currentWeight == numberOfPositiveVertices) return true;
 
         final Vertex vertex;
@@ -253,5 +247,4 @@ public class ConsistentTwoFactorBuilder {
                 break;
         }
     }
-
 }

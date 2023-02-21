@@ -1,7 +1,7 @@
 import graph.components.Edge;
 import graph.components.Graph;
 import graph.components.Vertex;
-import graph.preprocessors.AmbiguousVertexGetter;
+import graph.preprocessors.UnavoidableAmbiguousVertexGetter;
 import graph.preprocessors.HamUnavoidableEdgeGetter;
 import mock.TutteFragmentMock;
 import org.junit.Test;
@@ -27,7 +27,7 @@ public class PreProcessorTest {
 
     @Test
     public void testGetAmbiguousVertices() {
-        final AmbiguousVertexGetter ambiguousVertexGetter = new AmbiguousVertexGetter(graph);
+        final UnavoidableAmbiguousVertexGetter ambiguousVertexGetter = new UnavoidableAmbiguousVertexGetter(graph);
         List<Vertex> result = ambiguousVertexGetter.getResult(graph.getEdges().get(0));
         assertTrue(result.contains((graph.getVertices().get(1))));
         assertTrue(result.contains((graph.getVertices().get(2))));
