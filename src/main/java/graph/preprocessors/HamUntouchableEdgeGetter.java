@@ -21,7 +21,11 @@ public class HamUntouchableEdgeGetter extends HamEdgeGetter {
         for (Edge e: graph.getEdges()) {
             if (!badEdges.contains(e)) {
                 includeEdge(e);
-                if (!cycleConstructible())  goodEdges.add(e);
+                unionFindSet.union(e.getVFrom(), e.getVTo());
+                if (!cycleConstructible()) {
+                    goodEdges.add(e);
+                }
+                unionFindSet.disunion();
                 undoIncludeEdge(e);
             }
         }

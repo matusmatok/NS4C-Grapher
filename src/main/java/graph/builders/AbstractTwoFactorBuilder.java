@@ -77,7 +77,7 @@ abstract public class AbstractTwoFactorBuilder {
     private final Set<Vertex> deterministicVertices = new HashSet<>();
     private final Set<Vertex> choiceVertices = new HashSet<>();
 
-    private final AbstractUnionFindSet unionFindSet = new CountingUnionFindSet();
+    protected final AbstractUnionFindSet unionFindSet = new CountingUnionFindSet();
 
     protected final Graph graph;
     protected int numberOfPositiveVertices;

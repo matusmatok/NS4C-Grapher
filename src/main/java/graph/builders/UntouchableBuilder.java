@@ -12,9 +12,11 @@ public class UntouchableBuilder extends AbstractTwoFactorBuilder {
     @Override
     public boolean canBuild(Edge potenatialEdge) {
         numberOfPositiveVertices = (int)graph.getVertices().stream().filter((vertex -> vertex.getWeight() == 1)).count();
+        unionFindSet.union(potenatialEdge.getVFrom(), potenatialEdge.getVTo());
         includeEdge(potenatialEdge);
         final boolean result = canBuildConsistentTwoFactor();
         undoIncludeEdge(potenatialEdge);
+        unionFindSet.disunion();
         return result;
     }
 }
