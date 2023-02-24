@@ -20,10 +20,9 @@ import static org.junit.Assert.assertTrue;
 public class PreProcessorTest {
 
     private static final Graph TUTTE_FRAGMENT_MOCK = new TutteFragmentMock();
-    private static final Graph TEN_TUTTOV_TOTO_MOCK = new TenTuttovTotoMock();
     private static final Graph EXTENDED_TEN_TUTTOV_TOTO_MOCK = new ExtendedTenTuttovTotoMock();
     private static final HamUnavoidableEdgeGetter UNAVOIDABLE_EDGE_GETTER = new HamUnavoidableEdgeGetter(TUTTE_FRAGMENT_MOCK);
-    private static final HamUntouchableEdgeGetter UNTOUCHABLE_EDGE_GETTER = new HamUntouchableEdgeGetter(TEN_TUTTOV_TOTO_MOCK);
+    private static final HamUntouchableEdgeGetter UNTOUCHABLE_EDGE_GETTER = new HamUntouchableEdgeGetter(EXTENDED_TEN_TUTTOV_TOTO_MOCK);
 
     @Test
     public void testGetUnavoidableEdges() {
@@ -37,12 +36,12 @@ public class PreProcessorTest {
     @Test
     public void testGetUntouchableEdges() {
         final List<Edge> result = UNTOUCHABLE_EDGE_GETTER.getResult();
-        assertTrue(result.contains(TEN_TUTTOV_TOTO_MOCK.getEdges().get(48)));
-        assertTrue(result.contains(TEN_TUTTOV_TOTO_MOCK.getEdges().get(51)));
-        assertFalse(result.contains(TEN_TUTTOV_TOTO_MOCK.getEdges().get(24)));
-        assertFalse(result.contains(TEN_TUTTOV_TOTO_MOCK.getEdges().get(0)));
-        assertFalse(result.contains(TEN_TUTTOV_TOTO_MOCK.getEdges().get(31)));
-        assertFalse(result.contains(TEN_TUTTOV_TOTO_MOCK.getEdges().get(12)));
+        assertTrue(result.contains(EXTENDED_TEN_TUTTOV_TOTO_MOCK.getEdges().get(48)));
+        assertTrue(result.contains(EXTENDED_TEN_TUTTOV_TOTO_MOCK.getEdges().get(51)));
+        assertFalse(result.contains(EXTENDED_TEN_TUTTOV_TOTO_MOCK.getEdges().get(24)));
+        assertFalse(result.contains(EXTENDED_TEN_TUTTOV_TOTO_MOCK.getEdges().get(0)));
+        assertFalse(result.contains(EXTENDED_TEN_TUTTOV_TOTO_MOCK.getEdges().get(31)));
+        assertFalse(result.contains(EXTENDED_TEN_TUTTOV_TOTO_MOCK.getEdges().get(12)));
     }
 
     @Test
