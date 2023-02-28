@@ -1,7 +1,7 @@
 import graph.components.Graph;
 import graph.components.Vertex;
 import graph.preprocessors.VertexPolarityDistributor;
-import mock.TutteFragmentMock;
+import mock.FacedTutteFragmentMock;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import java.util.Set;
 import static org.junit.Assert.assertFalse;
 
 public class DistributorTest {
-    final static Graph graph = new TutteFragmentMock();
+    final static Graph graph = new FacedTutteFragmentMock();
     final static List<Vertex> ambiguousVertices = new ArrayList<>();
     static {
         for (int i =0; i <5; i++) ambiguousVertices.add(graph.getVertices().get(i));

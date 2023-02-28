@@ -5,11 +5,11 @@
  */
 package graph.components;
 
-import graph.components.Vertex.ConsistentTwoFactorState;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -296,6 +296,14 @@ public class Graph {
         edges.remove(edges.size() - 1);
         edges.remove(edges.size() - 1);
     }
+
+    public List<CubeTripole> getCubes() {
+        return this.vertices.stream().filter(vertex
+                -> vertex.getAdjacentEdges().stream().map(edge
+                    -> edge.getLeftFromPOV(vertex)).filter(face -> face.size() == 4)
+                .count() == 3)
+                .map(CubeTripole::new).collect(Collectors.toList());
+    }
     
     public void untagFaces(){
         for (Face f: faces) f.setTagged(false);
@@ -341,12 +349,10 @@ public class Graph {
 
 
     public void setPositive(Vertex vertex) {
-        vertex.setWeight(1);
-        vertex.setConsistentTwoFactorState(ConsistentTwoFactorState.P_UNDISCOVERED);
+        vertex.setSelfPositive();
     }
 
     public void setNegative(Vertex vertex) {
-        vertex.setWeight(0);
-        vertex.setConsistentTwoFactorState(ConsistentTwoFactorState.N_UNDISCOVERED);
+        vertex.setSelfNegative();
     }
 }

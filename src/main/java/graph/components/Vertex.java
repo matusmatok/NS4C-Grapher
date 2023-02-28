@@ -79,7 +79,17 @@ public class Vertex {
         }
         return null;
     }
-    
+
+    public void setSelfPositive() {
+        this.weight = 1;
+        this.consistentTwoFactorState = ConsistentTwoFactorState.P_UNDISCOVERED;
+    }
+
+    public void setSelfNegative() {
+        this.weight = 0;
+        this.consistentTwoFactorState = ConsistentTwoFactorState.P_UNDISCOVERED;
+    }
+
     public void print(){
         System.out.print(this);
     }

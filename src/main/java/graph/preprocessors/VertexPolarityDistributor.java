@@ -1,5 +1,6 @@
 package graph.preprocessors;
 
+import graph.components.CubeTripole;
 import graph.components.Graph;
 import graph.components.Vertex;
 
@@ -10,13 +11,18 @@ public class VertexPolarityDistributor implements Iterable<Graph> {
 
     private final Graph graph;
     private final List<Vertex> ambiguousVertices;
+    private final List<CubeTripole> cubes;
 
     private int currentDistributionNumber = 0;
     private int maxDistributionNumber;
 
     public VertexPolarityDistributor(Graph g, List<Vertex> ambiguousVertices) {
         graph = g;
+        cubes = graph.getCubes();
         this.ambiguousVertices = ambiguousVertices;
+        for (CubeTripole cube : cubes) {
+            ambiguousVertices.remove(cube.getAllVertices());
+        }
         maxDistributionNumber = (int)Math.pow(2, ambiguousVertices.size() - 1);
     }
 
@@ -27,6 +33,9 @@ public class VertexPolarityDistributor implements Iterable<Graph> {
         for (Vertex v : graph.getVertices()) {
             v.setWeight(1);
             v.setConsistentTwoFactorState(Vertex.ConsistentTwoFactorState.P_UNDISCOVERED);
+        }
+        for (CubeTripole cube : cubes) {
+            cube.distributePolarity();
         }
 
         Iterator<Graph> it = new Iterator<>() {
