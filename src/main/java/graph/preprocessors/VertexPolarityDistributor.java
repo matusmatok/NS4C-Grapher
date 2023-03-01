@@ -21,7 +21,7 @@ public class VertexPolarityDistributor implements Iterable<Graph> {
         cubes = graph.getCubes();
         this.ambiguousVertices = ambiguousVertices;
         for (CubeTripole cube : cubes) {
-            ambiguousVertices.remove(cube.getAllVertices());
+            ambiguousVertices.removeAll(cube.getAllVertices());
         }
         maxDistributionNumber = (int)Math.pow(2, ambiguousVertices.size() - 1);
     }
@@ -47,7 +47,7 @@ public class VertexPolarityDistributor implements Iterable<Graph> {
 
             @Override
             public Graph next() {
-                int counter = 0;
+                int counter = cubes.size();
                 for (int i = ambiguousVertices.size() - 2; i >=0; i--) {
                     final Vertex vertex = ambiguousVertices.get(i);
                     if ((currentDistributionNumber&(1 << i)) > 0) {

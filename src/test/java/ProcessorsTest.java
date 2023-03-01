@@ -54,7 +54,7 @@ public class ProcessorsTest {
     @Test
     public void testUntouchableProcessors() {
         assertFalse(UNTOUCHABLE_EDGE_PROCESSOR_FOR_BAD_GRAPH.hasProperty());
-        //assertTrue(UNTOUCHABLE_EDGE_PROCESSOR_FOR_GOOD_GRAPH.hasProperty());
+        assertTrue(UNTOUCHABLE_EDGE_PROCESSOR_FOR_GOOD_GRAPH.hasProperty());
     }
 
 }
