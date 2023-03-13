@@ -5,6 +5,7 @@ import graph.components.Vertex;
 import graph.preprocessors.HamUnavoidableEdgeGetter;
 import graph.preprocessors.UnavoidableAmbiguousVertexGetter;
 import graph.preprocessors.VertexPolarityDistributor;
+import graph.processors.ProcessorTypeDEF;
 import graph.processors.UnavoidableEdgeProcessor;
 import graph.processors.UntouchableEdgeProcessor;
 import mock.ExtendedTenTuttovTotoMock;
@@ -55,6 +56,14 @@ public class ProcessorsTest {
     public void testUntouchableProcessors() {
         assertFalse(UNTOUCHABLE_EDGE_PROCESSOR_FOR_BAD_GRAPH.hasProperty());
         assertTrue(UNTOUCHABLE_EDGE_PROCESSOR_FOR_GOOD_GRAPH.hasProperty());
+    }
+
+    @Test
+    public void testProcessorTypeDEF() {
+        final ProcessorTypeDEF processorForBadGraph = new ProcessorTypeDEF(badGraph);
+        final ProcessorTypeDEF processorForGoodGraph = new ProcessorTypeDEF(goodGraph);
+        assertFalse(processorForBadGraph.findGoodEdges());
+        assertTrue(processorForGoodGraph.findGoodEdges());
     }
 
 }

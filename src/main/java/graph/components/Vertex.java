@@ -87,6 +87,11 @@ public class Vertex {
 
     public void setSelfNegative() {
         this.weight = 0;
+        this.consistentTwoFactorState = ConsistentTwoFactorState.N_UNDISCOVERED;
+    }
+
+    public void setSelfPseudoNegative() {
+        this.weight = 0;
         this.consistentTwoFactorState = ConsistentTwoFactorState.P_UNDISCOVERED;
     }
 
