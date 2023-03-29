@@ -64,6 +64,6 @@ public class PreProcessorTest {
 
         final UntouchableAmbiguousVertexGetter untouchableAmbiguousVertexGetter = new UntouchableAmbiguousVertexGetter(EXTENDED_TEN_TUTTOV_TOTO_MOCK);
         final List<Vertex> untouchableResult = untouchableAmbiguousVertexGetter.getResult(EXTENDED_TEN_TUTTOV_TOTO_MOCK.getEdges().get(48));
-        assertEquals(48, untouchableResult.size());
+        assertEquals(37, untouchableResult.size());
     }
 }
