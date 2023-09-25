@@ -16,13 +16,12 @@ public class BFSCoder extends AbstractCanonicCoder{
     private Map<Face,Boolean> covered;
 
     @Override
-    public List<Integer> getLexCodeForFace(Face f, Graph g, List<Integer> lexCode) {
+    public LexCode getLexCodeForFace(Face f, Graph g, LexCode lexCode) {
         final List<Face> incidentFaces = f.getIncidentFaces();
         final int minimalIncidentFaceDegree = incidentFaces.stream().map((face) -> face.size()).min(Integer::compareTo).get();
 
         if (lexCode == null) {
-            lexCode = new ArrayList<>();
-            lexCode.add(Integer.MAX_VALUE);
+            lexCode = LexCode.builder().shortAdd(Integer.MAX_VALUE).build();
         }
 
         for (int i=0; i<incidentFaces.size(); i++) {
@@ -57,7 +56,7 @@ public class BFSCoder extends AbstractCanonicCoder{
         return lexCode;
     }
 
-    private List<Integer> getLexCodeWithInitialConfig(List<Integer> codeToBeat, int direction){
+    private LexCode getLexCodeWithInitialConfig(LexCode codeToBeat, int direction){
         int faceBfsIndex = 0;
         final List<Integer> result = new ArrayList<>();
         boolean beaten = false;
@@ -68,8 +67,8 @@ public class BFSCoder extends AbstractCanonicCoder{
             result.add(currentFace.size());
 
             if (!beaten){
-                if (currentFace.size() < codeToBeat.get(faceBfsIndex)) beaten = true;
-                if (currentFace.size() > codeToBeat.get(faceBfsIndex)) return codeToBeat;
+                if (currentFace.size() < codeToBeat.shortCodeAt(faceBfsIndex)) beaten = true;
+                if (currentFace.size() > codeToBeat.shortCodeAt(faceBfsIndex)) return codeToBeat;
             }
 
             final List<Face> currentFaceNeighbours = currentFace.getIncidentFaces();
@@ -87,7 +86,7 @@ public class BFSCoder extends AbstractCanonicCoder{
             }
             faceBfsIndex++;
         }
-        return result;
+        return LexCode.builder().shortAddAll(result).build();
     }
 
 }

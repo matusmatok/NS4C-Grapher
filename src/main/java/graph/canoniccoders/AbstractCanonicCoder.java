@@ -16,23 +16,19 @@ import graph.components.*;
  */
 public abstract class AbstractCanonicCoder {
     
-    public List<Integer> getLexCodeForFace(Face f, Graph g){
+    public LexCode getLexCodeForFace(Face f, Graph g){
         return getLexCodeForFace(f,g,null);
     }
-    public abstract List<Integer> getLexCodeForFace(Face f, Graph g, List<Integer> lexCode);
-    public boolean isMinimal(Graph g, List<Integer> codeInQuestion){
+    public abstract LexCode getLexCodeForFace(Face f, Graph g, LexCode lexCode);
+    public boolean isMinimal(Graph g, LexCode codeInQuestion){
         int minimalFaceSize = g.minimalFaceSize();
-        if (codeInQuestion.get(0) > minimalFaceSize) return false;
-        List<Integer> codeToBeat = new ArrayList<>(codeInQuestion);
+        if (codeInQuestion.shortCodeAt(0) > minimalFaceSize) return false;
+        LexCode codeToBeat = codeInQuestion;
 
         for (Face f: g.getFaces()){
             if (f.size() == minimalFaceSize){
-                List<Integer> competitor = getLexCodeForFace(f, g, codeToBeat);
-                assert competitor.size() == codeInQuestion.size();
-                for (int i = 0; i<competitor.size(); i++){
-                    if (competitor.get(i) < codeInQuestion.get(i)) return false;
-                    if (competitor.get(i) > codeInQuestion.get(i)) break;
-                }
+                LexCode competitor = getLexCodeForFace(f, g, codeToBeat);
+                if (competitor.compareTo(codeToBeat) < 0) return false;
             }
         }
         return true;

@@ -1,4 +1,5 @@
 import graph.canoniccoders.BFSCoder;
+import graph.canoniccoders.LexCode;
 import graph.components.Face;
 import graph.components.Graph;
 import graph.generators.TopVerifyingGenerator;
@@ -32,8 +33,7 @@ public class GeneratorTest {
         generator.generate();
         final String tutteFragmentLexCode = coder.getLexCodeForFace(tutteFragment.getFaces()
                     .stream().filter(face -> face.size() == 4)
-                    .findAny().get(), tutteFragment)
-                .stream().map(Object::toString).collect(Collectors.joining(" "));
+                    .findAny().get(), tutteFragment).toString();
         assertTrue(processor.getLexCodes().contains(tutteFragmentLexCode));
         processor.getLexCodes().clear();
 
@@ -41,9 +41,9 @@ public class GeneratorTest {
         final List<Face> size4Faces = extendedTutteFragment.getFaces().stream().filter(face -> face.size() == 4).collect(Collectors.toList());
         assertNotEquals(0, size4Faces.size());
         for (Face initFace : size4Faces) {
-            final List<Integer> currentCode = coder.getLexCodeForFace(initFace, extendedTutteFragment);
+            final LexCode currentCode = coder.getLexCodeForFace(initFace, extendedTutteFragment);
             if (coder.isMinimal(extendedTutteFragment, currentCode)) {
-                extendedTutteFragmentLexCode = currentCode.stream().map(Object::toString).collect(Collectors.joining(" "));
+                extendedTutteFragmentLexCode = currentCode.toString();
             }
         }
         assertNotEquals("9 9 9 9 9 9 9 9 9 9 9 9 9", extendedTutteFragmentLexCode);

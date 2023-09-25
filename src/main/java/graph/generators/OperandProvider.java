@@ -23,7 +23,17 @@ public class OperandProvider {
         private int faceId;
     }
 
-    public List<Operand> getOp3Operands(Graph graph) {
+    public List<Operand> getOp3Operands(Graph graph){
+        return getOp3OperandsAll(graph);
+    }
+
+    private List<Operand> getOp3OperandsAll(Graph graph) {
+        return graph.getVertices()
+                .stream().map((vertex -> new Operand(vertex.getId(), -1, -1)))
+                .collect(Collectors.toList());
+    }
+
+    private List<Operand> getOp3Operands2Triangles(Graph graph) {
         final List<Face> triangles = graph.getFaces().stream().filter((f) -> f.size() == 3).collect(Collectors.toList());
 
         if (triangles.size() == 0) {
@@ -73,7 +83,28 @@ public class OperandProvider {
             return result.stream().map(vertex -> new Operand(vertex.getId(), -1, -1)).collect(Collectors.toList());
         }
         else { // triangles > 2
-            throw new RuntimeException("We should not be in a state with more than 2 triangles in the graph.");
+            return List.of();
+        }
+    }
+
+    private List<Operand> getOp3OperandsOneTriangle(Graph graph) {
+        final List<Face> triangles = graph.getFaces().stream().filter((f) -> f.size() == 3).collect(Collectors.toList());
+
+        if (triangles.size() == 0) {
+            return graph.getVertices()
+                    .stream().map((vertex -> new Operand(vertex.getId(), -1, -1)))
+                    .collect(Collectors.toList());
+        } else if (triangles.size() == 1) {
+            final Set<Vertex> result = new HashSet<>();
+            final Face triangle = triangles.get(0);
+            final List<Edge> faceEdges = triangle.getAdjacentEdges();
+            for (Edge e: faceEdges) {
+                result.add(e.getVFrom());
+                result.add(e.getVTo());
+            }
+            return result.stream().map(vertex -> new Operand(vertex.getId(), -1, -1)).collect(Collectors.toList());
+        } else {
+            throw new RuntimeException("too many triangles");
         }
     }
 
@@ -105,6 +136,24 @@ public class OperandProvider {
         return outgoingEdges;
     }
 
+    public List<Operand> getOp4OperandsAll(Graph graph) {
+        final List<Face> squaresOrBigger = graph.getFaces().stream().filter(f -> f.size() > 3).collect(Collectors.toList());
+
+        final Set<Edge> processedEdges = new HashSet<>();
+        final List<Operand> result = new ArrayList<>();
+
+        for (Face face : squaresOrBigger) {
+            final List<Edge> edges = face.getAdjacentEdges();
+            for (int i = 0; i < face.size(); i++) {
+                if (!processedEdges.contains(edges.get(i))) {
+                    processedEdges.add(edges.get(i));
+                    result.add(new Operand(-1, edges.get((i + edges.size() - 1) % edges.size()).getId(), face.getId()));
+                }
+            }
+        }
+        return result;
+    }
+
     public List<Operand> getOp4Operands(Graph graph) {
         final List<Face> triangles = graph.getFaces().stream().filter((f) -> f.size() == 3).collect(Collectors.toList());
 
@@ -125,9 +174,15 @@ public class OperandProvider {
         }
         else if (triangles.size() == 1) {
             final Face triangle = triangles.get(0);
-            return triangle.getAdjacentEdges()
-                    .stream().map(edge -> new Operand(-1, edge.getId(), edge.getOppositeFace(triangle).getId()))
-                    .collect(Collectors.toList());
+            final List<Operand> result = new ArrayList<>();
+            for (Edge e: triangle.getAdjacentEdges()) {
+                final Face oppositeFace = e.getOppositeFace(triangle);
+                final int indexOfOther = oppositeFace.getAdjacentEdges()
+                        .get((oppositeFace.getIndexOfE(e) - 2 + oppositeFace.size()) %oppositeFace.size()).getId();
+                result.add(new Operand(-1, e.getId(), oppositeFace.getId()));
+                result.add(new Operand(-1, indexOfOther, oppositeFace.getId()));
+            }
+            return result;
         }
         else if (triangles.size() == 2) {
             final Set<Edge> outgoingEdgesOne = getOutgoingEdges(triangles.get(0));
@@ -146,8 +201,21 @@ public class OperandProvider {
             return result;
         }
         else {
-            throw new RuntimeException("We should not be in a state with more than 2 triangles in the graph.");
+            return List.of();
         }
+    }
+
+    public List<Operand> getOp5OperandsAll(Graph graph) {
+        final List<Operand> result = new ArrayList<>();
+
+        for (Face face : graph.getFaces()) {
+            if (face.size() < 5) continue;
+            final List<Edge> edges = face.getAdjacentEdges();
+            for (int i = 0; i < face.size(); i++) {
+                result.add(new Operand(-1, edges.get(i).getId(), face.getId()));
+            }
+        }
+        return result;
     }
 
     public List<Operand> getOp5Operands(Graph graph) {
@@ -188,25 +256,45 @@ public class OperandProvider {
                 final List<Face> squareOneIncidentFaces = squares.get(0).getIncidentFaces();
                 final List<Face> squareTwoIncidentFaces = squares.get(1).getIncidentFaces();
 
+//                if (squareOneIncidentFaces.contains(squares.get(1)) || squareTwoIncidentFaces.contains(squares.get(0))) {
+//                    return new ArrayList<>();
+//                }
+//
+//                squareOneIncidentFaces.retainAll(squareTwoIncidentFaces);
+//                final List<Operand> result = new ArrayList<>();
+//
+//                for (Face face : squareOneIncidentFaces) {
+//
+//                    final Set<Edge> squareAdjacentEdges = new HashSet<>(squares.get(0).getAdjacentEdges());
+//                    squareAdjacentEdges.addAll(squares.get(1).getAdjacentEdges());
+//
+//                    final List<Edge> adjacentEdges = face.getAdjacentEdges();
+//                    for (int i = 0; i < adjacentEdges.size(); i++) {
+//
+//                        if (squareAdjacentEdges.contains(adjacentEdges.get(i))
+//                                && squareAdjacentEdges.contains(adjacentEdges.get((i + 3) % adjacentEdges.size()))) {
+//                            result.add(new Operand(-1, adjacentEdges.get(i).getId(), face.getId()));
+//                        }
+//                    }
+//                }
+//                return result;
                 if (squareOneIncidentFaces.contains(squares.get(1)) || squareTwoIncidentFaces.contains(squares.get(0))) {
                     return new ArrayList<>();
                 }
-
                 squareOneIncidentFaces.retainAll(squareTwoIncidentFaces);
+                if (squareOneIncidentFaces.isEmpty()) return List.of();
+
+                if (squareOneIncidentFaces.size() > 1) return List.of();
+
+                final Face mutualFace = squareOneIncidentFaces.get(0);
+                if (mutualFace.size() < 6) return List.of();
+
                 final List<Operand> result = new ArrayList<>();
-
-                for (Face face : squareOneIncidentFaces) {
-
-                    final Set<Edge> squareAdjacentEdges = new HashSet<>(squares.get(0).getAdjacentEdges());
-                    squareAdjacentEdges.addAll(squares.get(1).getAdjacentEdges());
-
-                    final List<Edge> adjacentEdges = face.getAdjacentEdges();
-                    for (int i = 0; i < adjacentEdges.size(); i++) {
-
-                        if (squareAdjacentEdges.contains(adjacentEdges.get(i))
-                                && squareAdjacentEdges.contains(adjacentEdges.get((i + 3) % adjacentEdges.size()))) {
-                            result.add(new Operand(-1, adjacentEdges.get(i).getId(), face.getId()));
-                        }
+                for (Edge e: mutualFace.getAdjacentEdges()) {
+                    if (e.getOppositeFace(mutualFace) == squares.get(0) || e.getOppositeFace(mutualFace) == squares.get(1)) {
+                        result.add(new Operand(-1, e.getId(), mutualFace.getId()));
+                        final int indexOfSecondStart = (mutualFace.getIndexOfE(e) - 3 + mutualFace.size()) % mutualFace.size();
+                        result.add(new Operand(-1, mutualFace.getEdge(indexOfSecondStart).getId(), mutualFace.getId()));
                     }
                 }
                 return result;

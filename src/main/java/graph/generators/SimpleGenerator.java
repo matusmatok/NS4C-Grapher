@@ -2,6 +2,7 @@ package graph.generators;
 
 import graph.canoniccoders.AbstractCanonicCoder;
 import graph.canoniccoders.BFSCoder;
+import graph.canoniccoders.LexCode;
 import graph.components.Face;
 import graph.components.Graph;
 import graph.components.Vertex;
@@ -35,10 +36,9 @@ public class SimpleGenerator extends AbstractGenerator {
             Vertex v = graph.getVertices().get(i);
             Face newFace = graph.op3(v);
 
-            List<Integer> lexCode = coder.getLexCodeForFace(newFace, graph);
+            LexCode lexCode = coder.getLexCodeForFace(newFace, graph);
             if (coder.isMinimal(graph, lexCode)){
-                String lexCodeString = lexCode.stream().map(Object::toString).collect(
-                        Collectors.joining(" "));
+                String lexCodeString = lexCode.toString();
                 if (!discoveredGraphs.containsKey(lexCodeString)){
                     discoveredGraphs.put(lexCodeString, true);
                     generate();

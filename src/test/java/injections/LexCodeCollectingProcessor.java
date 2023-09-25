@@ -21,9 +21,7 @@ public class LexCodeCollectingProcessor extends UnavoidableEdgeProcessor {
 
     @Override
     public boolean hasProperty() {
-        lexCodes.add(coder.getLexCodeForFace(graph.getFaces().get(graph.getFaces().size() - 1), graph)
-                .stream().map(Object::toString)
-                .collect(Collectors.joining(" ")));
+        lexCodes.add(coder.getLexCodeForFace(graph.getFaces().get(graph.getFaces().size() - 1), graph).toString());
         return false;
     }
 }
