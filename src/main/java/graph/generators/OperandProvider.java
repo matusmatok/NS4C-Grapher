@@ -27,13 +27,13 @@ public class OperandProvider {
         return getOp3OperandsAll(graph);
     }
 
-    private List<Operand> getOp3OperandsAll(Graph graph) {
+    public List<Operand> getOp3OperandsAll(Graph graph) {
         return graph.getVertices()
                 .stream().map((vertex -> new Operand(vertex.getId(), -1, -1)))
                 .collect(Collectors.toList());
     }
 
-    private List<Operand> getOp3Operands2Triangles(Graph graph) {
+    public List<Operand> getOp3Operands2Triangles(Graph graph) {
         final List<Face> triangles = graph.getFaces().stream().filter((f) -> f.size() == 3).collect(Collectors.toList());
 
         if (triangles.size() == 0) {
@@ -87,7 +87,7 @@ public class OperandProvider {
         }
     }
 
-    private List<Operand> getOp3OperandsOneTriangle(Graph graph) {
+    public List<Operand> getOp3OperandsOneTriangle(Graph graph) {
         final List<Face> triangles = graph.getFaces().stream().filter((f) -> f.size() == 3).collect(Collectors.toList());
 
         if (triangles.size() == 0) {

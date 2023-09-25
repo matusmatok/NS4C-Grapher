@@ -25,7 +25,7 @@ public class Main {
         g.init();
         g.op3(0);
         g.getFaces().get(0).toNormalForm();
-        TopVerifyingGenerator generator = new TopVerifyingGenerator(g, new UnavoidableEdgeProcessor(g), 26 );
+        TopVerifyingGenerator generator = new TopVerifyingGenerator(g, new UnavoidableEdgeProcessor(g), 24 );
         generator.generate();
         System.out.println(generator.getTopLevelGraphs());
       

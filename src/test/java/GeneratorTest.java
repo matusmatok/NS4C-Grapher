@@ -1,4 +1,4 @@
-import graph.canoniccoders.BFSCoder;
+import graph.canoniccoders.obsolete.BFSCoder;
 import graph.canoniccoders.LexCode;
 import graph.components.Face;
 import graph.components.Graph;

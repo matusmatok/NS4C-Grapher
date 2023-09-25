@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package graph.canoniccoders;
+package graph.canoniccoders.obsolete;
 
 import graph.components.Edge;
 import graph.components.Face;

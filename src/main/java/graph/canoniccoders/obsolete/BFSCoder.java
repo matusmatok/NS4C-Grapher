@@ -1,9 +1,9 @@
-package graph.canoniccoders;
+package graph.canoniccoders.obsolete;
 
+import graph.canoniccoders.LexCode;
 import graph.components.Face;
 import graph.components.Graph;
 
-import java.awt.image.ImageProducer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

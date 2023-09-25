@@ -3,11 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package graph.canoniccoders;
+package graph.canoniccoders.obsolete;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import graph.canoniccoders.LexCode;
 import graph.components.*;
 
 /**

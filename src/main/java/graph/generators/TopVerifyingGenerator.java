@@ -1,7 +1,7 @@
 package graph.generators;
 
-import graph.canoniccoders.AbstractCanonicCoder;
-import graph.canoniccoders.BFSCoder;
+import graph.canoniccoders.obsolete.AbstractCanonicCoder;
+import graph.canoniccoders.obsolete.BFSCoder;
 import graph.canoniccoders.CanonicalCoder;
 import graph.canoniccoders.LexCode;
 import graph.components.Edge;
@@ -37,12 +37,12 @@ public class TopVerifyingGenerator extends AbstractGenerator{
     public void generate() {
 
         if (graph.getVertices().size() >= depth) {
-            //verifyTwoFactors();
+            verifyTwoFactors();
             topLevelGraphs++;
             return;
         }
 
-        final List<Operand> op3Operands = operandProvider.getOp3Operands(graph);
+        final List<Operand> op3Operands = operandProvider.getOp3OperandsAll(graph);
         for (Operand operand : op3Operands) {
 
             final Face newFace = graph.op3(operand.getVertexId());

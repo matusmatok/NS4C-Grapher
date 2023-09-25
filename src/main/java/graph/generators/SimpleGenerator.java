@@ -1,14 +1,13 @@
 package graph.generators;
 
-import graph.canoniccoders.AbstractCanonicCoder;
-import graph.canoniccoders.BFSCoder;
+import graph.canoniccoders.obsolete.AbstractCanonicCoder;
+import graph.canoniccoders.obsolete.BFSCoder;
 import graph.canoniccoders.LexCode;
 import graph.components.Face;
 import graph.components.Graph;
 import graph.components.Vertex;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import graph.processors.AbstractProcessor;

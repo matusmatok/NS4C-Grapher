@@ -1,13 +1,12 @@
 package injections;
 
-import graph.canoniccoders.BFSCoder;
+import graph.canoniccoders.obsolete.BFSCoder;
 import graph.components.Graph;
 import graph.processors.UnavoidableEdgeProcessor;
 import lombok.Getter;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class LexCodeCollectingProcessor extends UnavoidableEdgeProcessor {
 
