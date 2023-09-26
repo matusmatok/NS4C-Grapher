@@ -68,6 +68,12 @@ public class Edge {
         else throw new RuntimeException("Trying to get left face from the point of view of a vertex not present in this edge.");
     }
 
+    public Face getRightFromPOV(Vertex v){
+        if (v == this.vFrom) return this.rightFace;
+        else if (v == this.vTo) return this.leftFace;
+        else throw new RuntimeException("Trying to get left face from the point of view of a vertex not present in this edge.");
+    }
+
     public Face getFaceOfBiggerId() {
         return leftFace.getId() > rightFace.getId() ? leftFace : rightFace;
     }

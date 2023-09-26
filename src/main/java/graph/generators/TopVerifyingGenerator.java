@@ -47,7 +47,7 @@ public class TopVerifyingGenerator extends AbstractGenerator{
 
             final Face newFace = graph.op3(operand.getVertexId());
             LexCode localCode = CanonicalCoder.getCodeForFace(graph, newFace);
-            LexCode globalCode = CanonicalCoder.lexCodeForGraph(graph);
+            LexCode globalCode = CanonicalCoder.getCodeForGraph(graph);
 
             if (localCode.equals(globalCode)) {
                 String lexCodeString = localCode.toString();
@@ -64,7 +64,7 @@ public class TopVerifyingGenerator extends AbstractGenerator{
 
             final Edge newEdge = graph.op4(operand.getFaceId(), operand.getEdgeId());
             LexCode localCode = CanonicalCoder.getCodeForFace(graph, newEdge.getFaceOfBiggerId());
-            LexCode globalCode = CanonicalCoder.lexCodeForGraph(graph);
+            LexCode globalCode = CanonicalCoder.getCodeForGraph(graph);
 
             if (localCode.equals(globalCode)) {
                 String lexCodeString = localCode.toString();
@@ -81,7 +81,7 @@ public class TopVerifyingGenerator extends AbstractGenerator{
 
             final Edge newEdge = graph.op5(operand.getFaceId(), operand.getEdgeId());
             LexCode localCode = CanonicalCoder.getCodeForFace(graph, newEdge.getFaceOfBiggerId());
-            LexCode globalCode = CanonicalCoder.lexCodeForGraph(graph);
+            LexCode globalCode = CanonicalCoder.getCodeForGraph(graph);
 
             if (localCode.equals(globalCode)) {
                 String lexCodeString = localCode.toString();

@@ -64,6 +64,10 @@ public class LexCode implements Comparable<LexCode> {
         return shortCode.stream().map(Object::toString).collect(Collectors.joining(" "));
     }
 
+    public static LexCode getMaximumLexCode() {
+        return LexCode.builder().shortAdd(Integer.MAX_VALUE).build();
+    }
+
     public static class LexCodeBuilder {
         private final ComparableList shortCode = new ComparableList();
         private final ComparableList extendedCode = new ComparableList();
