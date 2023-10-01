@@ -1,14 +1,14 @@
 package graph.preprocessors;
 
 import graph.components.Edge;
-import graph.components.Graph;
+import graph.components.AbstractGraph;
 import graph.components.Vertex;
 import graph.utils.SimpleUnionFindSet;
 import java.util.List;
 
 public abstract class HamEdgeGetter extends AbstractPreProcessor<Edge> {
 
-    public HamEdgeGetter(Graph g) {
+    public HamEdgeGetter(AbstractGraph g) {
         super(g, new SimpleUnionFindSet());
     }
 

@@ -1,11 +1,12 @@
 import static org.junit.Assert.assertEquals;
 
 import graph.components.Edge;
-import graph.components.Graph;
+import graph.components.AbstractGraph;
+import graph.components.SimpleGraph;
 import org.junit.Test;
 
 public class GraphOperationTest {
-    private static final Graph graph = new Graph();
+    private static final SimpleGraph graph = new SimpleGraph();
 
     @Test
     public void testOp4_5() {

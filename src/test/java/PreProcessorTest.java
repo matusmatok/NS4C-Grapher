@@ -1,13 +1,11 @@
 import graph.components.Edge;
-import graph.components.Graph;
+import graph.components.AbstractGraph;
 import graph.components.Vertex;
 import graph.preprocessors.HamUnavoidableEdgeGetter;
 import graph.preprocessors.HamUntouchableEdgeGetter;
 import graph.preprocessors.UnavoidableAmbiguousVertexGetter;
 import graph.preprocessors.UntouchableAmbiguousVertexGetter;
 import mock.ExtendedTenTuttovTotoMock;
-import mock.ExtendedTutteFragmentMock;
-import mock.TenTuttovTotoMock;
 import mock.TutteFragmentMock;
 import org.junit.Test;
 
@@ -19,8 +17,8 @@ import static org.junit.Assert.assertTrue;
 
 public class PreProcessorTest {
 
-    private static final Graph TUTTE_FRAGMENT_MOCK = new TutteFragmentMock();
-    private static final Graph EXTENDED_TEN_TUTTOV_TOTO_MOCK = new ExtendedTenTuttovTotoMock();
+    private static final AbstractGraph TUTTE_FRAGMENT_MOCK = new TutteFragmentMock();
+    private static final AbstractGraph EXTENDED_TEN_TUTTOV_TOTO_MOCK = new ExtendedTenTuttovTotoMock();
     private static final HamUnavoidableEdgeGetter UNAVOIDABLE_EDGE_GETTER = new HamUnavoidableEdgeGetter(TUTTE_FRAGMENT_MOCK);
     private static final HamUntouchableEdgeGetter UNTOUCHABLE_EDGE_GETTER = new HamUntouchableEdgeGetter(EXTENDED_TEN_TUTTOV_TOTO_MOCK);
 

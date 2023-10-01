@@ -1,6 +1,6 @@
 import graph.builders.UnavoidableBuilder;
 import graph.components.Edge;
-import graph.components.Graph;
+import graph.components.AbstractGraph;
 import graph.components.Vertex;
 import graph.preprocessors.HamUnavoidableEdgeGetter;
 import graph.preprocessors.UnavoidableAmbiguousVertexGetter;
@@ -20,12 +20,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class ProcessorsTest {
-    private static final Graph badGraph = new FacedTutteFragmentMock();
-    private static final Graph goodGraph = new ExtendedTutteFragmentMock();
+    private static final AbstractGraph badGraph = new FacedTutteFragmentMock();
+    private static final AbstractGraph goodGraph = new ExtendedTutteFragmentMock();
 
-    private static final Graph tenTuttovToto = new TenTuttovTotoMock();
+    private static final AbstractGraph tenTuttovToto = new TenTuttovTotoMock();
 
-    private static final Graph extendedTenTuttovToto = new ExtendedTenTuttovTotoMock();
+    private static final AbstractGraph extendedTenTuttovToto = new ExtendedTenTuttovTotoMock();
     private static final UnavoidableEdgeProcessor UNAVOIDABLE_EDGE_PROCESSOR_FOR_BAD_GRAPH = new UnavoidableEdgeProcessor(badGraph);
     private static final UnavoidableEdgeProcessor UNAVOIDABLE_EDGE_PROCESSOR_FOR_GOOD_GRAPH = new UnavoidableEdgeProcessor(goodGraph);
     private static final UntouchableEdgeProcessor UNTOUCHABLE_EDGE_PROCESSOR_FOR_BAD_GRAPH = new UntouchableEdgeProcessor(tenTuttovToto);
@@ -39,7 +39,7 @@ public class ProcessorsTest {
             final UnavoidableAmbiguousVertexGetter ambiguousVertexGetter = new UnavoidableAmbiguousVertexGetter(badGraph);
             final List<Vertex> ambiguousVertices = ambiguousVertexGetter.getResult(potentialEdge);
             final VertexPolarityDistributor distributor = new VertexPolarityDistributor(badGraph, ambiguousVertices);
-            for (Graph g : distributor) {
+            for (AbstractGraph g : distributor) {
                 final UnavoidableBuilder builder = new UnavoidableBuilder(badGraph);
                 assertTrue(builder.canBuild(potentialEdge));
             }

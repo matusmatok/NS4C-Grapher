@@ -1,7 +1,7 @@
 package graph.preprocessors;
 
 import graph.components.CubeTripole;
-import graph.components.Graph;
+import graph.components.AbstractGraph;
 import graph.components.Vertex;
 
 import java.util.ArrayList;
@@ -10,9 +10,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class VertexPolarityDistributor implements Iterable<Graph> {
+public class VertexPolarityDistributor implements Iterable<AbstractGraph> {
 
-    private final Graph graph;
+    private final AbstractGraph graph;
     private final List<Vertex> ambiguousVertices;
     private final List<Vertex> forcedVertices;
     private final int[] prescribedPolarity;
@@ -25,11 +25,11 @@ public class VertexPolarityDistributor implements Iterable<Graph> {
     private int currentDistributionNumber = 0;
     private final int maxDistributionNumber;
 
-    public VertexPolarityDistributor(Graph g, List<Vertex> ambiguousVertices) {
+    public VertexPolarityDistributor(AbstractGraph g, List<Vertex> ambiguousVertices) {
         this(g, ambiguousVertices, new ArrayList<>(), new int[] {});
     }
 
-    public VertexPolarityDistributor(Graph g, List<Vertex> ambiguousVertices, List<Vertex> forcedVertices, int[] prescribedPolarity) {
+    public VertexPolarityDistributor(AbstractGraph g, List<Vertex> ambiguousVertices, List<Vertex> forcedVertices, int[] prescribedPolarity) {
         graph = g;
         cubes = graph.getCubes();
         this.ambiguousVertices = ambiguousVertices;
@@ -53,7 +53,7 @@ public class VertexPolarityDistributor implements Iterable<Graph> {
     }
 
     @Override
-    public Iterator<Graph> iterator() {
+    public Iterator<AbstractGraph> iterator() {
 
         currentDistributionNumber = 0;
         for (Vertex v : graph.getVertices()) {
@@ -77,7 +77,7 @@ public class VertexPolarityDistributor implements Iterable<Graph> {
             }
         }
 
-        Iterator<Graph> it = new Iterator<>() {
+        Iterator<AbstractGraph> it = new Iterator<>() {
 
             @Override
             public boolean hasNext() {
@@ -85,7 +85,7 @@ public class VertexPolarityDistributor implements Iterable<Graph> {
             }
 
             @Override
-            public Graph next() {
+            public AbstractGraph next() {
                 int counter = numberOfForcedNegativeVertices;
                 for (int i = ambiguousVertices.size() - 2; i >=0; i--) {
                     final Vertex vertex = ambiguousVertices.get(i);

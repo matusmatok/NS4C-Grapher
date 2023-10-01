@@ -1,4 +1,4 @@
-import graph.components.Graph;
+import graph.components.AbstractGraph;
 import graph.components.Vertex;
 import graph.preprocessors.ReducibleConfigurationFinder;
 import mock.FacedTutteFragmentMock;
@@ -13,7 +13,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class FinderTest {
-    private static final Graph graph = new FacedTutteFragmentMock();
+    private static final AbstractGraph graph = new FacedTutteFragmentMock();
     private static final ReducibleConfigurationFinder finder = new ReducibleConfigurationFinder(graph);
     private static final List<Vertex> ambiguousVertices = new ArrayList<>();
     static {

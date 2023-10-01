@@ -6,7 +6,8 @@ import graph.canoniccoders.CanonicalCoder;
 import graph.canoniccoders.LexCode;
 import graph.components.Edge;
 import graph.components.Face;
-import graph.components.Graph;
+import graph.components.AbstractGraph;
+import graph.components.SimpleGraph;
 import graph.generators.OperandProvider.Operand;
 import graph.processors.AbstractProcessor;
 import lombok.Getter;
@@ -23,7 +24,7 @@ public class TopVerifyingGenerator extends AbstractGenerator{
     @Getter
     private int topLevelGraphs = 0;
 
-    public TopVerifyingGenerator(Graph graph, AbstractProcessor processor, int depth) {
+    public TopVerifyingGenerator(SimpleGraph graph, AbstractProcessor processor, int depth) {
         super(graph, processor, depth);
     }
 

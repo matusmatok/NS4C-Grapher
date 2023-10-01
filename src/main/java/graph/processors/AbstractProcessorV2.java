@@ -2,7 +2,7 @@ package graph.processors;
 
 import graph.builders.AbstractTwoFactorBuilder;
 import graph.components.Edge;
-import graph.components.Graph;
+import graph.components.AbstractGraph;
 import graph.components.Vertex;
 import graph.preprocessors.AmbiguousVertexGetter;
 import graph.preprocessors.HamEdgeGetter;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractProcessorV2 {
-    protected final Graph graph;
+    protected final AbstractGraph graph;
 
     private final HamEdgeGetter potentialEdgeGetter;
 
@@ -20,8 +20,8 @@ public abstract class AbstractProcessorV2 {
     private final AbstractTwoFactorBuilder builder;
     private final ReducibleConfigurationFinder finder;
 
-    public AbstractProcessorV2(Graph graph, HamEdgeGetter potentialEdgeGetter,
-            AmbiguousVertexGetter ambiguousVertexGetter, AbstractTwoFactorBuilder builder) {
+    public AbstractProcessorV2(AbstractGraph graph, HamEdgeGetter potentialEdgeGetter,
+                               AmbiguousVertexGetter ambiguousVertexGetter, AbstractTwoFactorBuilder builder) {
         this.graph = graph;
         this.potentialEdgeGetter = potentialEdgeGetter;
         this.ambiguousVertexGetter = ambiguousVertexGetter;
@@ -53,7 +53,7 @@ public abstract class AbstractProcessorV2 {
                         edgeVertices,
                         potentialEdgePolarity);
 
-                for (Graph polarisedGraph : distributor) {
+                for (AbstractGraph polarisedGraph : distributor) {
                     if ((potentialEdgePolarity[0] == 1 ? resultMatrix[0][0] : resultMatrix[0][1] && resultMatrix[0][2])
                         && (potentialEdgePolarity[1] == 1 ? resultMatrix[1][0] : resultMatrix[1][1] && resultMatrix[1][2])) {
                         break;

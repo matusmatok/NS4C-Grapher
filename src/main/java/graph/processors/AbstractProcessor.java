@@ -2,7 +2,7 @@ package graph.processors;
 
 import graph.builders.AbstractTwoFactorBuilder;
 import graph.components.Edge;
-import graph.components.Graph;
+import graph.components.AbstractGraph;
 import graph.components.Vertex;
 import graph.preprocessors.AmbiguousVertexGetter;
 import graph.preprocessors.HamEdgeGetter;
@@ -12,7 +12,7 @@ import java.util.List;
 
 public abstract class AbstractProcessor {
 
-    protected final Graph graph;
+    protected final AbstractGraph graph;
 
     private final HamEdgeGetter potentialEdgeGetter;
 
@@ -20,8 +20,8 @@ public abstract class AbstractProcessor {
     private final AbstractTwoFactorBuilder builder;
     private final ReducibleConfigurationFinder finder;
 
-    public AbstractProcessor(Graph graph, HamEdgeGetter potentialEdgeGetter,
-            AmbiguousVertexGetter ambiguousVertexGetter, AbstractTwoFactorBuilder builder) {
+    public AbstractProcessor(AbstractGraph graph, HamEdgeGetter potentialEdgeGetter,
+                             AmbiguousVertexGetter ambiguousVertexGetter, AbstractTwoFactorBuilder builder) {
         this.graph = graph;
         this.potentialEdgeGetter = potentialEdgeGetter;
         this.ambiguousVertexGetter = ambiguousVertexGetter;
@@ -34,7 +34,7 @@ public abstract class AbstractProcessor {
         for (Edge potentiallyGoodEdge : potentiallyGoodEdges) {
             final List<Vertex> ambiguousVertices = ambiguousVertexGetter.getResult(potentiallyGoodEdge);
             final VertexPolarityDistributor distributor = new VertexPolarityDistributor(graph, ambiguousVertices);
-            for (Graph polarisedGraph : distributor) {
+            for (AbstractGraph polarisedGraph : distributor) {
                 /* containsPolarDependentReducibleConfig is faulty, needs fixing
                 finder.buildCache(new HashSet<>(ambiguousVertices));
                 if (!finder.containsPolarDependentReducibleConfig()) {

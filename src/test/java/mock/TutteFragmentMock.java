@@ -1,12 +1,12 @@
 package mock;
 
 import graph.components.Edge;
-import graph.components.Graph;
+import graph.components.AbstractGraph;
 import graph.components.Vertex;
 
 import java.util.List;
 
-public class TutteFragmentMock extends Graph {
+public class TutteFragmentMock extends AbstractGraph {
     public TutteFragmentMock(){
         super();
         init();

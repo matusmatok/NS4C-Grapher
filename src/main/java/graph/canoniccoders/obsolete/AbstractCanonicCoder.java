@@ -5,9 +5,6 @@
  */
 package graph.canoniccoders.obsolete;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import graph.canoniccoders.LexCode;
 import graph.components.*;
 
@@ -17,11 +14,11 @@ import graph.components.*;
  */
 public abstract class AbstractCanonicCoder {
     
-    public LexCode getLexCodeForFace(Face f, Graph g){
+    public LexCode getLexCodeForFace(Face f, AbstractGraph g){
         return getLexCodeForFace(f,g,null);
     }
-    public abstract LexCode getLexCodeForFace(Face f, Graph g, LexCode lexCode);
-    public boolean isMinimal(Graph g, LexCode codeInQuestion){
+    public abstract LexCode getLexCodeForFace(Face f, AbstractGraph g, LexCode lexCode);
+    public boolean isMinimal(AbstractGraph g, LexCode codeInQuestion){
         int minimalFaceSize = g.minimalFaceSize();
         if (codeInQuestion.shortCodeAt(0) > minimalFaceSize) return false;
         LexCode codeToBeat = codeInQuestion;

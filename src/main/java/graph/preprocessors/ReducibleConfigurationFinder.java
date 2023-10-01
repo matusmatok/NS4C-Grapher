@@ -2,7 +2,7 @@ package graph.preprocessors;
 
 import graph.components.Edge;
 import graph.components.Face;
-import graph.components.Graph;
+import graph.components.AbstractGraph;
 import graph.components.Vertex;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class ReducibleConfigurationFinder {
 
-    private final Graph graph;
+    private final AbstractGraph graph;
     private List<FaceAdjacentAmbiguousVertices> cachedFaces;
 
     @Getter
@@ -29,7 +29,7 @@ public class ReducibleConfigurationFinder {
     }
 
 
-    public ReducibleConfigurationFinder(Graph graph) {
+    public ReducibleConfigurationFinder(AbstractGraph graph) {
         this.graph = graph;
     }
 

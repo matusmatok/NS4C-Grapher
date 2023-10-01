@@ -1,6 +1,6 @@
 import graph.builders.UnavoidableBuilder;
 import graph.builders.UntouchableBuilder;
-import graph.components.Graph;
+import graph.components.AbstractGraph;
 import mock.ExtendedTenTuttovTotoMock;
 import mock.ExtendedTutteFragmentMock;
 import mock.ObscureTutteFragmentMock;
@@ -11,16 +11,16 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class BuildersTest {
-    private static final Graph graph = new ExtendedTutteFragmentMock();
+    private static final AbstractGraph graph = new ExtendedTutteFragmentMock();
     private static final UnavoidableBuilder builder = new UnavoidableBuilder(graph);
 
-    private static final Graph badGraph = new TutteFragmentMock();
+    private static final AbstractGraph badGraph = new TutteFragmentMock();
     private static final UnavoidableBuilder builderForBadGraph = new UnavoidableBuilder(badGraph);
 
-    private static final Graph tenTuttovTotoExtended = new ExtendedTenTuttovTotoMock();
+    private static final AbstractGraph tenTuttovTotoExtended = new ExtendedTenTuttovTotoMock();
     private static final UntouchableBuilder untouchableBuilder = new UntouchableBuilder(tenTuttovTotoExtended);
 
-    private static final Graph obscureTutteFragment = new ObscureTutteFragmentMock();
+    private static final AbstractGraph obscureTutteFragment = new ObscureTutteFragmentMock();
     private static final UnavoidableBuilder obscureBuilder = new UnavoidableBuilder(obscureTutteFragment);
 
     @Test

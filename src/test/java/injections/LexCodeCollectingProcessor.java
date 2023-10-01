@@ -1,7 +1,7 @@
 package injections;
 
 import graph.canoniccoders.obsolete.BFSCoder;
-import graph.components.Graph;
+import graph.components.AbstractGraph;
 import graph.processors.UnavoidableEdgeProcessor;
 import lombok.Getter;
 
@@ -14,7 +14,7 @@ public class LexCodeCollectingProcessor extends UnavoidableEdgeProcessor {
     private final Set<String> lexCodes = new HashSet<>();
     private final BFSCoder coder = new BFSCoder();
 
-    public LexCodeCollectingProcessor(Graph graph) {
+    public LexCodeCollectingProcessor(AbstractGraph graph) {
         super(graph);
     }
 

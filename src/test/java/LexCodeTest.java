@@ -4,7 +4,7 @@ import static org.junit.Assert.assertNotEquals;
 import graph.canoniccoders.CanonicalCoder;
 import graph.canoniccoders.LexCode;
 import graph.components.Face;
-import graph.components.Graph;
+import graph.components.AbstractGraph;
 import mock.FacedTutteFragmentMock;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -12,7 +12,7 @@ import org.junit.Test;
 import java.util.List;
 
 public class LexCodeTest {
-    private static final Graph graph = new FacedTutteFragmentMock();
+    private static final AbstractGraph graph = new FacedTutteFragmentMock();
     private static LexCode lexCode;
     private static LexCode withoutExtendedLexCode;
     private static LexCode lexCodeForFaceAndEdge;

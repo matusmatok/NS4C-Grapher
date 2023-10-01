@@ -1,21 +1,12 @@
 package graph.builders;
 
 import graph.components.Edge;
-import graph.components.Graph;
-import graph.components.Vertex;
-import graph.components.Vertex.ConsistentTwoFactorState;
-import graph.utils.AbstractUnionFindSet;
-import graph.utils.CountingUnionFindSet;
-import lombok.NonNull;
-
-import java.util.EnumMap;
-import java.util.HashSet;
-import java.util.Set;
+import graph.components.AbstractGraph;
 
 public class UnavoidableBuilder extends AbstractTwoFactorBuilder{
 
 
-    public UnavoidableBuilder(Graph graph) {
+    public UnavoidableBuilder(AbstractGraph graph) {
         super(graph);
     }
 

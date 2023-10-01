@@ -1,7 +1,7 @@
 package graph.builders;
 
 import graph.components.Edge;
-import graph.components.Graph;
+import graph.components.AbstractGraph;
 import graph.components.Vertex;
 import graph.components.Vertex.ConsistentTwoFactorState;
 import graph.utils.AbstractUnionFindSet;
@@ -79,11 +79,11 @@ abstract public class AbstractTwoFactorBuilder {
 
     protected final AbstractUnionFindSet unionFindSet = new CountingUnionFindSet();
 
-    protected final Graph graph;
+    protected final AbstractGraph graph;
     protected int numberOfPositiveVertices;
     private int currentWeight = 0;
 
-    public AbstractTwoFactorBuilder(Graph graph) {
+    public AbstractTwoFactorBuilder(AbstractGraph graph) {
         this.graph = graph;
     }
 

@@ -1,4 +1,4 @@
-import graph.components.Graph;
+import graph.components.AbstractGraph;
 import graph.components.Vertex;
 import graph.preprocessors.VertexPolarityDistributor;
 import mock.FacedTutteFragmentMock;
@@ -12,7 +12,7 @@ import java.util.Set;
 import static org.junit.Assert.assertFalse;
 
 public class DistributorTest {
-    final static Graph graph = new FacedTutteFragmentMock();
+    final static AbstractGraph graph = new FacedTutteFragmentMock();
     final static List<Vertex> ambiguousVertices = new ArrayList<>();
     static {
         for (int i =0; i <5; i++) ambiguousVertices.add(graph.getVertices().get(i));
@@ -22,7 +22,7 @@ public class DistributorTest {
     @Test
     public void testDistribution() {
         final Set<String> resultSet = new HashSet<>();
-        for (Graph g: distributor) {
+        for (AbstractGraph g: distributor) {
             final StringBuilder sb = new StringBuilder();
             for (int i=0; i<5; i++) sb.append(g.getVertices().get(i).getWeight());
             final String string = sb.toString();

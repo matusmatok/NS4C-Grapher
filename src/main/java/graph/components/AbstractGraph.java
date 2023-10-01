@@ -11,81 +11,39 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- *
- * @author ASUS
- */
-public class Graph {
+public abstract class AbstractGraph {
     @Getter protected final ArrayList<Vertex> vertices;
     @Getter protected final ArrayList<Face> faces;
     @Getter protected final ArrayList<Edge> edges;
+    private boolean initialized = false;
     
-    public Graph(){
+    public AbstractGraph(){
         vertices = new ArrayList<>();
         faces = new ArrayList<>();
         edges = new ArrayList<>();
     }
     
     public void init(){
-        for (int i=0; i<4; i++){
-            vertices.add(new Vertex(i));
-        }
-        
-        edges.add(new Edge(0, vertices.get(0), vertices.get(1)));
-        edges.add(new Edge(1, vertices.get(0), vertices.get(3)));
-        edges.add(new Edge(2, vertices.get(0), vertices.get(2)));
-        edges.add(new Edge(3, vertices.get(2), vertices.get(3)));
-        edges.add(new Edge(4, vertices.get(1), vertices.get(3)));
-        edges.add(new Edge(5, vertices.get(1), vertices.get(2)));
-        
-        for (int i=0; i<4; i++){
-            faces.add(new Face(i));
-        }
-        
-        faces.get(0).addEdge(edges.get(0));
-        faces.get(0).addEdge(edges.get(5));
-        faces.get(0).addEdge(edges.get(2));
-        
-        faces.get(1).addEdge(edges.get(0));
-        faces.get(1).addEdge(edges.get(1));
-        faces.get(1).addEdge(edges.get(4));
-        
-        faces.get(2).addEdge(edges.get(1));
-        faces.get(2).addEdge(edges.get(2));
-        faces.get(2).addEdge(edges.get(3));
-        
-        faces.get(3).addEdge(edges.get(3));
-        faces.get(3).addEdge(edges.get(5));
-        faces.get(3).addEdge(edges.get(4));
-        
-        edges.get(0).addFaces(faces.get(1), faces.get(0));
-        edges.get(1).addFaces(faces.get(2), faces.get(1));
-        edges.get(2).addFaces(faces.get(0), faces.get(2));
-        edges.get(3).addFaces(faces.get(3), faces.get(2));
-        edges.get(4).addFaces(faces.get(1), faces.get(3));
-        edges.get(5).addFaces(faces.get(3), faces.get(0));
-        
-        vertices.get(0).addEdge(edges.get(2));
-        vertices.get(0).addEdge(edges.get(1));
-        vertices.get(0).addEdge(edges.get(0));
-        
-        vertices.get(1).addEdge(edges.get(0));
-        vertices.get(1).addEdge(edges.get(4));
-        vertices.get(1).addEdge(edges.get(5));
-        
-        vertices.get(2).addEdge(edges.get(2));
-        vertices.get(2).addEdge(edges.get(5));
-        vertices.get(2).addEdge(edges.get(3));
-        
-        vertices.get(3).addEdge(edges.get(4));
-        vertices.get(3).addEdge(edges.get(1));
-        vertices.get(3).addEdge(edges.get(3));
+        if (initialized) throw new UnsupportedOperationException("Graph instance already initialised");
+        initialized = true;
     }
 
-    public Face op3(int vertexId) {
+    public Vertex getVertex(int id) {
+        return vertices.get(id);
+    }
+
+    public Edge getEdge(int id) {
+        return edges.get(id);
+    }
+
+    public Face getFace(int id) {
+        return faces.get(id);
+    }
+
+    protected Face op3(int vertexId) {
         return op3(vertices.get(vertexId));
     }
-    public Face op3(Vertex v){
+    protected Face op3(Vertex v){
         ArrayList<Vertex> newV = new ArrayList<>();
         newV.add(new Vertex(v.getId()));
         newV.add(new Vertex(vertices.size()));
@@ -122,7 +80,7 @@ public class Graph {
         return newFace;
     }
     
-    public void undoOp3(Face f){
+    protected void undoOp3(Face f){
         int smallestId = f.getVertexOfSmallestId();
         Vertex newVertex = vertices.get(smallestId);
 
@@ -150,25 +108,25 @@ public class Graph {
         vertices.remove(vertices.size() - 1);
     }
 
-    public Edge op4(int faceId, int idOfInitialEdge) {
+    protected Edge op4(int faceId, int idOfInitialEdge) {
         return op4(faces.get(faceId), idOfInitialEdge);
     }
-    public Edge op4(Face formerFace, int idOfInitialEdge) {
+    protected Edge op4(Face formerFace, int idOfInitialEdge) {
         return operation(4, formerFace, idOfInitialEdge);
     }
 
-    public void undoOp4(Edge middleEdge) {
+    protected void undoOp4(Edge middleEdge) {
         undoOperation(4, middleEdge);
     }
 
-    public Edge op5(int faceId, int idOfInitialEdge) {
+    protected Edge op5(int faceId, int idOfInitialEdge) {
         return op5(faces.get(faceId),idOfInitialEdge);
     }
-    public Edge op5(Face formerFace, int idOfInitialEdge) {
+    protected Edge op5(Face formerFace, int idOfInitialEdge) {
         return operation(5, formerFace, idOfInitialEdge);
     }
 
-    public void undoOp5(Edge middleEdge) {
+    protected void undoOp5(Edge middleEdge) {
         undoOperation(5, middleEdge);
     }
 

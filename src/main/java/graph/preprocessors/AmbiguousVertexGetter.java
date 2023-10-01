@@ -1,7 +1,7 @@
 package graph.preprocessors;
 
 import graph.components.Edge;
-import graph.components.Graph;
+import graph.components.AbstractGraph;
 import graph.components.Vertex;
 import graph.utils.SimpleUnionFindSet;
 
@@ -13,7 +13,7 @@ import static graph.components.Vertex.CycleVertexState.UNDISCOVERED;
 
 public abstract class AmbiguousVertexGetter extends AbstractPreProcessor<Vertex> {
 
-    public AmbiguousVertexGetter(Graph g) {
+    public AmbiguousVertexGetter(AbstractGraph g) {
         super(g, new SimpleUnionFindSet());
     }
 

@@ -1,5 +1,5 @@
 import graph.components.CubeTripole;
-import graph.components.Graph;
+import graph.components.AbstractGraph;
 import graph.components.Vertex;
 import mock.ExtendedTenTuttovTotoMock;
 import org.junit.Test;
@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.assertEquals;
 
 public class CubeTripoleTest {
-    private static final Graph TEN_TUTTOV_TOTO = new ExtendedTenTuttovTotoMock();
+    private static final AbstractGraph TEN_TUTTOV_TOTO = new ExtendedTenTuttovTotoMock();
 
     @Test
     public void testCubeTripoleFunctionality() {

@@ -1,11 +1,11 @@
 package graph.builders;
 
 import graph.components.Edge;
-import graph.components.Graph;
+import graph.components.AbstractGraph;
 
 public class UntouchableBuilder extends AbstractTwoFactorBuilder {
 
-    public UntouchableBuilder(Graph graph) {
+    public UntouchableBuilder(AbstractGraph graph) {
         super(graph);
     }
 

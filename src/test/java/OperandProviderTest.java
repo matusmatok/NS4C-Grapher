@@ -1,4 +1,5 @@
-import graph.components.Graph;
+import graph.components.AbstractGraph;
+import graph.components.SimpleGraph;
 import graph.generators.OperandProvider;
 import mock.TutteFragmentMock;
 import org.junit.Test;
@@ -12,10 +13,10 @@ public class OperandProviderTest {
 
     @Test
     public void testGetOp3_4() {
-        final Graph tutteFragmentMock = new TutteFragmentMock();
+        final AbstractGraph tutteFragmentMock = new TutteFragmentMock();
         final List<OperandProvider.Operand> operands = provider.getOp3Operands(tutteFragmentMock);
         assertEquals(16, operands.size());
-        final Graph simpleGraph = new Graph();
+        final SimpleGraph simpleGraph = new SimpleGraph();
 
         simpleGraph.init();
         simpleGraph.op3(0); //trivial state

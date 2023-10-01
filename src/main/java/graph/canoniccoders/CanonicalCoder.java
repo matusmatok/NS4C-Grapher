@@ -2,7 +2,7 @@ package graph.canoniccoders;
 
 import graph.components.Edge;
 import graph.components.Face;
-import graph.components.Graph;
+import graph.components.AbstractGraph;
 import graph.components.Vertex;
 
 import java.util.*;
@@ -12,7 +12,7 @@ public class CanonicalCoder {
 
     public static final int CODE_FOR_VISITED = 0;
 
-    private static LexCode getCodeWithSetup(final Graph g, final Face origin, final Face neigh, final int direction) {
+    private static LexCode getCodeWithSetup(final AbstractGraph g, final Face origin, final Face neigh, final int direction) {
         final List<Face> queue = new ArrayList<>();
         final Map<Face,Face> parent = new HashMap<>();
         final Set<Face> visited = new HashSet<>();
@@ -52,7 +52,7 @@ public class CanonicalCoder {
         return builder.shortAddAll(queue.stream().map(Face::size).collect(Collectors.toList())).build();
     }
 
-    public static LexCode getCodeForVertex(final Graph g, final Vertex vertex) {
+    public static LexCode getCodeForVertex(final AbstractGraph g, final Vertex vertex) {
         LexCode bestCode = LexCode.getMaximumLexCode();
 
         for (final Edge edge : vertex.getAdjacentEdges()) {
@@ -74,7 +74,7 @@ public class CanonicalCoder {
         return bestCode;
     }
 
-    public static LexCode getCodeForEdge(final Graph g, final Edge e) {
+    public static LexCode getCodeForEdge(final AbstractGraph g, final Edge e) {
         final LexCode lexCode1;
         if (e.getLeftFace().size() <= e.getRightFace().size()) {
             lexCode1 = getCodeForFaceAndEdge(g, e.getLeftFace(), e);
@@ -91,7 +91,7 @@ public class CanonicalCoder {
         return (lexCode1.compareTo(lexCode2) < 0) ? lexCode1 : lexCode2;
     }
 
-    public static LexCode getCodeForFaceAndEdge(final Graph g, final Face origin, final Edge border) {
+    public static LexCode getCodeForFaceAndEdge(final AbstractGraph g, final Face origin, final Edge border) {
         final Face neighbourFace = border.getOppositeFace(origin);
         final Face rightFace = border.getRightFromPOVofFace(origin).getThirdFace(origin, neighbourFace);
         final Face leftFace = border.getLeftFromPOVofFace(origin).getThirdFace(origin, neighbourFace);
@@ -112,7 +112,7 @@ public class CanonicalCoder {
         return (lexCode1.compareTo(lexCode2) < 0) ? lexCode1 : lexCode2;
     }
 
-    public static LexCode getCodeForFace(final Graph g, final Face face) {
+    public static LexCode getCodeForFace(final AbstractGraph g, final Face face) {
         final int smallestNeighSize = face.getIncidentFaces().stream().map(Face::size).min(Integer::compareTo).orElseThrow();
         final List<Face> smallestNeighs = face.getIncidentFaces().stream().filter(f -> f.size() == smallestNeighSize)
                 .collect(Collectors.toList());
@@ -145,7 +145,7 @@ public class CanonicalCoder {
         return Objects.requireNonNull(bestCode);
     }
 
-    public static LexCode getCodeForGraph(Graph g) {
+    public static LexCode getCodeForGraph(AbstractGraph g) {
         final int minimalFaceSize = g.minimalFaceSize();
         final List<Face> minimalFaces = g.getFaces().stream().filter(f -> f.size() == minimalFaceSize).collect(Collectors.toList());
 

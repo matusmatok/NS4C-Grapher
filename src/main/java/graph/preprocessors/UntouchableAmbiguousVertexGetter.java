@@ -1,7 +1,7 @@
 package graph.preprocessors;
 
 import graph.components.Edge;
-import graph.components.Graph;
+import graph.components.AbstractGraph;
 import graph.components.Vertex;
 
 import java.util.ArrayList;
@@ -9,7 +9,7 @@ import java.util.List;
 
 public class UntouchableAmbiguousVertexGetter extends AmbiguousVertexGetter {
 
-    public UntouchableAmbiguousVertexGetter(Graph graph) {
+    public UntouchableAmbiguousVertexGetter(AbstractGraph graph) {
         super(graph);
     }
     

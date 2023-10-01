@@ -1,7 +1,7 @@
 package graph.preprocessors;
 
 import graph.components.Edge;
-import graph.components.Graph;
+import graph.components.AbstractGraph;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.Set;
 public class HamUntouchableEdgeGetter extends HamEdgeGetter {
 
     private final Set<Edge> badEdges = new HashSet<>();
-    public HamUntouchableEdgeGetter(Graph g) {
+    public HamUntouchableEdgeGetter(AbstractGraph g) {
         super(g);
     }
 

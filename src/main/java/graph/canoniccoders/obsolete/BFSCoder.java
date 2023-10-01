@@ -2,7 +2,7 @@ package graph.canoniccoders.obsolete;
 
 import graph.canoniccoders.LexCode;
 import graph.components.Face;
-import graph.components.Graph;
+import graph.components.AbstractGraph;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +16,7 @@ public class BFSCoder extends AbstractCanonicCoder{
     private Map<Face,Boolean> covered;
 
     @Override
-    public LexCode getLexCodeForFace(Face f, Graph g, LexCode lexCode) {
+    public LexCode getLexCodeForFace(Face f, AbstractGraph g, LexCode lexCode) {
         final List<Face> incidentFaces = f.getIncidentFaces();
         final int minimalIncidentFaceDegree = incidentFaces.stream().map((face) -> face.size()).min(Integer::compareTo).get();
 

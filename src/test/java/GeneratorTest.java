@@ -1,7 +1,8 @@
 import graph.canoniccoders.obsolete.BFSCoder;
 import graph.canoniccoders.LexCode;
 import graph.components.Face;
-import graph.components.Graph;
+import graph.components.AbstractGraph;
+import graph.components.SimpleGraph;
 import graph.generators.TopVerifyingGenerator;
 import injections.LexCodeCollectingProcessor;
 import mock.ExtendedTutteFragmentMock;
@@ -18,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 public class GeneratorTest {
     private static final TutteFragmentMock tutteFragment = new FacedTutteFragmentMock();
     private final TutteFragmentMock extendedTutteFragment = new ExtendedTutteFragmentMock();
-    private static final Graph graph = new Graph();
+    private static final SimpleGraph graph = new SimpleGraph();
     static {
         graph.init();
         graph.op3(graph.getVertices().get(0));

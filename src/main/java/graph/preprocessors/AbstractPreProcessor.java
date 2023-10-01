@@ -2,7 +2,7 @@ package graph.preprocessors;
 
 import graph.components.Edge;
 import graph.components.Edge.hamCycleEdgeState;
-import graph.components.Graph;
+import graph.components.AbstractGraph;
 import graph.components.Vertex;
 import graph.components.Vertex.CycleVertexState;
 import graph.utils.AbstractUnionFindSet;
@@ -50,9 +50,9 @@ public abstract class AbstractPreProcessor<T> {
     protected final Set<Vertex> deterministicVertices = new HashSet<>(50);
 
     protected final AbstractUnionFindSet unionFindSet;
-    protected final Graph graph;
+    protected final AbstractGraph graph;
 
-    public AbstractPreProcessor(Graph g, AbstractUnionFindSet unionFindSet) {
+    public AbstractPreProcessor(AbstractGraph g, AbstractUnionFindSet unionFindSet) {
         graph = g;
         undiscoveredVertices.addAll(g.getVertices());
         this.unionFindSet = unionFindSet;

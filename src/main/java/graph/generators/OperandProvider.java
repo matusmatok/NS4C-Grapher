@@ -2,7 +2,7 @@ package graph.generators;
 
 import graph.components.Edge;
 import graph.components.Face;
-import graph.components.Graph;
+import graph.components.AbstractGraph;
 import graph.components.Vertex;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,17 +23,17 @@ public class OperandProvider {
         private int faceId;
     }
 
-    public List<Operand> getOp3Operands(Graph graph){
+    public List<Operand> getOp3Operands(AbstractGraph graph){
         return getOp3OperandsAll(graph);
     }
 
-    public List<Operand> getOp3OperandsAll(Graph graph) {
+    public List<Operand> getOp3OperandsAll(AbstractGraph graph) {
         return graph.getVertices()
                 .stream().map((vertex -> new Operand(vertex.getId(), -1, -1)))
                 .collect(Collectors.toList());
     }
 
-    public List<Operand> getOp3Operands2Triangles(Graph graph) {
+    public List<Operand> getOp3Operands2Triangles(AbstractGraph graph) {
         final List<Face> triangles = graph.getFaces().stream().filter((f) -> f.size() == 3).collect(Collectors.toList());
 
         if (triangles.size() == 0) {
@@ -87,7 +87,7 @@ public class OperandProvider {
         }
     }
 
-    public List<Operand> getOp3OperandsOneTriangle(Graph graph) {
+    public List<Operand> getOp3OperandsOneTriangle(AbstractGraph graph) {
         final List<Face> triangles = graph.getFaces().stream().filter((f) -> f.size() == 3).collect(Collectors.toList());
 
         if (triangles.size() == 0) {
@@ -136,7 +136,7 @@ public class OperandProvider {
         return outgoingEdges;
     }
 
-    public List<Operand> getOp4OperandsAll(Graph graph) {
+    public List<Operand> getOp4OperandsAll(AbstractGraph graph) {
         final List<Face> squaresOrBigger = graph.getFaces().stream().filter(f -> f.size() > 3).collect(Collectors.toList());
 
         final Set<Edge> processedEdges = new HashSet<>();
@@ -154,7 +154,7 @@ public class OperandProvider {
         return result;
     }
 
-    public List<Operand> getOp4Operands(Graph graph) {
+    public List<Operand> getOp4Operands(AbstractGraph graph) {
         final List<Face> triangles = graph.getFaces().stream().filter((f) -> f.size() == 3).collect(Collectors.toList());
 
         if (triangles.size() == 0) {
@@ -205,7 +205,7 @@ public class OperandProvider {
         }
     }
 
-    public List<Operand> getOp5OperandsAll(Graph graph) {
+    public List<Operand> getOp5OperandsAll(AbstractGraph graph) {
         final List<Operand> result = new ArrayList<>();
 
         for (Face face : graph.getFaces()) {
@@ -218,7 +218,7 @@ public class OperandProvider {
         return result;
     }
 
-    public List<Operand> getOp5Operands(Graph graph) {
+    public List<Operand> getOp5Operands(AbstractGraph graph) {
         if (graph.getFaces().stream().filter((f) -> f.size() == 3).collect(Collectors.toList()).size() > 0) return new ArrayList<>();
         final List<Face> squares = graph.getFaces().stream().filter((f) -> f.size() == 4).collect(Collectors.toList());
 

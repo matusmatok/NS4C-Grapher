@@ -5,8 +5,8 @@
  */
 package graph;
 
-import graph.components.Graph;
-import graph.generators.AbstractGenerator;
+import graph.components.AbstractGraph;
+import graph.components.SimpleGraph;
 import graph.generators.TopVerifyingGenerator;
 import graph.processors.UnavoidableEdgeProcessor;
 
@@ -21,7 +21,7 @@ public class Main {
     
     public static void main(String[] args){
         
-        Graph g = new Graph();
+        SimpleGraph g = new SimpleGraph();
         g.init();
         g.op3(0);
         g.getFaces().get(0).toNormalForm();
