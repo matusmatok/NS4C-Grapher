@@ -1,2 +1,2 @@
-# Diplomovka
-Search for the smallest counter=example for the 4-colour theorem for signed planar graphs.
+# NS4C Grapher
+Search for the smallest signed non-4-colourable planar graph.
