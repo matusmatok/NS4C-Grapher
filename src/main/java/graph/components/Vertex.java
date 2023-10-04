@@ -71,6 +71,13 @@ public class Vertex {
     public void addEdge(Edge e){
         this.adjacentEdges.add(e);
     }
+
+    public void addAllEdges(final Edge e0, final Edge e1, final Edge e2) {
+        if (!adjacentEdges.isEmpty()) throw new UnsupportedOperationException("Vertex already has edges assigned");
+        adjacentEdges.add(e0);
+        adjacentEdges.add(e1);
+        adjacentEdges.add(e2);
+    }
     
     public Face getThirdFace(Face f1, Face f2){
         for (Edge e: adjacentEdges){
@@ -78,6 +85,23 @@ public class Vertex {
             if (temp != f2) return temp;
         }
         return null;
+    }
+
+    public Face getOppositeFace(final Edge edge) {
+        if (edge.getVFrom() != this && edge.getVTo() != this) {
+            throw new IllegalArgumentException("Edge is not adjacent to this vertex");
+        }
+        for (final Edge e : adjacentEdges) {
+            if (e.getLeftFace() != edge.getLeftFace() && e.getLeftFace() != edge.getRightFace()) return e.getLeftFace();
+        }
+        throw new UnknownError();
+    }
+
+    public Edge getOppositeEdge(final Face face) {
+        return getAdjacentEdges().stream()
+                .filter(edge -> edge.getLeftFace() != face && edge.getRightFace() != face)
+                .findAny()
+                .orElseThrow();
     }
 
     public void setSelfPositive() {

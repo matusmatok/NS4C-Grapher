@@ -45,6 +45,24 @@ public class Edge {
         this.rightFace = right;
         this.leftFace = left;
     }
+
+    public class OrientedEdge {
+        @Getter
+        private final Edge correspondingEdge;
+        @Getter
+        private final Vertex origin;
+        private OrientedEdge(final Edge correspondingEdge, final Vertex origin) {
+            this.correspondingEdge = correspondingEdge;
+            this.origin = origin;
+        }
+    }
+
+    public OrientedEdge getOriented(final Vertex from) {
+        if (from != vFrom && from != vTo) {
+            throw new IllegalArgumentException("Cannot construct oriented Edge starting in a vertex non-present in this edge");
+        }
+        return new OrientedEdge(this, from);
+    }
     
     public void removeSelfFromOutterFace(Face innerFace){
         if (leftFace == innerFace) rightFace.removeEdge(this);

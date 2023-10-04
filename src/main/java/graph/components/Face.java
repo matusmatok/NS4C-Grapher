@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,13 +47,17 @@ public class Face {
         }
         return -1;
     }
+
+    public Edge getEdgeOfSmallestId() {
+        return adjacentEdges.stream().min(Comparator.comparingInt(Edge::getId)).orElseThrow();
+    }
     
     public int size(){
         return this.adjacentEdges.size();
     }
     
     public Edge getEdge(int index){
-        return this.adjacentEdges.get(index);
+        return this.adjacentEdges.get((index + this.size()) % this.size());
     }
     
     public ArrayList<Edge> getAdjacentEdgesCOPY(){
