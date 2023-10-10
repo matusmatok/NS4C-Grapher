@@ -4,13 +4,51 @@ import graph.components.Edge;
 import graph.components.Face;
 import graph.components.AbstractGraph;
 import graph.components.Vertex;
+import graph.utils.EasyList;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class CanonicalCoder {
 
+    public static boolean noLadderExtension = false;
     public static final int CODE_FOR_VISITED = 0;
+
+    private static LexCode getNoLadderCodeWithSetup(final AbstractGraph g, final Face origin, final Face neigh, final int direction) {
+        final int neighIndex = origin.getIndexOfIncidentFace(neigh);
+        final Face thirdFace = origin.getEdge(neighIndex + direction).getOppositeFace(origin);
+        final Face fourthFace = neigh.getEdge(neigh.getIndexOfIncidentFace(origin) - 2*direction).getOppositeFace(neigh);
+        if (origin.size() != 4 || neigh.size() != 5 || thirdFace.size() != 5 || fourthFace.size() != 4) {
+            return getCodeWithSetup(g, origin, neigh, direction);
+        }
+
+        final Face fifthFace = origin.getEdge(neighIndex + 2*direction).getOppositeFace(origin);
+        final Face sixthFace = origin.getEdge(neighIndex + 3*direction).getOppositeFace(origin);
+
+        final List<Face> queue = EasyList.of(origin, neigh, thirdFace, fourthFace, fifthFace, sixthFace);
+
+        final Map<Face,Face> parent = new HashMap<>();
+        parent.put(origin, neigh);
+        parent.put(neigh, origin);
+        parent.put(thirdFace, origin);
+        parent.put(fourthFace, neigh);
+        parent.put(fifthFace, origin);
+        parent.put(sixthFace, origin);
+
+        final Set<Face> visited = new HashSet<>();
+        visited.add(origin);
+        visited.add(neigh);
+        visited.add(thirdFace);
+        visited.add(fourthFace);
+        visited.add(fifthFace);
+        visited.add(sixthFace);
+
+        final LexCode.LexCodeBuilder builder = LexCode.builder();
+        builder.extendedAddAll(EasyList.of(4, 5, 5, 4, fifthFace.size(), sixthFace.size()));
+        int queuePointer = 1;
+
+        return constructCodeSubroutine(g, queue, parent, visited, direction, builder, queuePointer);
+    }
 
     private static LexCode getCodeWithSetup(final AbstractGraph g, final Face origin, final Face neigh, final int direction) {
         final List<Face> queue = new ArrayList<>();
@@ -23,6 +61,12 @@ public class CanonicalCoder {
         parent.put(origin, neigh);
 
         int queuePointer = 0;
+
+        return constructCodeSubroutine(g, queue, parent, visited, direction, builder, queuePointer);
+    }
+
+    private static LexCode constructCodeSubroutine(final AbstractGraph g, final List<Face> queue, final Map<Face, Face> parent,
+        final Set<Face> visited, final int direction, final LexCode.LexCodeBuilder builder, int queuePointer) {
 
         while(queue.size() < g.getFaces().size()) {
             final Face currentFace = queue.get(queuePointer);
@@ -62,11 +106,13 @@ public class CanonicalCoder {
 
             if (leftFace.size() <= thirdFace.size() && rightFace.size() <= thirdFace.size()) {
                 if (leftFace.size() <= rightFace.size()) {
-                    final LexCode lexCode = getCodeWithSetup(g, leftFace, rightFace, 1);
+                    final LexCode lexCode = noLadderExtension ? getNoLadderCodeWithSetup(g, leftFace, rightFace, 1)
+                            : getCodeWithSetup(g, leftFace, rightFace, 1);
                     if (lexCode.compareTo(bestCode) < 0) bestCode = lexCode;
                 }
                 if (rightFace.size() <= leftFace.size()) {
-                    final LexCode lexCode = getCodeWithSetup(g, rightFace, leftFace, -1);
+                    final LexCode lexCode = noLadderExtension ? getNoLadderCodeWithSetup(g, rightFace, leftFace, -1)
+                            : getCodeWithSetup(g, rightFace, leftFace, -1);
                     if (lexCode.compareTo(bestCode) < 0) bestCode = lexCode;
                 }
             }
@@ -98,14 +144,16 @@ public class CanonicalCoder {
 
         final LexCode lexCode1;
         if (rightFace.size() <= leftFace.size()) {
-            lexCode1 = getCodeWithSetup(g, origin, neighbourFace, 1);
+            lexCode1 = noLadderExtension ? getNoLadderCodeWithSetup(g, origin, neighbourFace, 1)
+                    : getCodeWithSetup(g, origin, neighbourFace, 1);
         } else {
             lexCode1 = LexCode.getMaximumLexCode();
         }
 
         final LexCode lexCode2;
         if (leftFace.size() <= rightFace.size()) {
-            lexCode2 = getCodeWithSetup(g, origin, neighbourFace, -1);
+            lexCode2 = noLadderExtension ? getNoLadderCodeWithSetup(g, origin, neighbourFace, -1)
+                    : getCodeWithSetup(g, origin, neighbourFace, -1);
         } else {
             lexCode2 = LexCode.getMaximumLexCode();
         }
@@ -130,7 +178,8 @@ public class CanonicalCoder {
                     continue;
                 }
 
-                final LexCode localCode = getCodeWithSetup(g, face, neigh, directions[i]);
+                final LexCode localCode = noLadderExtension ? getNoLadderCodeWithSetup(g, face, neigh, directions[i])
+                        : getCodeWithSetup(g, face, neigh, directions[i]);
 
                 if (bestCode == null) {
                     bestCode = localCode;

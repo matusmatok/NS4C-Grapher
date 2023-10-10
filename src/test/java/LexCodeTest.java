@@ -3,8 +3,8 @@ import static org.junit.Assert.assertNotEquals;
 
 import graph.canoniccoders.CanonicalCoder;
 import graph.canoniccoders.LexCode;
-import graph.components.Face;
-import graph.components.AbstractGraph;
+import graph.components.*;
+import graph.utils.EasyList;
 import mock.FacedTutteFragmentMock;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -89,5 +89,27 @@ public class LexCodeTest {
 
         final LexCode actualLexCode2 = CanonicalCoder.getCodeForVertex(graph, graph.getVertices().get(2));
         assertEquals(lexCode, actualLexCode2);
+    }
+
+    @Test
+    public void testNoLadderExtension() {
+        final List<Integer> expectedLong = EasyList.of(
+                4, 5, 5, 4, 5, 5,
+                0, 0, 5, 0, 0,
+                0, 0, 0, 5, 0,
+                0, 0, 0, 0,
+                0, 0, 0, 4, 0);
+        final List<Integer> expectedShort = EasyList.of(4, 5, 5, 4, 5, 5, 5, 5, 4);
+        final LexCode expectedCode = LexCode.builder().shortAddAll(expectedShort).extendedAddAll(expectedLong).build();
+
+        final AbstractGraph noLadderGraph = new NoLadderC4ECGraph();
+        noLadderGraph.init();
+
+        CanonicalCoder.noLadderExtension = true;
+
+        final LexCode actualCode = CanonicalCoder.getCodeForGraph(noLadderGraph);
+        assertEquals(expectedCode, actualCode);
+
+        CanonicalCoder.noLadderExtension = false;
     }
 }
