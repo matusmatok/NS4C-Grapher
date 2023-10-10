@@ -104,4 +104,31 @@ public class NoLadderC4CCGraphTest {
         final LexCode postReductionCode = CanonicalCoder.getCodeForGraph(graph);
         assertEquals(lexCode, postReductionCode);
     }
+
+    @Test
+    public void testOperationE() {
+        final Face setupParameterFace = graph.getFace(7);
+        graph.operationD(setupParameterFace);
+        final LexCode preOperationECode = CanonicalCoder.getCodeForGraph(graph);
+
+        final Edge operandEdge = graph.getEdge(28);
+        graph.operationE(operandEdge);
+        final LexCode newLexCode = CanonicalCoder.getCodeForFace(graph, graph.getFace(graph.getFaces().size() - 1));
+        assertEquals("4 5 5 5 7", newLexCode.toString().substring(0, 9));
+
+        graph.reductionE();
+        assertEquals(preOperationECode, CanonicalCoder.getCodeForGraph(graph));
+    }
+
+    @Test
+    public void testOperationG() {
+        graph.operationG(graph.getFace(4), graph.getVertex(4));
+        final LexCode newLexCode = CanonicalCoder.getCodeForFace(graph, graph.getFace(graph.getFaces().size() - 1));
+
+        assertEquals("4 5 5 6 6", newLexCode.toString().substring(0, 9));
+        assertEquals(6, graph.getFace(6).size());
+
+        graph.reductionG();
+        assertEquals(lexCode, CanonicalCoder.getCodeForGraph(graph));
+    }
 }
