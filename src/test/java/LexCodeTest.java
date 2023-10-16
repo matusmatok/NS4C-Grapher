@@ -1,6 +1,7 @@
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
+import graph.canoniccoders.CachingCoder;
 import graph.canoniccoders.CanonicalCoder;
 import graph.canoniccoders.LexCode;
 import graph.components.*;
@@ -111,5 +112,18 @@ public class LexCodeTest {
         assertEquals(expectedCode, actualCode);
 
         CanonicalCoder.noLadderExtension = false;
+    }
+
+    @Test
+    public void testCachingCoder() {
+        final CachingCoder cachingCoder = new CachingCoder(graph);
+
+        final LexCode cachedLexCode1 = cachingCoder.getGraphCode();
+        final LexCode lexCode1 = CanonicalCoder.getCodeForGraph(graph);
+        assertEquals(lexCode1, cachedLexCode1);
+
+        final LexCode cachedLecCode2 = cachingCoder.getCodeForEdge(graph.getEdge(4));
+        final LexCode lexCode2 = CanonicalCoder.getCodeForEdge(graph, graph.getEdge(4));
+        assertEquals(lexCode2, cachedLecCode2);
     }
 }

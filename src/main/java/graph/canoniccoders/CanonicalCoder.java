@@ -14,7 +14,7 @@ public class CanonicalCoder {
     public static boolean noLadderExtension = false;
     public static final int CODE_FOR_VISITED = 0;
 
-    private static LexCode getNoLadderCodeWithSetup(final AbstractGraph g, final Face origin, final Face neigh, final int direction) {
+    protected static LexCode getNoLadderCodeWithSetup(final AbstractGraph g, final Face origin, final Face neigh, final int direction) {
         final int neighIndex = origin.getIndexOfIncidentFace(neigh);
         final Face thirdFace = origin.getEdge(neighIndex + direction).getOppositeFace(origin);
         final Face fourthFace = neigh.getEdge(neigh.getIndexOfIncidentFace(origin) - 2*direction).getOppositeFace(neigh);
@@ -50,7 +50,7 @@ public class CanonicalCoder {
         return constructCodeSubroutine(g, queue, parent, visited, direction, builder, queuePointer);
     }
 
-    private static LexCode getCodeWithSetup(final AbstractGraph g, final Face origin, final Face neigh, final int direction) {
+    protected static LexCode getCodeWithSetup(final AbstractGraph g, final Face origin, final Face neigh, final int direction) {
         final List<Face> queue = new ArrayList<>();
         final Map<Face,Face> parent = new HashMap<>();
         final Set<Face> visited = new HashSet<>();
