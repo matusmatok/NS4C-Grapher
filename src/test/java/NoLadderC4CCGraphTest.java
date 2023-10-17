@@ -76,59 +76,49 @@ public class NoLadderC4CCGraphTest {
 
     @Test
     public void testOperationC() {
-        final Face setupParameterFace = graph.getFace(3);
-        graph.operationD(setupParameterFace);
-        final LexCode preOperationCCode = CanonicalCoder.getCodeForGraph(graph);
-
-        final Face newSquare = graph.getFace(graph.getFaces().size() - 1);
-        final Vertex anyAdjacentVertex = newSquare.getEdge(0).getVFrom();
-        final Edge.OrientedEdge orientedEdge = anyAdjacentVertex.getOppositeEdge(newSquare).getOriented(anyAdjacentVertex);
-
-        graph.operationC(orientedEdge);
-        final LexCode newLexCode = CanonicalCoder.getCodeForFace(graph, newSquare);
-        assertEquals("4 5 5 5 5 5", newLexCode.toString().substring(0, 11));
-
-        graph.reductionC();
-        assertEquals(preOperationCCode, CanonicalCoder.getCodeForGraph(graph));
-    }
-
-    @Test
-    public void testOperationD() {
         final Face parameterFace = graph.getFace(3);
+        final Edge parameterEdge = parameterFace.getEdge(0);
 
-        graph.operationD(parameterFace);
+        graph.operationB(parameterFace, parameterEdge);
+        graph.operationC(graph.getEdge(graph.getEdges().size() - 8));
+
         final LexCode postOperationCode = CanonicalCoder.getCodeForGraph(graph);
         assertEquals("4 5 5 5 5", postOperationCode.toString().substring(0,9));
 
-        graph.reductionD(parameterFace);
+        graph.reductionC();
+        graph.reductionB(parameterFace, parameterEdge);
         final LexCode postReductionCode = CanonicalCoder.getCodeForGraph(graph);
         assertEquals(lexCode, postReductionCode);
     }
 
     @Test
-    public void testOperationE() {
-        final Face setupParameterFace = graph.getFace(7);
-        graph.operationD(setupParameterFace);
+    public void testOperationD() {
+        final Face parameterFace = graph.getFace(7);
+        final Edge parameterEdge = parameterFace.getEdge(0);
+
+        graph.operationB(parameterFace, parameterEdge);
+        graph.operationC(graph.getEdge(graph.getEdges().size() - 8));
+
         final LexCode preOperationECode = CanonicalCoder.getCodeForGraph(graph);
 
         final Edge operandEdge = graph.getEdge(28);
-        graph.operationE(operandEdge);
+        graph.operationD(operandEdge);
         final LexCode newLexCode = CanonicalCoder.getCodeForFace(graph, graph.getFace(graph.getFaces().size() - 1));
         assertEquals("4 5 5 5 7", newLexCode.toString().substring(0, 9));
 
-        graph.reductionE();
+        graph.reductionD();
         assertEquals(preOperationECode, CanonicalCoder.getCodeForGraph(graph));
     }
 
     @Test
-    public void testOperationG() {
-        graph.operationG(graph.getFace(4), graph.getVertex(4));
+    public void testOperationF() {
+        graph.operationF(graph.getFace(4), graph.getEdge(12));
         final LexCode newLexCode = CanonicalCoder.getCodeForFace(graph, graph.getFace(graph.getFaces().size() - 1));
 
         assertEquals("4 5 5 6 6", newLexCode.toString().substring(0, 9));
         assertEquals(6, graph.getFace(6).size());
 
-        graph.reductionG();
+        graph.reductionF();
         assertEquals(lexCode, CanonicalCoder.getCodeForGraph(graph));
     }
 }

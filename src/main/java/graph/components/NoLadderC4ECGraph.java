@@ -166,7 +166,18 @@ public class NoLadderC4ECGraph extends AbstractGraph{
         }
     }
 
-    private void operationAC(final OrientedEdge orientedEdge) {
+    private void operationDEG(final Edge edge) {
+        final Face operandFace = edge.getRightFace();
+        final Edge operandEdge = operandFace.getEdge(operandFace.getIndexOfE(edge) - 1);
+
+        op4(operandFace, operandEdge.getId());
+    }
+
+    private void reductionDEG() {
+        undoOp4(getEdge(getEdges().size() - 3));
+    }
+
+    public void operationA(final OrientedEdge orientedEdge) {
         final Edge correspondingEdge = orientedEdge.getCorrespondingEdge();
         final Face rightFace = correspondingEdge.getRightFromPOV(orientedEdge.getOrigin());
         final Edge operandRightFaceEdge = rightFace.getEdge(rightFace.getIndexOfE(correspondingEdge) + 1);
@@ -174,21 +185,6 @@ public class NoLadderC4ECGraph extends AbstractGraph{
         final Edge operandEdge = operandFace.getEdge(operandFace.getIndexOfE(operandRightFaceEdge) - 1);
 
         op5(operandFace, operandEdge.getId());
-    }
-
-    private void operationEFH(final Edge edge) {
-        final Face operandFace = edge.getRightFace();
-        final Edge operandEdge = operandFace.getEdge(operandFace.getIndexOfE(edge) - 1);
-
-        op4(operandFace, operandEdge.getId());
-    }
-
-    private void reductionEFH() {
-        undoOp4(getEdge(getEdges().size() - 3));
-    }
-
-    public void operationA(final OrientedEdge orientedEdge) {
-        operationAC(orientedEdge);
     }
 
     public void reductionA() {
@@ -365,79 +361,54 @@ public class NoLadderC4ECGraph extends AbstractGraph{
         for(int i = 0; i < 3; i++) getFaces().remove(getFaces().size() - 1);
     }
 
-    public void operationC(final OrientedEdge orientedEdge) {
-        operationAC(orientedEdge);
+    public void operationC(final Edge edge) {
+        final Face operandFace = edge.getLeftFace();
+        op4(operandFace, operandFace.getEdge(operandFace.getIndexOfE(edge) - 1).getId());
     }
 
     public void reductionC() {
-        undoOp5(getEdge(getEdges().size() - 3));
-    }
-
-    public void operationD(final Face square) {
-        final Edge orientation = square.getEdgeOfSmallestId();
-        operationB(square, orientation);
-
-        final Face oppositeFace = orientation.getOppositeFace(square);
-        op4(oppositeFace, orientation.getId());
-    }
-
-    public void reductionD(final Face square) {
         undoOp4(getEdge(getEdges().size() - 3));
-        reductionB(square, square.getEdgeOfSmallestId());
+    }
+
+    public void operationD(final Edge edge) {
+        operationDEG(edge);
+    }
+
+    public void reductionD() {
+        reductionDEG();
     }
 
     public void operationE(final Edge edge) {
-        operationEFH(edge);
+        operationDEG(edge);
     }
 
     public void reductionE() {
-        reductionEFH();
+        reductionDEG();
     }
 
-    public void operationF(final Edge edge) {
-        operationEFH(edge);
-    }
-
-    public void reductionF() {
-        reductionEFH();
-    }
-
-    public void operationG(final Face pentagon, final Vertex orientation) {
-        Edge operandEdge = null;
-        for (final Edge e : orientation.getAdjacentEdges()) {
-            if (e.getLeftFromPOV(orientation) == pentagon) {
-                operandEdge = pentagon.getEdge(pentagon.getIndexOfE(e) + 3);
-                break;
-            }
-            if (e.getRightFace() == pentagon) {
-                operandEdge = pentagon.getEdge(pentagon.getIndexOfE(e) + 2);
-                break;
-            }
-        }
-
-        assert operandEdge != null;
-        op4(pentagon, operandEdge.getId());
+    public void operationF(final Face pentagon, final Edge orientation) {
+        op4(pentagon, orientation.getId());
         op4(pentagon, getEdge(getEdges().size() - 3).getId());
     }
 
+    public void reductionF() {
+        undoOp4(getEdge(getEdges().size() - 3));
+        undoOp4(getEdge(getEdges().size() - 3));
+    }
+
+    public void operationG(final Edge edge) {
+        operationDEG(edge);
+    }
+
     public void reductionG() {
-        undoOp4(getEdge(getEdges().size() - 3));
-        undoOp4(getEdge(getEdges().size() - 3));
+        reductionDEG();
     }
 
-    public void operationH(final Edge edge) {
-        operationEFH(edge);
-    }
-
-    public void reductionH() {
-        reductionEFH();
-    }
-
-    public void operationI(final Face face, final Edge orientation) {
+    public void operationH(final Face face, final Edge orientation) {
         op5(face, orientation.getId());
     }
 
-    public void reductionI() {
+    public void reductionH() {
         undoOp5(getEdge(getEdges().size() - 3));
     }
 }
