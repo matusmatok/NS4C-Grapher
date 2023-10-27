@@ -2,12 +2,74 @@ package graph.components;
 
 import graph.components.Edge.OrientedEdge;
 import graph.utils.EasyList;
+
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
 
 public class NoLadderC4ECGraph extends AbstractGraph{
     public NoLadderC4ECGraph() {
         super();
+    }
+
+    public static NoLadderC4ECGraph loadFromFile(final InputStreamReader stream) throws FileNotFoundException {
+        final Scanner reader = new Scanner(stream);
+        final int numberOfVertices = reader.nextInt();
+        final NoLadderC4ECGraph graph = new NoLadderC4ECGraph();
+
+        assert numberOfVertices > 4 && numberOfVertices % 2 == 0;
+        for (int i = 0; i < numberOfVertices; i++) {
+            graph.vertices.add(new Vertex(i));
+        }
+
+        for (int i = 0; i < numberOfVertices; i++) {
+            final Vertex currentVertex = graph.getVertex(i);
+            for (int j = 0; j < 3; j++) {
+                final int neighbourId = reader.nextInt();
+
+                assert neighbourId != i;
+
+                final Edge edge;
+                if (neighbourId > i) {
+                    edge = new Edge(graph.edges.size(), currentVertex, graph.getVertex(neighbourId));
+                    graph.edges.add(edge);
+                } else {
+                    final Vertex neighbour = graph.getVertex(neighbourId);
+                    edge = neighbour.getAdjacentEdges().stream()
+                            .filter(edge1 -> edge1.getVTo() == currentVertex)
+                            .findAny()
+                            .orElseThrow();
+                }
+                currentVertex.addEdge(edge);
+            }
+        }
+
+        for (final Edge edge : graph.edges) {
+            if (edge.getRightFace() == null) {
+                final Face newFace = new Face(graph.faces.size());
+                graph.faces.add(newFace);
+
+                Edge currentEdge = edge;
+                Vertex currentFromVertex = edge.getVFrom();
+
+                do {
+                    newFace.addEdge(currentEdge);
+                    if (currentFromVertex == currentEdge.getVFrom()) {
+                        currentEdge.setRightFace(newFace);
+                    } else {
+                        currentEdge.setLeftFace(newFace);
+                    }
+
+                    currentFromVertex = currentEdge.getOppositeVertex(currentFromVertex);
+                    currentEdge = currentFromVertex.getAdjacentEdges().get((currentFromVertex.getAdjacentEdges().indexOf(currentEdge) + 2) % 3);
+                } while (currentEdge != edge);
+            }
+        }
+
+        return graph;
     }
 
     @Override

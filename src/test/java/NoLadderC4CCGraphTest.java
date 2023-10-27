@@ -6,9 +6,11 @@ import graph.components.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.io.FileNotFoundException;
 import java.util.List;
 
-public class NoLadderC4CCGraphTest {
+public class NoLadderC4CCGraphTest implements ResourceDependent{
     private static NoLadderC4ECGraph graph;
     private static LexCode lexCode;
     private static String baseGraphString;
@@ -32,6 +34,13 @@ public class NoLadderC4CCGraphTest {
     public void before() {
         graph = new NoLadderC4ECGraph();
         graph.init();
+    }
+
+    @Test
+    public void testLoadFromFile() throws FileNotFoundException {
+        final NoLadderC4ECGraph loadedGraph = NoLadderC4ECGraph.loadFromFile(loadResourceAsStream("base_graph.txt"));
+        final LexCode lexCode1 = CanonicalCoder.getCodeForGraph(loadedGraph);
+        assertEquals(lexCode, lexCode1);
     }
 
     @Test
