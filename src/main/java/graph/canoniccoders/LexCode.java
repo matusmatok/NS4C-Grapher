@@ -59,6 +59,13 @@ public class LexCode implements Comparable<LexCode> {
         return shortComparisonResult;
     }
 
+    public boolean shortStartsAs(final int ... beginning) {
+        for (int i = 0; i < beginning.length; i++) {
+            if (shortCode.get(i) != beginning[i]) return false;
+        }
+        return true;
+    }
+
     @Override
     public String toString() {
         return shortCode.stream().map(Object::toString).collect(Collectors.joining(" "));
@@ -66,6 +73,10 @@ public class LexCode implements Comparable<LexCode> {
 
     public static LexCode getMaximumLexCode() {
         return LexCode.builder().shortAdd(Integer.MAX_VALUE).build();
+    }
+
+    public boolean isMaximumLexCode() {
+        return shortCodeAt(0) == Integer.MAX_VALUE;
     }
 
     public static class LexCodeBuilder {
