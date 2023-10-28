@@ -35,8 +35,35 @@ public abstract class AbstractGraph {
         return edges.get(id);
     }
 
+    public Edge getEdge(final int vertexId1, final int vertexId2) {
+        return getEdge(getVertex(vertexId1), getVertex(vertexId2));
+    }
+
+    public Edge getEdge(final Vertex v1, final Vertex v2) {
+        for (final Edge e : v1.getAdjacentEdges()) {
+            if (e.getOppositeVertex(v1) == v2) return e;
+        }
+        throw new IllegalArgumentException("Vertices " + v1.getId() + " " + v2.getId() + " are not incident.");
+    }
+
     public Face getFace(int id) {
         return faces.get(id);
+    }
+
+    public Face getFace(final int vertexId1, final int vertexId2, final int vertexId3) {
+        return getFace(getVertex(vertexId1), getVertex(vertexId2), getVertex(vertexId3));
+    }
+
+    public Face getFace(final Vertex v1, final Vertex v2, final Vertex v3) {
+        final Edge e1 = getEdge(v1, v2);
+        final Edge e2 = getEdge(v2, v3);
+
+        for (final Face face1 : new Face[]{e1.getRightFace(), e1.getLeftFace()}) {
+            for (final Face face2 : new Face[]{e2.getRightFace(), e2.getLeftFace()}) {
+                if (face1 == face2) return face1;
+            }
+        }
+        throw new IllegalArgumentException("Vertices are not adjacent to a common face.");
     }
 
     protected Face op3(int vertexId) {

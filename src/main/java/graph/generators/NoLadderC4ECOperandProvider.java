@@ -41,6 +41,8 @@ public class NoLadderC4ECOperandProvider {
         operandOrbits.put("F", new HashSet<>());
         operandOrbits.put("G", new HashSet<>());
         operandOrbits.put("H", new HashSet<>());
+
+        calculateOperands();
     }
 
     @AllArgsConstructor
@@ -49,8 +51,57 @@ public class NoLadderC4ECOperandProvider {
         private Face face;
         private Edge edge;
         private Edge.OrientedEdge orientedEdge;
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == null) return false;
+
+            if (o instanceof Operand) {
+                final Operand other = (Operand) o;
+                return face == other.getFace() &&
+                        edge == other.getEdge() &&
+                        (orientedEdge == null || orientedEdge.equals(other.orientedEdge));
+            }
+            throw new IllegalArgumentException("Incomparable objects");
+        }
+
+        @Override
+        public String toString() {
+            return "Operand:\n" + face + edge + orientedEdge;
+        }
     }
 
+    public List<Operand> getOperandsA() {
+        return operands.get("A");
+    }
+
+    public List<Operand> getOperandsB() {
+        return operands.get("B");
+    }
+
+    public List<Operand> getOperandsC() {
+        return operands.get("C");
+    }
+
+    public List<Operand> getOperandsD() {
+        return operands.get("D");
+    }
+
+    public List<Operand> getOperandsE() {
+        return operands.get("E");
+    }
+
+    public List<Operand> getOperandsF() {
+        return operands.get("F");
+    }
+
+    public List<Operand> getOperandsG() {
+        return operands.get("G");
+    }
+
+    public List<Operand> getOperandsH() {
+        return operands.get("H");
+    }
     private void calculateOperands() {
         final LexCode canonicalCode = coder.getGraphCode();
         if (canonicalCode.shortStartsAs(4,5,5,4,5)) {
@@ -69,10 +120,30 @@ public class NoLadderC4ECOperandProvider {
                 final Edge middleEdge = middleA.get(0);
                 final Face square1 = middleEdge.getVFrom().getOppositeFace(middleEdge);
                 final Face square2 = middleEdge.getVTo().getOppositeFace(middleEdge);
-                final LexCode secondGadgetLexCode = findSecondLowestGadget(square1, square2);
+
+                //B*
+                for (final Face squareA : new Face[]{square1, square2}) {
+                    if (coder.getCodeForFace(squareA).shortStartsAs(4, 5, 5, 4, 5)) {
+                        final Face otherSquare = squareA == square1 ? square2 : square1;
+                        if (!coder.getCodeForFace(otherSquare).shortStartsAs(4, 5, 5, 4, 5)) {
+                            final Face faceA = squareA.getAdjacentEdges().stream()
+                                    .map(edge -> edge.getOppositeFace(squareA))
+                                    .filter(face -> face.size() == 5 && face != middleEdge.getRightFace() && face != middleEdge.getLeftFace())
+                                    .findAny()
+                                    .orElseThrow();
+
+                            faceA.getAdjacentEdges().stream()
+                                    .map(edge -> edge.getOppositeFace(faceA))
+                                    .filter(face -> face.size() == 4 && face != squareA)
+                                    .forEach(this::addOperandsB);
+                        }
+                    }
+                }
 
                 addOperandsB(square1);
                 addOperandsB(square2);
+
+                final LexCode secondGadgetLexCode = findSecondLowestGadget(square1, square2);
 
                 if (secondGadgetLexCode.isMaximumLexCode()) return;
                 if (secondGadgetLexCode.shortStartsAs(4, 5, 5, 4)) return;
@@ -86,11 +157,11 @@ public class NoLadderC4ECOperandProvider {
                 final List<Edge> potentialOperandsD = new ArrayList<>(2);
                 final List<Edge> potentialOperandsE = new ArrayList<>(4);
                 final List<Edge> potentialOperandsG = new ArrayList<>(2);
-                final List<Face> facesA = new ArrayList<>(2);
+                final List<Operand> potentialOperandsF = new ArrayList<>();
 
                 for (final Face square : new Face[]{square1, square2}){
                     final List<Edge> extrudingEdges = square.getAdjacentEdges().stream()
-                            .map(edge -> edge.getLeftFromPOVofFace(square1).getOppositeEdge(square1))
+                            .map(edge -> edge.getLeftFromPOVofFace(square).getOppositeEdge(square))
                             .collect(Collectors.toList());
                     final int middleEdgeIndex = extrudingEdges.indexOf(middleEdge);
 
@@ -108,8 +179,22 @@ public class NoLadderC4ECOperandProvider {
                         potentialOperandsE.add(oppositeEdge);
                         final Face faceA = oppositeEdge.getRightFace().size() == 5 ?
                                 oppositeEdge.getRightFace() : oppositeEdge.getLeftFace();
-                        facesA.add(faceA);
-                        potentialOperandsG.add(faceA.getEdge(faceA.getIndexOfE(oppositeEdge) + 2));
+                        final Vertex leftVertexPOV = oppositeEdge.getLeftFromPOVofFace(faceA);
+                        final int indexOfOppositeEdgeInA = faceA.getIndexOfE(oppositeEdge);
+                        final int indexOfAdditionalOrientationF;
+
+                        if (leftVertexPOV.getOppositeFace(oppositeEdge) == square) {
+                            potentialOperandsG.add(faceA.getEdge( indexOfOppositeEdgeInA + 2));
+                            indexOfAdditionalOrientationF = indexOfOppositeEdgeInA + 3;
+                        } else {
+                            potentialOperandsG.add(faceA.getEdge(indexOfOppositeEdgeInA + 3));
+                            indexOfAdditionalOrientationF = indexOfOppositeEdgeInA + 2;
+                        }
+                        potentialOperandsF.add(new Operand(faceA, oppositeEdge, null));
+                        if (faceA.getEdge(indexOfAdditionalOrientationF + 2).getOppositeFace(faceA).size() != 4 &&
+                                faceA.getEdge(indexOfAdditionalOrientationF + 3).getOppositeFace(faceA).size() != 4) {
+                            potentialOperandsF.add(new Operand(faceA, faceA.getEdge(indexOfAdditionalOrientationF), null));
+                        }
                     }
                 }
 
@@ -124,11 +209,7 @@ public class NoLadderC4ECOperandProvider {
                     addOperandsE(edge);
                 }
 
-                for (int i = 0; i < facesA.size(); i++) {
-                    final int potentialEdgeGIndex = facesA.get(i).getIndexOfE(potentialOperandsG.get(i));
-                    addOperandsF(facesA.get(i), potentialOperandsG.get(i));
-                    addOperandsF(facesA.get(i), facesA.get(i).getEdge(potentialEdgeGIndex + 3));
-                }
+                operands.get("F").addAll(potentialOperandsF);
 
                 addOperandsF(middleEdge.getLeftFace(), middleEdge);
                 addOperandsF(middleEdge.getRightFace(), middleEdge);

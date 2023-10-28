@@ -93,6 +93,7 @@ public class Vertex {
         }
         for (final Edge e : adjacentEdges) {
             if (e.getLeftFace() != edge.getLeftFace() && e.getLeftFace() != edge.getRightFace()) return e.getLeftFace();
+            if (e.getRightFace() != edge.getLeftFace() && e.getRightFace() != edge.getRightFace()) return e.getRightFace();
         }
         throw new UnknownError();
     }

@@ -55,6 +55,23 @@ public class Edge {
             this.correspondingEdge = correspondingEdge;
             this.origin = origin;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == null) return false;
+
+            if (o instanceof OrientedEdge) {
+                final OrientedEdge other = (OrientedEdge)o;
+                return other.correspondingEdge == this.correspondingEdge &&
+                        other.origin == this.origin;
+            }
+            throw new IllegalArgumentException("Incomparable object");
+        }
+
+        @Override
+        public String toString() {
+            return "Corresponding edge: " + correspondingEdge.getId() + " Origin vertex: " + origin.getId();
+        }
     }
 
     public OrientedEdge getOriented(final Vertex from) {
