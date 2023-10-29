@@ -13,6 +13,7 @@ import lombok.Getter;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class NoLadderC4ECOperandProvider {
 
@@ -115,7 +116,32 @@ public class NoLadderC4ECOperandProvider {
                 addOperandsA(middleEdgeB);
             }
 
-            if (middleA.size() == 1) {
+            if (middleA.size() == 2) {
+                final Edge middleEdge1 = middleA.get(0);
+                final Face square1_1 = middleEdge1.getVFrom().getOppositeFace(middleEdge1);
+                final Face square1_2 = middleEdge1.getVTo().getOppositeFace(middleEdge1);
+                final Edge middleEdge2 = middleA.get(1);
+                final Face square2_1 = middleEdge2.getVFrom().getOppositeFace(middleEdge2);
+                final Face square2_2 = middleEdge2.getVTo().getOppositeFace(middleEdge2);
+
+                final List<Face> squaresA = Arrays.stream(new Face[]{square1_1, square1_2, square2_1, square2_2})
+                        .filter(square -> coder.getCodeForFace(square).shortStartsAs(4,5,5,4,5))
+                        .collect(Collectors.toList());
+
+                if (squaresA.size() == 2) {
+                    squaresA.stream().map(Face::getAdjacentEdges)
+                            .flatMap(List::stream)
+                            .map(edge -> edge.getLeftFace().size() == 4 ? edge.getRightFace() : edge.getLeftFace())
+                            .filter(face -> face.size() == 5 &&
+                                    middleEdge1.getLeftFace() != face && middleEdge1.getRightFace() != face &&
+                                    middleEdge2.getLeftFace() != face && middleEdge2.getRightFace() != face)
+                            .map(face -> face.getAdjacentEdges().stream().map(edge -> edge.getOppositeFace(face)).collect(Collectors.toList()))
+                            .flatMap(List::stream)
+                            .filter(face -> face.size() == 4 && !coder.getCodeForFace(face).shortStartsAs(4, 5, 5, 4, 5))
+                            .forEach(this::addOperandsB);
+                }
+
+            } else if (middleA.size() == 1) {
                 //B
                 final Edge middleEdge = middleA.get(0);
                 final Face square1 = middleEdge.getVFrom().getOppositeFace(middleEdge);

@@ -70,7 +70,7 @@ public class Edge {
 
         @Override
         public String toString() {
-            return "Corresponding edge: " + correspondingEdge.getId() + " Origin vertex: " + origin.getId();
+            return "Corresponding edge: " + correspondingEdge.getId() + " Origin vertex: " + origin.getId() + "\n";
         }
     }
 
