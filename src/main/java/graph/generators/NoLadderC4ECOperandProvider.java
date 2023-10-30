@@ -146,6 +146,8 @@ public class NoLadderC4ECOperandProvider {
                 final Edge middleEdge = middleA.get(0);
                 final Face square1 = middleEdge.getVFrom().getOppositeFace(middleEdge);
                 final Face square2 = middleEdge.getVTo().getOppositeFace(middleEdge);
+                final boolean bothSided = coder.getCodeForFace(square1).shortStartsAs(4, 5, 5, 4, 5) &&
+                        coder.getCodeForFace(square2).shortStartsAs(4, 5, 5, 4, 5);
 
                 //B*
                 for (final Face squareA : new Face[]{square1, square2}) {
@@ -208,18 +210,24 @@ public class NoLadderC4ECOperandProvider {
                         final Vertex leftVertexPOV = oppositeEdge.getLeftFromPOVofFace(faceA);
                         final int indexOfOppositeEdgeInA = faceA.getIndexOfE(oppositeEdge);
                         final int indexOfAdditionalOrientationF;
+                        final int indexOfOperandG;
 
                         if (leftVertexPOV.getOppositeFace(oppositeEdge) == square) {
-                            potentialOperandsG.add(faceA.getEdge( indexOfOppositeEdgeInA + 2));
+                            indexOfOperandG = indexOfOppositeEdgeInA + 2;
                             indexOfAdditionalOrientationF = indexOfOppositeEdgeInA + 3;
                         } else {
-                            potentialOperandsG.add(faceA.getEdge(indexOfOppositeEdgeInA + 3));
+                            indexOfOperandG = indexOfOppositeEdgeInA + 3;
                             indexOfAdditionalOrientationF = indexOfOppositeEdgeInA + 2;
                         }
                         potentialOperandsF.add(new Operand(faceA, oppositeEdge, null));
                         if (faceA.getEdge(indexOfAdditionalOrientationF + 2).getOppositeFace(faceA).size() != 4 &&
                                 faceA.getEdge(indexOfAdditionalOrientationF + 3).getOppositeFace(faceA).size() != 4) {
                             potentialOperandsF.add(new Operand(faceA, faceA.getEdge(indexOfAdditionalOrientationF), null));
+                        }
+
+                        final Edge operandG = faceA.getEdge(indexOfOperandG);
+                        if (operandG.getVFrom().getOppositeFace(operandG).size() > 4 && operandG.getVTo().getOppositeFace(operandG).size() > 4 && !bothSided) {
+                            potentialOperandsG.add(operandG);
                         }
                     }
                 }
@@ -228,19 +236,84 @@ public class NoLadderC4ECOperandProvider {
                     addOperandsD(edge);
                 }
 
-                if (secondGadgetLexCode.shortStartsAs(4, 5, 5, 5)) return;
+                if (secondGadgetLexCode.shortStartsAs(4, 5, 5, 5)) {
+                    final List<Face> facesD = graph.getFaces().stream()
+                            .filter(face -> face.size() == 4 && coder.getCodeForFace(face).shortStartsAs(4, 5, 5, 5))
+                            .collect(Collectors.toList());
+                    if (facesD.size() == 1) {
+                        final List<Face> surroundingsD = facesD.get(0).getIncidentFaces().stream()
+                                .filter(face -> face.size() == 5)
+                                .collect(Collectors.toList());
+
+                        if (!bothSided){
+                            final List<Edge> potentialAdditionalOperandsE = potentialOperandsE.stream()
+                                    .filter(edge -> edge.getVFrom().getOppositeFace(edge).size() == 5 || edge.getVTo().getOppositeFace(edge).size() == 5)
+                                    .collect(Collectors.toList());
+
+                            if (!potentialAdditionalOperandsE.isEmpty()) {
+                                for (final Edge e : potentialOperandsE) {
+                                    if (surroundingsD.contains(e.getVFrom().getOppositeFace(e)) || surroundingsD.contains(e.getVTo().getOppositeFace(e))) {
+                                        addOperandsE(e);
+                                    }
+                                }
+                            }
+                        }
+
+                        final List<Operand> potentialAdditionalOperandsF = potentialOperandsF.stream()
+                                .filter(operand -> {
+                                    final int indexOfOrientation = operand.getFace().getIndexOfE(operand.getEdge());
+                                    final Face face = operand.getFace();
+                                    return operand.getEdge().getLeftFace().size() == 5 &&
+                                            operand.getEdge().getRightFace().size() == 5 &&
+                                            (face.getEdge(indexOfOrientation + 2).getOppositeFace(face).size() == 5 ||
+                                                    face.getEdge(indexOfOrientation + 3).getOppositeFace(face).size() == 5);
+                                })
+                                .collect(Collectors.toList());
+                        if (!potentialAdditionalOperandsF.isEmpty()) {
+                            for (final Operand potentialOperandF : potentialAdditionalOperandsF) {
+                                final Face face = potentialOperandF.getFace();
+                                final int indexOfOrientation = face.getIndexOfE(potentialOperandF.getEdge());
+                                if (surroundingsD.contains(face.getEdge(indexOfOrientation + 2).getOppositeFace(face)) ||
+                                surroundingsD.contains(face.getEdge(indexOfOrientation + 3).getOppositeFace(face))) {
+                                    addOperandsF(face, potentialOperandF.getEdge());
+                                }
+                            }
+                        }
+
+                    }
+                    return;
+                }
 
                 //E F
                 for (final Edge edge : potentialOperandsE) {
                     addOperandsE(edge);
                 }
 
-                operands.get("F").addAll(potentialOperandsF);
+                for (final Operand operandF : potentialOperandsF) {
+                    addOperandsF(operandF.getFace(), operandF.getEdge());
+                }
 
                 addOperandsF(middleEdge.getLeftFace(), middleEdge);
                 addOperandsF(middleEdge.getRightFace(), middleEdge);
 
-                if (secondGadgetLexCode.shortStartsAs(4, 5, 5)) return;
+                if (secondGadgetLexCode.shortStartsAs(4, 5, 5)) {
+                    final List<Face> facesEF = graph.getFaces().stream()
+                            .filter(face -> face.size() == 4 && coder.getCodeForFace(face).shortStartsAs(4, 5, 5) &&
+                                    face != square1 && face != square2)
+                            .collect(Collectors.toList());
+                    if (facesEF.size() == 1) {
+                        final Face faceEF = facesEF.get(0);
+                        final List<Face> surroundingsEF = faceEF.getIncidentFaces().stream().filter(face -> face.size() == 5)
+                                .collect(Collectors.toList());
+                        for (final Edge operandG : potentialOperandsG) {
+                            if (surroundingsEF.contains(operandG.getVFrom().getOppositeFace(operandG)) ||
+                                surroundingsEF.contains(operandG.getVTo().getOppositeFace(operandG))) {
+                                addOperandsG(operandG);
+                            }
+                        }
+                    }
+                    return;
+                }
 
                 //G
                 for (final Edge potentialG : potentialOperandsG) {

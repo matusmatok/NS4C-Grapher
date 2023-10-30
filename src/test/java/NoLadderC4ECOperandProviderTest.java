@@ -94,6 +94,37 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
     }
 
     @Test
+    public void testCaseADv2() throws FileNotFoundException {
+        final NoLadderC4ECGraph graph = NoLadderC4ECGraph.loadFromFile(loadResourceAsStream("gadgetA/gadgetDv2.txt"));
+        final NoLadderC4ECOperandProvider provider = new NoLadderC4ECOperandProvider(graph, new CachingCoder(graph));
+
+        final List<Operand> operandsE = provider.getOperandsE();
+        assertEquals(1, operandsE.size());
+        final Operand operandE = operandsE.get(0);
+        assertEquals(graph.getEdge(19, 20), operandE.getEdge());
+
+        final List<Operand> operandsF = provider.getOperandsF();
+        assertEquals(1, operandsF.size());
+        final Operand operandF = operandsF.get(0);
+        assertEquals(graph.getEdge(3, 11), operandF.getEdge());
+        assertEquals(graph.getFace(3, 4, 20), operandF.getFace());
+    }
+
+    @Test
+    public void testCaseADv3() throws FileNotFoundException {
+        final NoLadderC4ECGraph graph = NoLadderC4ECGraph.loadFromFile(loadResourceAsStream("gadgetA/gadgetDv3.txt"));
+        final NoLadderC4ECOperandProvider provider = new NoLadderC4ECOperandProvider(graph, new CachingCoder(graph));
+
+        assertTrue(provider.getOperandsE().isEmpty());
+
+        final List<Operand> operandsF = provider.getOperandsF();
+        assertEquals(1, operandsF.size());
+        final Operand operandF = operandsF.get(0);
+        assertEquals(graph.getEdge(2, 12), operandF.getEdge());
+        assertEquals(graph.getFace(2, 3, 23), operandF.getFace());
+    }
+
+    @Test
     public void testCaseAEF() throws FileNotFoundException {
         final NoLadderC4ECGraph graph = NoLadderC4ECGraph.loadFromFile(loadResourceAsStream("gadgetA/gadgetEF.txt"));
         final NoLadderC4ECOperandProvider provider = new NoLadderC4ECOperandProvider(graph, new CachingCoder(graph));
@@ -128,6 +159,16 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
 
         assertTrue(provider.getOperandsG().isEmpty());
         assertTrue(provider.getOperandsH().isEmpty());
+    }
+
+    @Test
+    public void testCaseAEFv2() throws FileNotFoundException {
+        final NoLadderC4ECGraph graph = NoLadderC4ECGraph.loadFromFile(loadResourceAsStream("gadgetA/gadgetEFv2.txt"));
+        final NoLadderC4ECOperandProvider provider = new NoLadderC4ECOperandProvider(graph, new CachingCoder(graph));
+
+        final List<Operand> operandsG = provider.getOperandsG();
+        assertEquals(1, operandsG.size());
+        assertEquals(graph.getEdge(4, 5), operandsG.get(0).getEdge());
     }
 
     @Test
