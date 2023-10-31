@@ -55,9 +55,15 @@ public class Face {
     public int size(){
         return this.adjacentEdges.size();
     }
-    
+
     public Edge getEdge(int index){
         return this.adjacentEdges.get((index + this.size()) % this.size());
+    }
+
+    public List<Edge> getExtrudingEdges() {
+        return getAdjacentEdges().stream()
+                .map(edge -> edge.getLeftFromPOVofFace(this).getOppositeEdge(this))
+                .collect(Collectors.toList());
     }
     
     public ArrayList<Edge> getAdjacentEdgesCOPY(){
