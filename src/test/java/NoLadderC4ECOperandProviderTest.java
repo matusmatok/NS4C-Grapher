@@ -378,4 +378,88 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
         final List<Operand> operandsH = provider.getOperandsH();
         assertTrue(operandsH.isEmpty());
     }
+
+    @Test
+    public void testCaseCC() throws FileNotFoundException {
+        final NoLadderC4ECGraph graph = NoLadderC4ECGraph.loadFromFile(loadResourceAsStream("gadgetC/gadgetC.txt"));
+        final NoLadderC4ECOperandProvider provider = new NoLadderC4ECOperandProvider(graph, new CachingCoder(graph));
+
+        assertTrue(provider.getOperandsA().isEmpty());
+        assertEquals(8, provider.getOperandsB().size());
+        assertTrue(provider.getOperandsC().isEmpty());
+        assertTrue(provider.getOperandsD().isEmpty());
+        assertTrue(provider.getOperandsE().isEmpty());
+        assertTrue(provider.getOperandsF().isEmpty());
+    }
+
+    @Test
+    public void testCaseCD() throws FileNotFoundException {
+        final NoLadderC4ECGraph graph = NoLadderC4ECGraph.loadFromFile(loadResourceAsStream("gadgetC/gadgetD.txt"));
+        final NoLadderC4ECOperandProvider provider = new NoLadderC4ECOperandProvider(graph, new CachingCoder(graph));
+
+        assertTrue(provider.getOperandsA().isEmpty());
+        assertEquals(8, provider.getOperandsB().size());
+        assertTrue(provider.getOperandsC().isEmpty());
+
+        final List<Operand> expectedOperandsD = List.of(
+                new Operand(null, graph.getEdge(13, 14), null),
+                new Operand(null, graph.getEdge(39, 16), null),
+                new Operand(null, graph.getEdge(38, 11), null),
+                new Operand(null, graph.getEdge(12, 9), null)
+        );
+        final List<Operand> operandsD = provider.getOperandsD();
+        assertEquals(4, operandsD.size());
+        for (final Operand operandD : operandsD) {
+            assertTrue(expectedOperandsD.contains(operandD));
+        }
+        assertTrue(provider.getOperandsE().isEmpty());
+        assertTrue(provider.getOperandsF().isEmpty());
+    }
+
+    @Test
+    public void testCaseCDv2() throws FileNotFoundException {
+        final NoLadderC4ECGraph graph = NoLadderC4ECGraph.loadFromFile(loadResourceAsStream("gadgetC/gadgetDv2.txt"));
+        final NoLadderC4ECOperandProvider provider = new NoLadderC4ECOperandProvider(graph, new CachingCoder(graph));
+
+        assertTrue(provider.getOperandsA().isEmpty());
+        assertEquals(6, provider.getOperandsB().size());
+        assertTrue(provider.getOperandsC().isEmpty());
+        assertEquals(4, provider.getOperandsD().size());
+        final List<Operand> operandsF = provider.getOperandsF();
+        assertEquals(1, operandsF.size());
+        assertTrue(operandsF.contains(new Operand(graph.getFace(3, 4, 18), graph.getEdge(4, 18), null)));
+        assertTrue(provider.getOperandsE().isEmpty());
+    }
+
+    @Test
+    public void testCaseCEF() throws FileNotFoundException {
+        final NoLadderC4ECGraph graph = NoLadderC4ECGraph.loadFromFile(loadResourceAsStream("gadgetC/gadgetEF.txt"));
+        final NoLadderC4ECOperandProvider provider = new NoLadderC4ECOperandProvider(graph, new CachingCoder(graph));
+
+        assertTrue(provider.getOperandsA().isEmpty());
+        assertEquals(8, provider.getOperandsB().size());
+        assertTrue(provider.getOperandsC().isEmpty());
+        assertEquals(4, provider.getOperandsD().size());
+        assertTrue(provider.getOperandsE().isEmpty());
+
+        final List<Operand> operandsF = provider.getOperandsF();
+        final List<Operand> expectedOperandsF = List.of(
+                new Operand(graph.getFace(10, 42, 43), graph.getEdge(42, 43), null),
+                new Operand(graph.getFace(9, 10, 14), graph.getEdge(13, 14), null),
+                new Operand(graph.getFace(9, 10, 14), graph.getEdge(9, 12), null),
+                new Operand(graph.getFace(8, 9, 12), graph.getEdge(9, 12), null),
+                new Operand(graph.getFace(8, 9, 12), graph.getEdge(11, 40), null),
+                new Operand(graph.getFace(11, 40, 41), graph.getEdge(11, 40), null),
+                new Operand(graph.getFace(11, 40, 41), graph.getEdge(41, 16), null),
+                new Operand(graph.getFace(13, 14, 17), graph.getEdge(41, 16), null),
+                new Operand(graph.getFace(13, 14, 17), graph.getEdge(13, 14), null)
+        );
+        assertEquals(9, expectedOperandsF.size());
+        for (final Operand operandF : operandsF) {
+            assertTrue(expectedOperandsF.contains(operandF));
+        }
+        assertTrue(provider.getOperandsG().isEmpty());
+        assertTrue(provider.getOperandsH().isEmpty());
+
+    }
 }
