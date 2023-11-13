@@ -148,8 +148,8 @@ public class Edge {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Edge ").append(id).append(" : ").append(vFrom.getId()).append(" ").append(vTo.getId())
-                .append(" Left: ").append(leftFace.getId()).append(" Right: ").append(rightFace.getId()).append("\n");
+        sb.append("Edge ").append(id).append(" : ").append(vFrom.getId()).append(" ").append(vTo.getId()).append("\n");
+   //             .append(" Left: ").append(leftFace.getId()).append(" Right: ").append(rightFace.getId()).append("\n");
         return sb.toString();
     }
 

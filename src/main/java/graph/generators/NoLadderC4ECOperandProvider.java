@@ -11,6 +11,7 @@ import graph.utils.EasyList;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.rmi.UnexpectedException;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -111,6 +112,8 @@ public class NoLadderC4ECOperandProvider {
             handleCaseB();
         } else if (canonicalCode.shortStartsAs(4, 5, 5, 5, 5)) {
             handleCaseC();
+        } else if (canonicalCode.shortStartsAs(4, 5, 5, 5)) {
+            handleCaseD();
         }
     }
 
@@ -426,6 +429,164 @@ public class NoLadderC4ECOperandProvider {
         }
     }
 
+    private void handleCaseD() {
+        addAllOperandsA();
+        addAllOperandsD();
+
+        final List<Face> facesD = graph.getFaces().stream()
+                .filter(face -> face.size() == 4 && coder.getCodeForFace(face).shortStartsAs(4, 5, 5, 5))
+                .collect(Collectors.toList());
+
+        if (facesD.size() < 4) {
+            //D
+            final Face primaryFace = facesD.get(0);
+            final List<Face> surroundingsD1 = primaryFace.getIncidentFaces().stream()
+                    .filter(face -> face.size() == 5)
+                    .collect(Collectors.toList());
+
+            final List<Edge> potentialEdgesE = surroundingsD1.stream()
+                    .map(Face::getExtrudingEdges)
+                    .flatMap(List::stream)
+                    .filter(this::isEdgeE)
+                    .collect(Collectors.toList());
+
+            potentialEdgesE.addAll(primaryFace.getExtrudingEdges().stream()
+                    .filter(edge -> edge.getLeftFace().size() != 5 || edge.getRightFace().size() != 5)
+                    .filter(edge -> edge.getVTo().getOppositeFace(edge).size() != 4 || edge.getVFrom().getOppositeFace(edge).size() != 4)
+                    .collect(Collectors.toList()));
+
+            final List<Face> potentialFacesF = surroundingsD1.stream()
+                    .map(Face::getIncidentFaces)
+                    .flatMap(List::stream)
+                    .filter(face -> face.size() == 5)
+                    .distinct()
+                    .collect(Collectors.toList());
+
+            //E F
+            if (facesD.size() == 1) {
+                for (final Edge edge : potentialEdgesE) {
+                    addOperandsE(edge);
+                }
+                for (final Face potentialOperand : potentialFacesF) {
+                    for (final Edge edge : potentialOperand.getAdjacentEdges()) {
+                        addOperandsF(potentialOperand, edge);
+                    }
+                }
+            } else if (facesD.size() == 2){
+                final Face secondaryFace = facesD.get(1);
+                final List<Face> surroundingsD2 = secondaryFace.getIncidentFaces().stream()
+                        .filter(face -> face.size() == 5)
+                        .collect(Collectors.toList());
+                surroundingsD2.add(secondaryFace);
+
+                for (final Edge potentialEdge : potentialEdgesE) {
+                    if (surroundingsD2.contains(potentialEdge.getVFrom().getOppositeFace(potentialEdge)) ||
+                        surroundingsD2.contains(potentialEdge.getVTo().getOppositeFace(potentialEdge))) {
+                        addOperandsE(potentialEdge);
+                    }
+                }
+
+                potentialFacesF.retainAll(surroundingsD2.stream()
+                        .map(Face::getIncidentFaces)
+                        .flatMap(List::stream)
+                        .filter(face -> face.size() == 5)
+                        .distinct()
+                        .collect(Collectors.toList()));
+
+                for (final Face potentialOperandF : potentialFacesF) {
+                    for (final Edge edge : potentialOperandF.getAdjacentEdges()) {
+                        addOperandsF(potentialOperandF, edge);
+                    }
+                }
+            } else {
+                final Face secondaryFace = facesD.get(1);
+                final List<Face> extendedSurroundingsD2 = secondaryFace.getIncidentFaces().stream()
+                        .filter(face -> face.size() == 5)
+                        .map(Face::getIncidentFaces)
+                        .flatMap(List::stream)
+                        .filter(face -> face.size() == 5)
+                        .distinct()
+                        .collect(Collectors.toList());
+                final Face ternaryFace = facesD.get(2);
+                final List<Face> extendedSurroundingsD3 = ternaryFace.getIncidentFaces().stream()
+                        .filter(face -> face.size() == 5)
+                        .map(Face::getIncidentFaces)
+                        .flatMap(List::stream)
+                        .filter(face -> face.size() == 5)
+                        .distinct()
+                        .collect(Collectors.toList());
+
+                potentialFacesF.retainAll(extendedSurroundingsD2);
+                potentialFacesF.retainAll(extendedSurroundingsD3);
+
+                if (!potentialFacesF.isEmpty()) System.out.print("3-D destructible: " + graph);
+
+                for (final Face f : potentialFacesF) {
+                    for (final Edge e : f.getAdjacentEdges()) {
+                        addOperandsF(f, e);
+                    }
+                }
+            }
+
+            //G
+            if (facesD.size() == 1) {
+                final List<Face> facesDEF = graph.getFaces().stream()
+                        .filter(face -> coder.getCodeForFace(face).shortStartsAs(4, 5, 5))
+                        .collect(Collectors.toList());
+                final List<Edge> potentialEdgesG = getMiddle5ExtrudingEdgesD(primaryFace);
+
+                if (facesDEF.size() == 1) {
+                    for (final Edge potentialG : potentialEdgesG) {
+                        addOperandsG(potentialG);
+                    }
+                } else if (facesDEF.size() == 2) {
+                    final Face otherFace = facesDEF.get(0) == primaryFace ? facesDEF.get(1) : facesDEF.get(0);
+                    final List<Face> otherSurroundings = otherFace.getIncidentFaces().stream()
+                            .filter(face -> face.size() == 5)
+                            .collect(Collectors.toList());
+                    for (final Edge potentialG : potentialEdgesG) {
+                        if (otherSurroundings.contains(potentialG.getVFrom().getOppositeFace(potentialG)) ||
+                                otherSurroundings.contains(potentialG.getVTo().getOppositeFace(potentialG))) {
+                            addOperandsG(potentialG);
+                        }
+                    }
+                }
+            } else if (facesD.size() == 2) {
+                final List<Edge> potentialEdgesPrimaryG = getMiddle5ExtrudingEdgesD(primaryFace);
+                final List<Edge> potentialEdgesSecondaryG = getMiddle5ExtrudingEdgesD(facesD.get(1));
+
+                potentialEdgesPrimaryG.retainAll(potentialEdgesSecondaryG);
+                for (final Edge potentialEdgeG : potentialEdgesPrimaryG) {
+                    addOperandsG(potentialEdgeG);
+                }
+            }
+
+            //H
+            final List<Face> squares = graph.getFaces().stream().filter(face -> face.size() == 4).collect(Collectors.toList());
+                if (squares.size() < 3) {
+                final Edge sixPlusBorder = primaryFace.getAdjacentEdges().stream()
+                        .filter(edge -> edge.getOppositeFace(primaryFace).size() > 5).findAny().orElseThrow();
+                final Face sixPlus = sixPlusBorder.getOppositeFace(primaryFace);
+                final int indexOfBorder = sixPlus.getIndexOfE(sixPlusBorder);
+
+                if (squares.size() == 1) {
+                    addOperandsH(sixPlus, sixPlusBorder);
+                    addOperandsH(sixPlus, sixPlus.getEdge(indexOfBorder + sixPlus.size() - 3));
+                } else if (squares.size() == 2) {
+                    if (squares.contains(sixPlus.getEdge(indexOfBorder + 3).getOppositeFace(sixPlus))) {
+                        addOperandsH(sixPlus, sixPlusBorder);
+                    }
+
+                    final Edge otherStart = sixPlus.getEdge(indexOfBorder - 3 + sixPlus.size());
+                    if (squares.contains(otherStart.getOppositeFace(sixPlus))) {
+                        addOperandsH(sixPlus, otherStart);
+                    }
+                }
+            }
+        }
+
+    }
+
     private LexCode findSecondLowestGadget(final Face firstExcluded, final Face secondExcluded) {
         return graph.getFaces().stream()
                 .filter(face -> face.size() == 4 && face != firstExcluded && face != secondExcluded)
@@ -445,6 +606,52 @@ public class NoLadderC4ECOperandProvider {
             return edge.getVTo().getOppositeFace(edge).size() == 4 && edge.getVFrom().getOppositeFace(edge).size() == 4;
         }
         return false;
+    }
+
+    private boolean isEdgeE(final Edge edge) {
+        if (edge.getRightFace().size() == 5 && edge.getLeftFace().size() == 5) return false;
+
+        final Face face5 = edge.getRightFace().size() == 5 ? edge.getRightFace() : edge.getLeftFace();
+        if (face5.size() != 5) return false;
+
+        final Face op1 = edge.getVFrom().getOppositeFace(edge);
+        final Face op2 = edge.getVTo().getOppositeFace(edge);
+        final Face face4 = op1.size() == 4 ? op1 : op2;
+        if (face4.size() > 4) return false;
+
+        for (final Edge e : face4.getAdjacentEdges()) {
+            if (e.getOppositeFace(face4) == face5) {
+                if (e.getVFrom().getOppositeFace(e).size() == 5 || e.getVTo().getOppositeFace(e).size() == 5) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private List<Edge> getMiddle5ExtrudingEdgesD (final Face square) {
+        return square.getAdjacentEdges().stream()
+                .filter(edge -> edge.getVFrom().getOppositeFace(edge).size() == 5 && edge.getVTo().getOppositeFace(edge).size() == 5)
+                .filter(edge -> edge.getLeftFace().size() == 5 || edge.getRightFace().size() == 5)
+                .map(edge -> edge.getOppositeFace(square))
+                .findAny()
+                .orElseThrow()
+                .getExtrudingEdges().stream()
+                .filter(edge -> edge.getLeftFace().size() > 4 && edge.getRightFace().size() > 4 &&
+                        edge.getVFrom().getOppositeFace(edge).size() > 4 && edge.getVTo().getOppositeFace(edge).size() > 4)
+                .collect(Collectors.toList());
+    }
+
+    private void addAllOperandsA() {
+        graph.getFaces().stream().filter(face -> face.size() == 4).forEach(this::addOperandsB);
+    }
+
+    //only to be used when there are no gadgets B present in the graph
+    private void addAllOperandsD() {
+        graph.getEdges().stream()
+                .filter(edge -> edge.getLeftFace().size() == 5 && edge.getRightFace().size() == 5)
+                .filter(edge -> edge.getVFrom().getOppositeFace(edge).size() == 4 || edge.getVTo().getOppositeFace(edge).size() == 4)
+                .forEach(this::addOperandsD);
     }
 
     private void addOperandsA(final Edge edge) {
@@ -474,8 +681,14 @@ public class NoLadderC4ECOperandProvider {
     private void addOperandsB(final Face face) {
         final Edge orientation1 = face.getEdge(0);
         final Edge orientation2 = face.getEdge(1);
-        final LexCode lexCode1 = coder.getCodeForFaceAndEdge(face, orientation1);
-        final LexCode lexCode2 = coder.getCodeForFaceAndEdge(face, orientation2);
+        final LexCode lexCode1 =
+                coder.getCodeForFaceAndEdge(face, orientation1).compareTo(coder.getCodeForFaceAndEdge(face, face.getEdge(2))) < 0
+                        ? coder.getCodeForFaceAndEdge(face, orientation1)
+                        : coder.getCodeForFaceAndEdge(face, face.getEdge(2));
+        final LexCode lexCode2 =
+                coder.getCodeForFaceAndEdge(face, orientation2).compareTo(coder.getCodeForFaceAndEdge(face, face.getEdge(3))) < 0
+                        ? coder.getCodeForFaceAndEdge(face, orientation2)
+                        : coder.getCodeForFaceAndEdge(face, face.getEdge(3));
 
         if (!operandOrbits.get("B").contains(lexCode1)) {
             operandOrbits.get("B").add(lexCode1);
@@ -513,10 +726,17 @@ public class NoLadderC4ECOperandProvider {
     }
 
     private void addOperandsF(final Face face, final Edge edge) {
-        final LexCode lexCode = coder.getCodeForFaceAndEdge(face, edge);
-        if (!operandOrbits.get("F").contains(lexCode)) {
-            operandOrbits.get("F").add(lexCode);
-            operands.get("F").add(new Operand(face, edge, null));
+        if (edge.getRightFace().size() > 4 && edge.getLeftFace().size() > 4) {
+            final int indexOfEdge = face.getIndexOfE(edge);
+            final Edge end1 = face.getEdge(indexOfEdge + 2);
+            final Edge end2 = face.getEdge(indexOfEdge + 3);
+            if (end1.getOppositeFace(face).size() > 4 && end2.getOppositeFace(face).size() > 4) {
+                final LexCode lexCode = coder.getCodeForFaceAndEdge(face, edge);
+                if (!operandOrbits.get("F").contains(lexCode)) {
+                    operandOrbits.get("F").add(lexCode);
+                    operands.get("F").add(new Operand(face, edge, null));
+                }
+            }
         }
     }
 
@@ -525,6 +745,14 @@ public class NoLadderC4ECOperandProvider {
         if (!operandOrbits.get("G").contains(lexCode)) {
             operandOrbits.get("G").add(lexCode);
             operands.get("G").add(new Operand(null, edge, null));
+        }
+    }
+
+    private void addOperandsH(final Face face, final Edge edge) {
+        final LexCode lexCode = coder.getCodeForEdge(edge);
+        if (!operandOrbits.get("H").contains(lexCode)) {
+            operandOrbits.get("H").add(lexCode);
+            operands.get("H").add(new Operand(face, edge, null));
         }
     }
 }
