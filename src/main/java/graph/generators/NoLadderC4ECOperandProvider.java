@@ -1,20 +1,16 @@
 package graph.generators;
 
 import graph.canoniccoders.CachingCoder;
-import graph.canoniccoders.CanonicalCoder;
 import graph.canoniccoders.LexCode;
 import graph.components.Edge;
 import graph.components.Face;
 import graph.components.NoLadderC4ECGraph;
 import graph.components.Vertex;
-import graph.utils.EasyList;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.rmi.UnexpectedException;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class NoLadderC4ECOperandProvider {
 
@@ -116,6 +112,8 @@ public class NoLadderC4ECOperandProvider {
             handleCaseD();
         } else if (canonicalCode.shortStartsAs(4, 5, 5)) {
             handleCaseEF();
+        } else if (canonicalCode.shortStartsAs(4)) {
+            handleCaseG();
         }
     }
 
@@ -432,7 +430,7 @@ public class NoLadderC4ECOperandProvider {
     }
 
     private void handleCaseD() {
-        addAllOperandsA();
+        addAllOperandsB();
         addAllOperandsD();
 
         final List<Face> facesD = graph.getFaces().stream()
@@ -590,7 +588,7 @@ public class NoLadderC4ECOperandProvider {
     }
 
     private void handleCaseEF() {
-        addAllOperandsA();
+        addAllOperandsB();
         addAllOperandsD();
         addAllOperandsE();
         addAllOperandsF();
@@ -612,23 +610,18 @@ public class NoLadderC4ECOperandProvider {
             }
 
             //H
-            if (squares.size() <= 2) {
-                final List<Edge> primaryNeighbours6Plus = primarySquare.getAdjacentEdges().stream()
-                        .filter(edge -> edge.getOppositeFace(primarySquare).size() > 5)
-                        .collect(Collectors.toList());
+            casesEFGAddAllOperandsH(squares);
+        }
+    }
 
-                for (final Edge border : primaryNeighbours6Plus) {
-                    final Face oppositeFace = border.getOppositeFace(primarySquare);
-                    final int indexOfE = oppositeFace.getIndexOfE(border);
-                    if (squares.size() == 1 || oppositeFace.getEdge(indexOfE + 3).getOppositeFace(oppositeFace).size() == 4) {
-                        addOperandsH(oppositeFace, border);
-                    }
-                    if (squares.size() == 1 || oppositeFace.getEdge(indexOfE - 3).getOppositeFace(oppositeFace).size() == 4) {
-                        addOperandsH(oppositeFace, oppositeFace.getEdge(indexOfE - 3));
-                    }
-                }
-            }
+    private void handleCaseG() {
+        addAllOperandsB();
+        addAllOperandsF();
+        addAllOperandsG();
 
+        final List<Face> squares = graph.getFaces().stream().filter(face -> face.size() == 4).collect(Collectors.toList());
+        if (squares.size() <= 2) {
+            casesEFGAddAllOperandsH(squares);
         }
     }
 
@@ -698,7 +691,7 @@ public class NoLadderC4ECOperandProvider {
                 .collect(Collectors.toList());
     }
 
-    private void addAllOperandsA() {
+    private void addAllOperandsB() {
         graph.getFaces().stream().filter(face -> face.size() == 4).forEach(this::addOperandsB);
     }
 
@@ -722,6 +715,33 @@ public class NoLadderC4ECOperandProvider {
         for (final Face pentagon : graph.getFaces().stream().filter(face -> face.size() == 5).collect(Collectors.toList())) {
             for (final Edge orientation : pentagon.getAdjacentEdges()) {
                 addOperandsF(pentagon, orientation);
+            }
+        }
+    }
+
+    private void addAllOperandsG() {
+        graph.getEdges().stream()
+                .filter(edge -> edge.getLeftFace().size() > 4 && edge.getRightFace().size() > 4)
+                .filter(edge -> edge.getVFrom().getOppositeFace(edge).size() > 4 && edge.getVTo().getOppositeFace(edge).size() > 4)
+                .forEach(this::addOperandsG);
+    }
+
+    private void casesEFGAddAllOperandsH(final List<Face> squares) {
+        final Face primarySquare = squares.get(0);
+        if (squares.size() <= 2) {
+            final List<Edge> primaryNeighbours6Plus = primarySquare.getAdjacentEdges().stream()
+                    .filter(edge -> edge.getOppositeFace(primarySquare).size() > 5)
+                    .collect(Collectors.toList());
+
+            for (final Edge border : primaryNeighbours6Plus) {
+                final Face oppositeFace = border.getOppositeFace(primarySquare);
+                final int indexOfE = oppositeFace.getIndexOfE(border);
+                if (squares.size() == 1 || oppositeFace.getEdge(indexOfE + 3).getOppositeFace(oppositeFace).size() == 4) {
+                    addOperandsH(oppositeFace, border);
+                }
+                if (squares.size() == 1 || oppositeFace.getEdge(indexOfE - 3).getOppositeFace(oppositeFace).size() == 4) {
+                    addOperandsH(oppositeFace, oppositeFace.getEdge(indexOfE - 3));
+                }
             }
         }
     }
