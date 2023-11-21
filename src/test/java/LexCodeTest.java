@@ -1,6 +1,3 @@
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-
 import graph.canoniccoders.CachingCoder;
 import graph.canoniccoders.CanonicalCoder;
 import graph.canoniccoders.LexCode;
@@ -11,6 +8,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class LexCodeTest {
     private static final AbstractGraph graph = new FacedTutteFragmentMock();
@@ -122,8 +121,27 @@ public class LexCodeTest {
         final LexCode lexCode1 = CanonicalCoder.getCodeForGraph(graph);
         assertEquals(lexCode1, cachedLexCode1);
 
-        final LexCode cachedLecCode2 = cachingCoder.getCodeForEdge(graph.getEdge(4));
+        final LexCode cachedLecCode2 = cachingCoder.getLexCode(graph.getEdge(4));
         final LexCode lexCode2 = CanonicalCoder.getCodeForEdge(graph, graph.getEdge(4));
         assertEquals(lexCode2, cachedLecCode2);
+    }
+
+    @Test
+    public void testVertexCaching() {
+        final CachingCoder cachingCoder = new CachingCoder(graph);
+        final Face cube = graph.getFaces().stream()
+                .filter(face -> face.size() == 4)
+                .findAny()
+                .orElseThrow();
+        final Edge borderToSix = cube.getAdjacentEdges()
+                .stream().filter(edge -> edge.getOppositeFace(cube).size() == 6)
+                .findAny()
+                .orElseThrow();
+
+        final LexCode leftCode = cachingCoder.getLexCode(cube, borderToSix, borderToSix.getLeftFromPOVofFace(cube));
+        final LexCode rightCode = cachingCoder.getLexCode(cube, borderToSix, borderToSix.getRightFromPOVofFace(cube));
+        assertEquals(leftCode, rightCode);
+        assertTrue(leftCode.shortStartsAs(4, 6, 5));
+        assertTrue(cachingCoder.isEdgeVertexTransitive(borderToSix));
     }
 }

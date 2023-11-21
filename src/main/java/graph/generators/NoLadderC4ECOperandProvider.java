@@ -120,8 +120,8 @@ public class NoLadderC4ECOperandProvider {
     private void handleCaseA() {
         final List<Edge> middleB = graph.getEdges().stream().filter(this::isEdgeB).collect(Collectors.toList());
         final List<Edge> middleA = middleB.stream().filter(edge ->
-                        coder.getCodeForFace(edge.getVFrom().getOppositeFace(edge)).shortStartsAs(4, 5, 5, 4, 5) ||
-                                coder.getCodeForFace(edge.getVTo().getOppositeFace(edge)).shortStartsAs(4, 5, 5, 4, 5))
+                        coder.getLexCode(edge.getVFrom().getOppositeFace(edge)).shortStartsAs(4, 5, 5, 4, 5) ||
+                                coder.getLexCode(edge.getVTo().getOppositeFace(edge)).shortStartsAs(4, 5, 5, 4, 5))
                 .collect(Collectors.toList());
 
         for (final Edge middleEdgeB : middleB) {
@@ -137,7 +137,7 @@ public class NoLadderC4ECOperandProvider {
             final Face square2_2 = middleEdge2.getVTo().getOppositeFace(middleEdge2);
 
             final List<Face> squaresA = Arrays.stream(new Face[]{square1_1, square1_2, square2_1, square2_2})
-                    .filter(square -> coder.getCodeForFace(square).shortStartsAs(4,5,5,4,5))
+                    .filter(square -> coder.getLexCode(square).shortStartsAs(4,5,5,4,5))
                     .collect(Collectors.toList());
 
             if (squaresA.size() == 2) {
@@ -149,7 +149,7 @@ public class NoLadderC4ECOperandProvider {
                                 middleEdge2.getLeftFace() != face && middleEdge2.getRightFace() != face)
                         .map(face -> face.getAdjacentEdges().stream().map(edge -> edge.getOppositeFace(face)).collect(Collectors.toList()))
                         .flatMap(List::stream)
-                        .filter(face -> face.size() == 4 && !coder.getCodeForFace(face).shortStartsAs(4, 5, 5, 4, 5))
+                        .filter(face -> face.size() == 4 && !coder.getLexCode(face).shortStartsAs(4, 5, 5, 4, 5))
                         .forEach(this::addOperandsB);
             }
 
@@ -158,14 +158,14 @@ public class NoLadderC4ECOperandProvider {
             final Edge middleEdge = middleA.get(0);
             final Face square1 = middleEdge.getVFrom().getOppositeFace(middleEdge);
             final Face square2 = middleEdge.getVTo().getOppositeFace(middleEdge);
-            final boolean bothSided = coder.getCodeForFace(square1).shortStartsAs(4, 5, 5, 4, 5) &&
-                    coder.getCodeForFace(square2).shortStartsAs(4, 5, 5, 4, 5);
+            final boolean bothSided = coder.getLexCode(square1).shortStartsAs(4, 5, 5, 4, 5) &&
+                    coder.getLexCode(square2).shortStartsAs(4, 5, 5, 4, 5);
 
             //B*
             for (final Face squareA : new Face[]{square1, square2}) {
-                if (coder.getCodeForFace(squareA).shortStartsAs(4, 5, 5, 4, 5)) {
+                if (coder.getLexCode(squareA).shortStartsAs(4, 5, 5, 4, 5)) {
                     final Face otherSquare = squareA == square1 ? square2 : square1;
-                    if (!coder.getCodeForFace(otherSquare).shortStartsAs(4, 5, 5, 4, 5)) {
+                    if (!coder.getLexCode(otherSquare).shortStartsAs(4, 5, 5, 4, 5)) {
                         final Face faceA = squareA.getAdjacentEdges().stream()
                                 .map(edge -> edge.getOppositeFace(squareA))
                                 .filter(face -> face.size() == 5 && face != middleEdge.getRightFace() && face != middleEdge.getLeftFace())
@@ -248,7 +248,7 @@ public class NoLadderC4ECOperandProvider {
 
             if (secondGadgetLexCode.shortStartsAs(4, 5, 5, 5)) {
                 final List<Face> facesD = graph.getFaces().stream()
-                        .filter(face -> face.size() == 4 && coder.getCodeForFace(face).shortStartsAs(4, 5, 5, 5))
+                        .filter(face -> face.size() == 4 && coder.getLexCode(face).shortStartsAs(4, 5, 5, 5))
                         .collect(Collectors.toList());
                 if (facesD.size() == 1) {
                     final List<Face> surroundingsD = facesD.get(0).getIncidentFaces().stream()
@@ -308,7 +308,7 @@ public class NoLadderC4ECOperandProvider {
 
             if (secondGadgetLexCode.shortStartsAs(4, 5, 5)) {
                 final List<Face> facesEF = graph.getFaces().stream()
-                        .filter(face -> face.size() == 4 && coder.getCodeForFace(face).shortStartsAs(4, 5, 5) &&
+                        .filter(face -> face.size() == 4 && coder.getLexCode(face).shortStartsAs(4, 5, 5) &&
                                 face != square1 && face != square2)
                         .collect(Collectors.toList());
                 if (facesEF.size() == 1) {
@@ -375,7 +375,7 @@ public class NoLadderC4ECOperandProvider {
         squares.forEach(this::addOperandsB);
 
         final List<Face> middleC = squares.stream()
-                .filter(face -> coder.getCodeForFace(face).shortStartsAs(4, 5, 5, 5, 5))
+                .filter(face -> coder.getLexCode(face).shortStartsAs(4, 5, 5, 5, 5))
                 .collect(Collectors.toList());
         if (middleC.size() == 1) {
             final Face middleSquare = middleC.get(0);
@@ -399,7 +399,7 @@ public class NoLadderC4ECOperandProvider {
             }
 
             final List<Face> facesD = squares.stream()
-                    .filter(face -> coder.getCodeForFace(face).shortStartsAs(4, 5, 5, 5))
+                    .filter(face -> coder.getLexCode(face).shortStartsAs(4, 5, 5, 5))
                     .filter(face -> face != middleSquare)
                     .collect(Collectors.toList());
             if (facesD.size() == 1) {
@@ -434,7 +434,7 @@ public class NoLadderC4ECOperandProvider {
         addAllOperandsD();
 
         final List<Face> facesD = graph.getFaces().stream()
-                .filter(face -> face.size() == 4 && coder.getCodeForFace(face).shortStartsAs(4, 5, 5, 5))
+                .filter(face -> face.size() == 4 && coder.getLexCode(face).shortStartsAs(4, 5, 5, 5))
                 .collect(Collectors.toList());
 
         if (facesD.size() < 4) {
@@ -531,7 +531,7 @@ public class NoLadderC4ECOperandProvider {
             //G
             if (facesD.size() == 1) {
                 final List<Face> facesDEF = graph.getFaces().stream()
-                        .filter(face -> coder.getCodeForFace(face).shortStartsAs(4, 5, 5))
+                        .filter(face -> coder.getLexCode(face).shortStartsAs(4, 5, 5))
                         .collect(Collectors.toList());
                 final List<Edge> potentialEdgesG = getMiddle5ExtrudingEdgesD(primaryFace);
 
@@ -595,7 +595,7 @@ public class NoLadderC4ECOperandProvider {
 
         final List<Face> squares = graph.getFaces().stream().filter(face -> face.size() == 4).collect(Collectors.toList());
         final List<Face> facesEF = squares.stream()
-                .filter(face -> coder.getCodeForFace(face).shortStartsAs(4, 5, 5))
+                .filter(face -> coder.getLexCode(face).shortStartsAs(4, 5, 5))
                 .collect(Collectors.toList());
         if (facesEF.size() <= 2) {
             //G
@@ -628,14 +628,7 @@ public class NoLadderC4ECOperandProvider {
     private LexCode findSecondLowestGadget(final Face firstExcluded, final Face secondExcluded) {
         return graph.getFaces().stream()
                 .filter(face -> face.size() == 4 && face != firstExcluded && face != secondExcluded)
-                .map(coder::getCodeForFace)
-                .min(LexCode::compareTo).orElseGet(LexCode::getMaximumLexCode);
-    }
-
-    private LexCode findSecondLowestGadget(final Face excluded) {
-        return graph.getFaces().stream()
-                .filter(face -> face.size() == 4 && face != excluded)
-                .map(coder::getCodeForFace)
+                .map(coder::getLexCode)
                 .min(LexCode::compareTo).orElseGet(LexCode::getMaximumLexCode);
     }
 
@@ -750,7 +743,7 @@ public class NoLadderC4ECOperandProvider {
         final Vertex from = edge.getVFrom();
         for (final Edge potentialEdge : from.getAdjacentEdges()) {
             if (potentialEdge != edge) {
-                final LexCode lexCode = coder.getCodeForEdge(potentialEdge);
+                final LexCode lexCode = coder.getLexCode(potentialEdge);
                 if (!operandOrbits.get("A").contains(lexCode)) {
                     operandOrbits.get("A").add(lexCode);
                     operands.get("A").add(new Operand(null, null, potentialEdge.getOriented(from)));
@@ -761,7 +754,7 @@ public class NoLadderC4ECOperandProvider {
         final Vertex to = edge.getVTo();
         for (final Edge potentialEdge : to.getAdjacentEdges()) {
             if (potentialEdge != edge) {
-                final LexCode lexCode = coder.getCodeForEdge(potentialEdge);
+                final LexCode lexCode = coder.getLexCode(potentialEdge);
                 if (!operandOrbits.get("A").contains(lexCode)) {
                     operandOrbits.get("A").add(lexCode);
                     operands.get("A").add(new Operand(null, null, potentialEdge.getOriented(to)));
@@ -774,13 +767,13 @@ public class NoLadderC4ECOperandProvider {
         final Edge orientation1 = face.getEdge(0);
         final Edge orientation2 = face.getEdge(1);
         final LexCode lexCode1 =
-                coder.getCodeForFaceAndEdge(face, orientation1).compareTo(coder.getCodeForFaceAndEdge(face, face.getEdge(2))) < 0
-                        ? coder.getCodeForFaceAndEdge(face, orientation1)
-                        : coder.getCodeForFaceAndEdge(face, face.getEdge(2));
+                coder.getLexCode(face, orientation1).compareTo(coder.getLexCode(face, face.getEdge(2))) < 0
+                        ? coder.getLexCode(face, orientation1)
+                        : coder.getLexCode(face, face.getEdge(2));
         final LexCode lexCode2 =
-                coder.getCodeForFaceAndEdge(face, orientation2).compareTo(coder.getCodeForFaceAndEdge(face, face.getEdge(3))) < 0
-                        ? coder.getCodeForFaceAndEdge(face, orientation2)
-                        : coder.getCodeForFaceAndEdge(face, face.getEdge(3));
+                coder.getLexCode(face, orientation2).compareTo(coder.getLexCode(face, face.getEdge(3))) < 0
+                        ? coder.getLexCode(face, orientation2)
+                        : coder.getLexCode(face, face.getEdge(3));
 
         if (!operandOrbits.get("B").contains(lexCode1)) {
             operandOrbits.get("B").add(lexCode1);
@@ -794,7 +787,7 @@ public class NoLadderC4ECOperandProvider {
     }
 
     private void addOperandsC(final Edge edge) {
-        final LexCode lexCode = coder.getCodeForEdge(edge);
+        final LexCode lexCode = coder.getLexCode(edge);
         if (!operandOrbits.get("C").contains(lexCode)) {
             operandOrbits.get("C").add(lexCode);
             operands.get("C").add(new Operand(null, edge, null));
@@ -802,7 +795,7 @@ public class NoLadderC4ECOperandProvider {
     }
 
     private void addOperandsD(final Edge edge) {
-        final LexCode lexCode = coder.getCodeForEdge(edge);
+        final LexCode lexCode = coder.getLexCode(edge);
         if (!operandOrbits.get("D").contains(lexCode)) {
             operandOrbits.get("D").add(lexCode);
             operands.get("D").add(new Operand(null, edge, null));
@@ -810,7 +803,7 @@ public class NoLadderC4ECOperandProvider {
     }
 
     private void addOperandsE(final Edge edge) {
-        final LexCode lexCode = coder.getCodeForEdge(edge);
+        final LexCode lexCode = coder.getLexCode(edge);
         if (!operandOrbits.get("E").contains(lexCode)) {
             operandOrbits.get("E").add(lexCode);
             operands.get("E").add(new Operand(null, edge, null));
@@ -823,7 +816,7 @@ public class NoLadderC4ECOperandProvider {
             final Edge end1 = face.getEdge(indexOfEdge + 2);
             final Edge end2 = face.getEdge(indexOfEdge + 3);
             if (end1.getOppositeFace(face).size() > 4 && end2.getOppositeFace(face).size() > 4) {
-                final LexCode lexCode = coder.getCodeForFaceAndEdge(face, edge);
+                final LexCode lexCode = coder.getLexCode(face, edge);
                 if (!operandOrbits.get("F").contains(lexCode)) {
                     operandOrbits.get("F").add(lexCode);
                     operands.get("F").add(new Operand(face, edge, null));
@@ -833,7 +826,7 @@ public class NoLadderC4ECOperandProvider {
     }
 
     private void addOperandsG(final Edge edge) {
-        final LexCode lexCode = coder.getCodeForEdge(edge);
+        final LexCode lexCode = coder.getLexCode(edge);
         if (!operandOrbits.get("G").contains(lexCode)) {
             operandOrbits.get("G").add(lexCode);
             operands.get("G").add(new Operand(null, edge, null));
@@ -841,7 +834,7 @@ public class NoLadderC4ECOperandProvider {
     }
 
     private void addOperandsH(final Face face, final Edge edge) {
-        final LexCode lexCode = coder.getCodeForFaceAndEdge(face, edge);
+        final LexCode lexCode = coder.getLexCode(face, edge);
         if (!operandOrbits.get("H").contains(lexCode)) {
             operandOrbits.get("H").add(lexCode);
             operands.get("H").add(new Operand(face, edge, null));
