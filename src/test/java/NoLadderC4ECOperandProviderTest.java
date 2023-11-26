@@ -755,6 +755,21 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
         assertTrue(provider.getOperandsE().isEmpty());
         assertEquals(12, provider.getOperandsF().size());
         assertEquals(8, provider.getOperandsG().size());
-        assertEquals(2, provider.getOperandsH().size());
+        assertEquals(1, provider.getOperandsH().size());
+    }
+
+    @Test
+    public void testCaseH() throws FileNotFoundException {
+        final NoLadderC4ECGraph graph = NoLadderC4ECGraph.loadFromFile(loadResourceAsStream("gadgetH/gadgetH.txt"));
+        final NoLadderC4ECOperandProvider provider = new NoLadderC4ECOperandProvider(graph, new CachingCoder(graph));
+
+        assertTrue(provider.getOperandsA().isEmpty());
+        assertTrue(provider.getOperandsB().isEmpty());
+        assertTrue(provider.getOperandsC().isEmpty());
+        assertTrue(provider.getOperandsD().isEmpty());
+        assertTrue(provider.getOperandsE().isEmpty());
+        assertEquals(3, provider.getOperandsF().size());
+        assertEquals(3, provider.getOperandsG().size());
+        assertEquals(1, provider.getOperandsH().size());
     }
 }

@@ -159,6 +159,14 @@ public class CachingCoder {
         return faceRootedMap.get(face).getCodeForEdge(edge);
     }
 
+    public LexCode getLexCode(final Face face, final Vertex vertex) {
+        return vertex.getAdjacentEdges().stream()
+                .filter(edge -> edge.getLeftFace() == face || edge.getRightFace() == face)
+                .map(edge -> getLexCode(face, edge, vertex))
+                .min(LexCode::compareTo)
+                .orElseThrow();
+    }
+
     public LexCode getLexCode(final Face face, final Edge edge, final Vertex vertex) {
         if (!faceRootedMap.containsKey(face)) {
             faceRootedMap.put(face, new FaceNode(graph, face));
