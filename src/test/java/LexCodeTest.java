@@ -8,6 +8,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -143,5 +144,19 @@ public class LexCodeTest {
         assertEquals(leftCode, rightCode);
         assertTrue(leftCode.shortStartsAs(4, 6, 5));
         assertTrue(cachingCoder.isEdgeVertexTransitive(borderToSix));
+    }
+
+    @Test
+    public void testCanonicalMaps() {
+        final CachingCoder cachingCoder = new CachingCoder(graph);
+        final Map<Edge, Vertex> canonicalMap = cachingCoder.getCanonicalEdgeAndVertex(graph.getFace(0));
+
+        assertEquals(2, canonicalMap.size());
+        final Edge firstCanonicalEdge = graph.getEdge(0, 2);
+        final Edge secondCanonicalEdge = graph.getEdge(1, 3);
+        assertTrue(canonicalMap.containsKey(firstCanonicalEdge));
+        assertTrue(canonicalMap.containsKey(secondCanonicalEdge));
+        assertEquals(graph.getVertex(2), canonicalMap.get(firstCanonicalEdge));
+        assertEquals(graph.getVertex(3), canonicalMap.get(secondCanonicalEdge));
     }
 }

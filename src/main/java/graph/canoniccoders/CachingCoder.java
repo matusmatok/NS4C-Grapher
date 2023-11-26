@@ -4,6 +4,7 @@ import graph.components.AbstractGraph;
 import graph.components.Edge;
 import graph.components.Face;
 import graph.components.Vertex;
+import graph.utils.EasyList;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import java.util.HashMap;
@@ -22,7 +23,8 @@ public class CachingCoder {
         private final AbstractGraph graph;
         private final Face face;
         private final Map<Edge, FaceEdgeNode> subElements = new HashMap<>();
-        private LexCode lexCode = null;
+        private LexCode canonicalCode = null;
+        private List<Edge> canonicalEdges = null;
 
         private LexCode getCodeForEdge(final Edge edge) {
             if (!subElements.containsKey(edge)) {
@@ -33,7 +35,7 @@ public class CachingCoder {
         }
 
         private LexCode getCanonicalCode() {
-            if (lexCode == null) {
+            if (canonicalCode == null) {
                 final int minimalFaceSize = face.getAdjacentEdges()
                         .stream().map(edge -> edge.getOppositeFace(face).size())
                         .min(Integer::compareTo).orElseThrow();
@@ -42,14 +44,25 @@ public class CachingCoder {
                 for (final Edge e : face.getAdjacentEdges()) {
                     if (e.getOppositeFace(face).size() == minimalFaceSize) {
                         final LexCode localCode = getCodeForEdge(e);
-                        if (localCode.compareTo(bestCode) < 0) {
+                        final int comparisonResult = localCode.compareTo(bestCode);
+                        if (comparisonResult < 0) {
                             bestCode = localCode;
+                            canonicalEdges = EasyList.of(e);
+                        } else if (comparisonResult == 0) {
+                            canonicalEdges.add(e);
                         }
                     }
                 }
-                lexCode = bestCode;
+                canonicalCode = bestCode;
             }
-            return lexCode;
+            return canonicalCode;
+        }
+
+        private List<Edge> getCanonicalEdges() {
+            if (canonicalCode == null) {
+                getCanonicalCode();
+            }
+            return canonicalEdges;
         }
     }
 
@@ -59,6 +72,7 @@ public class CachingCoder {
         private final Edge edge;
         private final Map<Vertex, LexCode> lexCodes = new HashMap<>();
         private LexCode canonicalCode = null;
+        private List<Vertex> canonicalVertices = null;
         @Getter
         private boolean vertexTransitive = false;
 
@@ -93,13 +107,23 @@ public class CachingCoder {
             final int result = vFromCode.compareTo(vToCode);
             if (result < 0) {
                 this.canonicalCode = vFromCode;
+                this.canonicalVertices = List.of(edge.getVFrom());
             } else if (result > 0) {
                 this.canonicalCode = vToCode;
+                this.canonicalVertices = List.of(edge.getVTo());
             } else {
                 this.canonicalCode = vFromCode;
+                this.canonicalVertices = List.of(edge.getVFrom(), edge.getVTo());
                 vertexTransitive = true;
             }
             return this.canonicalCode;
+        }
+
+        final List<Vertex> getCanonicalVertices() {
+            if (canonicalCode == null) {
+                getCanonicalCode();
+            }
+            return canonicalVertices;
         }
     }
 
@@ -159,5 +183,19 @@ public class CachingCoder {
 
         final FaceEdgeNode faceEdgeNode = faceRootedMap.get(face).subElements.get(edge);
         return faceEdgeNode.isVertexTransitive();
+    }
+
+    public Map<Edge, Vertex> getCanonicalEdgeAndVertex(final Face face) {
+        final Map<Edge, Vertex> resultMap = new HashMap<>();
+        final List<Edge> canonicalEdges = faceRootedMap.get(face).getCanonicalEdges();
+        final Map<Edge, FaceEdgeNode> subElements = faceRootedMap.get(face).subElements;
+
+        for (final Edge edge : canonicalEdges) {
+            final List<Vertex> canonicalVertices = subElements.get(edge).getCanonicalVertices();
+            for (final Vertex canonicalVertex : canonicalVertices) {
+                resultMap.put(edge, canonicalVertex);
+            }
+        }
+        return resultMap;
     }
 }
