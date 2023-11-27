@@ -5,11 +5,9 @@ import graph.components.Face;
 import graph.components.NoLadderC4ECGraph;
 import graph.generators.NoLadderC4ECOperandProvider;
 import graph.generators.NoLadderC4ECOperandProvider.Operand;
+import graph.utils.EasyList;
 import java.io.FileNotFoundException;
 import java.util.List;
-
-import graph.generators.OperandProvider;
-import graph.utils.EasyList;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -37,7 +35,7 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
         assertEquals(4, operandsA.size()); //4 because symmetries
 
         final List<Operand> operandsB = provider.getOperandsB();
-        assertEquals(2, operandsB.size());
+        assertEquals(1, operandsB.size());
     }
 
     @Test
@@ -59,10 +57,10 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
 
         final List<Operand> operandsA = provider.getOperandsA();
         assertEquals(8, operandsA.size());
-        assertTrue(operandsA.contains(new Operand(null, null, graph.getEdge(32, 29).getOriented(graph.getVertex(32)))));
-        assertTrue(operandsA.contains(new Operand(null, null, graph.getEdge(32, 31).getOriented(graph.getVertex(32)))));
-        assertTrue(operandsA.contains(new Operand(null, null, graph.getEdge(33, 34).getOriented(graph.getVertex(33)))));
-        assertTrue(operandsA.contains(new Operand(null, null, graph.getEdge(33, 36).getOriented(graph.getVertex(33)))));
+        assertTrue(operandsA.contains(new Operand(null, null, null, graph.getEdge(32, 29).getOriented(graph.getVertex(32)))));
+        assertTrue(operandsA.contains(new Operand(null, null, null, graph.getEdge(32, 31).getOriented(graph.getVertex(32)))));
+        assertTrue(operandsA.contains(new Operand(null, null, null, graph.getEdge(33, 34).getOriented(graph.getVertex(33)))));
+        assertTrue(operandsA.contains(new Operand(null, null, null, graph.getEdge(33, 36).getOriented(graph.getVertex(33)))));
 
         assertTrue(provider.getOperandsC().isEmpty());
     }
@@ -137,20 +135,20 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
         assertEquals(1, provider.getOperandsD().size());
 
         final List<Operand> expectedOperandsE = List.of(
-                new Operand(null, graph.getEdge(12, 16), null),
-                new Operand(null, graph.getEdge(9, 10), null),
-                new Operand(null, graph.getEdge(16, 17), null),
-                new Operand(null, graph.getEdge(18, 19), null)
+                new Operand(null, graph.getEdge(12, 16), null, null),
+                new Operand(null, graph.getEdge(9, 10), null, null),
+                new Operand(null, graph.getEdge(16, 17), null, null),
+                new Operand(null, graph.getEdge(18, 19), null, null)
         );
         for (final Operand operandE : provider.getOperandsE()) {
             assertTrue(expectedOperandsE.contains(operandE));
         }
 
         final List<Operand> expectedOperandsF = List.of(
-                new Operand(graph.getFace(13, 9, 10), graph.getEdge(13, 14), null),
-                new Operand(graph.getFace(12, 13, 14), graph.getEdge(13, 14), null),
-                new Operand(graph.getFace(10, 11, 19), graph.getEdge(10, 15), null),
-                new Operand(graph.getFace(10, 11, 19), graph.getEdge(18, 19), null)
+                new Operand(graph.getFace(13, 9, 10), graph.getEdge(13, 14), null, null),
+                new Operand(graph.getFace(12, 13, 14), graph.getEdge(13, 14), null, null),
+                new Operand(graph.getFace(10, 11, 19), graph.getEdge(10, 15), null, null),
+                new Operand(graph.getFace(10, 11, 19), graph.getEdge(18, 19), null, null)
         );
         final List<Operand> operandsF = provider.getOperandsF();
         assertEquals(4, operandsF.size());
@@ -206,10 +204,10 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
         assertEquals(graph.getEdge(10, 15), operandsD.get(0).getEdge());
 
         final List<Operand> expectedOperandsE = List.of(
-                new Operand(null, graph.getEdge(12, 16), null),
-                new Operand(null, graph.getEdge(9, 10), null),
-                new Operand(null, graph.getEdge(16, 17), null),
-                new Operand(null, graph.getEdge(18, 19), null)
+                new Operand(null, graph.getEdge(12, 16), null, null),
+                new Operand(null, graph.getEdge(9, 10), null, null),
+                new Operand(null, graph.getEdge(16, 17), null, null),
+                new Operand(null, graph.getEdge(18, 19), null, null)
         );
         final List<Operand> operandsE = provider.getOperandsE();
         assertEquals(4, operandsE.size());
@@ -219,10 +217,10 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
         }
 
         final List<Operand> expectedOperandsF = List.of(
-                new Operand(graph.getFace(13, 9, 10), graph.getEdge(13, 14), null),
-                new Operand(graph.getFace(12, 13, 14), graph.getEdge(13, 14), null),
-                new Operand(graph.getFace(10, 11, 19), graph.getEdge(10, 15), null),
-                new Operand(graph.getFace(10, 11, 19), graph.getEdge(18, 19), null)
+                new Operand(graph.getFace(13, 9, 10), graph.getEdge(13, 14), null, null),
+                new Operand(graph.getFace(12, 13, 14), graph.getEdge(13, 14), null, null),
+                new Operand(graph.getFace(10, 11, 19), graph.getEdge(10, 15), null, null),
+                new Operand(graph.getFace(10, 11, 19), graph.getEdge(18, 19), null, null)
         );
         final List<Operand> operandsF = provider.getOperandsF();
         assertEquals(4, operandsF.size());
@@ -248,9 +246,9 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
 
         final List<Operand> operandsF = provider.getOperandsF();
         final List<Operand> expectedOperandsF = List.of(
-                new Operand(graph.getFace(13, 9, 10), graph.getEdge(13, 14), null),
-                new Operand(graph.getFace(12, 13, 14), graph.getEdge(13, 14), null),
-                new Operand(graph.getFace(10, 11, 19), graph.getEdge(18, 19), null)
+                new Operand(graph.getFace(13, 9, 10), graph.getEdge(13, 14), null, null),
+                new Operand(graph.getFace(12, 13, 14), graph.getEdge(13, 14), null, null),
+                new Operand(graph.getFace(10, 11, 19), graph.getEdge(18, 19), null, null)
         );
         for (final Operand operandF : operandsF) {
             assertTrue(expectedOperandsF.contains(operandF));
@@ -263,14 +261,14 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
         final NoLadderC4ECOperandProvider provider = new NoLadderC4ECOperandProvider(graph, new CachingCoder(graph));
 
         final List<Operand> expectedOperandsA = List.of(
-                new Operand(null, null, graph.getEdge(12, 9).getOriented(graph.getVertex(12))),
-                new Operand(null, null, graph.getEdge(12, 11).getOriented(graph.getVertex(12))),
-                new Operand(null, null, graph.getEdge(13, 14).getOriented(graph.getVertex(13))),
-                new Operand(null, null, graph.getEdge(13, 16).getOriented(graph.getVertex(13))),
-                new Operand(null, null, graph.getEdge(30, 28).getOriented(graph.getVertex(30))),
-                new Operand(null, null, graph.getEdge(30, 29).getOriented(graph.getVertex(30))),
-                new Operand(null, null, graph.getEdge(31, 32).getOriented(graph.getVertex(31))),
-                new Operand(null, null, graph.getEdge(31, 33).getOriented(graph.getVertex(31)))
+                new Operand(null, null, null, graph.getEdge(12, 9).getOriented(graph.getVertex(12))),
+                new Operand(null, null, null, graph.getEdge(12, 11).getOriented(graph.getVertex(12))),
+                new Operand(null, null, null, graph.getEdge(13, 14).getOriented(graph.getVertex(13))),
+                new Operand(null, null, null, graph.getEdge(13, 16).getOriented(graph.getVertex(13))),
+                new Operand(null, null, null, graph.getEdge(30, 28).getOriented(graph.getVertex(30))),
+                new Operand(null, null, null, graph.getEdge(30, 29).getOriented(graph.getVertex(30))),
+                new Operand(null, null, null, graph.getEdge(31, 32).getOriented(graph.getVertex(31))),
+                new Operand(null, null, null, graph.getEdge(31, 33).getOriented(graph.getVertex(31)))
         );
         final List<Operand> operandsA = provider.getOperandsA();
         assertEquals(8, operandsA.size());
@@ -332,10 +330,10 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
         assertEquals(1, provider.getOperandsC().size());
 
         final List<Operand> expectedOperandsE = List.of(
-                new Operand(null, graph.getEdge(9, 10), null),
-                new Operand(null, graph.getEdge(14, 10), null),
-                new Operand(null, graph.getEdge(11, 15), null),
-                new Operand(null, graph.getEdge(16, 15), null)
+                new Operand(null, graph.getEdge(9, 10), null, null),
+                new Operand(null, graph.getEdge(14, 10), null, null),
+                new Operand(null, graph.getEdge(11, 15), null, null),
+                new Operand(null, graph.getEdge(16, 15), null, null)
         );
         final List<Operand> operandsE = provider.getOperandsE();
         assertEquals(4, operandsE.size());
@@ -344,8 +342,8 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
         }
 
         final List<Operand> expectedOperandsF = List.of(
-                new Operand(graph.getFace(9, 10, 14), graph.getEdge(12, 13), null),
-                new Operand(graph.getFace(11, 12, 13), graph.getEdge(12, 13), null)
+                new Operand(graph.getFace(9, 10, 14), graph.getEdge(12, 13), null, null),
+                new Operand(graph.getFace(11, 12, 13), graph.getEdge(12, 13), null, null)
         );
         final List<Operand> operandsF = provider.getOperandsF();
         assertEquals(2, operandsF.size());
@@ -403,10 +401,10 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
         assertTrue(provider.getOperandsC().isEmpty());
 
         final List<Operand> expectedOperandsD = List.of(
-                new Operand(null, graph.getEdge(13, 14), null),
-                new Operand(null, graph.getEdge(39, 16), null),
-                new Operand(null, graph.getEdge(38, 11), null),
-                new Operand(null, graph.getEdge(12, 9), null)
+                new Operand(null, graph.getEdge(13, 14), null, null),
+                new Operand(null, graph.getEdge(39, 16), null, null),
+                new Operand(null, graph.getEdge(38, 11), null, null),
+                new Operand(null, graph.getEdge(12, 9), null, null)
         );
         final List<Operand> operandsD = provider.getOperandsD();
         assertEquals(4, operandsD.size());
@@ -428,7 +426,7 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
         assertEquals(4, provider.getOperandsD().size());
         final List<Operand> operandsF = provider.getOperandsF();
         assertEquals(1, operandsF.size());
-        assertTrue(operandsF.contains(new Operand(graph.getFace(3, 4, 18), graph.getEdge(4, 18), null)));
+        assertTrue(operandsF.contains(new Operand(graph.getFace(3, 4, 18), graph.getEdge(4, 18), null, null)));
         assertTrue(provider.getOperandsE().isEmpty());
     }
 
@@ -445,15 +443,15 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
 
         final List<Operand> operandsF = provider.getOperandsF();
         final List<Operand> expectedOperandsF = List.of(
-                new Operand(graph.getFace(10, 42, 43), graph.getEdge(42, 43), null),
-                new Operand(graph.getFace(9, 10, 14), graph.getEdge(13, 14), null),
-                new Operand(graph.getFace(9, 10, 14), graph.getEdge(9, 12), null),
-                new Operand(graph.getFace(8, 9, 12), graph.getEdge(9, 12), null),
-                new Operand(graph.getFace(8, 9, 12), graph.getEdge(11, 40), null),
-                new Operand(graph.getFace(11, 40, 41), graph.getEdge(11, 40), null),
-                new Operand(graph.getFace(11, 40, 41), graph.getEdge(41, 16), null),
-                new Operand(graph.getFace(13, 14, 17), graph.getEdge(41, 16), null),
-                new Operand(graph.getFace(13, 14, 17), graph.getEdge(13, 14), null)
+                new Operand(graph.getFace(10, 42, 43), graph.getEdge(42, 43), null, null),
+                new Operand(graph.getFace(9, 10, 14), graph.getEdge(13, 14), null, null),
+                new Operand(graph.getFace(9, 10, 14), graph.getEdge(9, 12), null, null),
+                new Operand(graph.getFace(8, 9, 12), graph.getEdge(9, 12), null, null),
+                new Operand(graph.getFace(8, 9, 12), graph.getEdge(11, 40), null, null),
+                new Operand(graph.getFace(11, 40, 41), graph.getEdge(11, 40), null, null),
+                new Operand(graph.getFace(11, 40, 41), graph.getEdge(41, 16), null, null),
+                new Operand(graph.getFace(13, 14, 17), graph.getEdge(41, 16), null, null),
+                new Operand(graph.getFace(13, 14, 17), graph.getEdge(13, 14), null, null)
         );
         assertEquals(9, expectedOperandsF.size());
         for (final Operand operandF : operandsF) {
@@ -474,10 +472,10 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
         assertTrue(provider.getOperandsC().isEmpty());
 
         final List<Operand> expectedOperandsD = List.of(
-                new Operand(null, graph.getEdge(6, 17), null),
-                new Operand(null, graph.getEdge(8, 18), null),
-                new Operand(null, graph.getEdge(10, 22), null),
-                new Operand(null, graph.getEdge(12, 23), null)
+                new Operand(null, graph.getEdge(6, 17), null, null),
+                new Operand(null, graph.getEdge(8, 18), null, null),
+                new Operand(null, graph.getEdge(10, 22), null, null),
+                new Operand(null, graph.getEdge(12, 23), null, null)
         );
         final List<Operand> operandsD = provider.getOperandsD();
         assertEquals(4, operandsD.size());
@@ -486,8 +484,8 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
         }
 
         final List<Operand> expectedOperandsE = List.of(
-                new Operand(null, graph.getEdge(19, 20), null),
-                new Operand(null, graph.getEdge(20, 21), null)
+                new Operand(null, graph.getEdge(19, 20), null, null),
+                new Operand(null, graph.getEdge(20, 21), null, null)
         );
         final List<Operand> operandsE = provider.getOperandsE();
         assertEquals(2, operandsE.size());
@@ -496,10 +494,10 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
         }
 
         final List<Operand> expectedOperandsF = List.of(
-                new Operand(graph.getFace(8, 9, 20), graph.getEdge(18, 8), null),
-                new Operand(graph.getFace(8, 9, 20), graph.getEdge(19, 20), null),
-                new Operand(graph.getFace(9, 10, 22), graph.getEdge(20, 21), null),
-                new Operand(graph.getFace(9, 10, 22), graph.getEdge(10, 22), null)
+                new Operand(graph.getFace(8, 9, 20), graph.getEdge(18, 8), null, null),
+                new Operand(graph.getFace(8, 9, 20), graph.getEdge(19, 20), null, null),
+                new Operand(graph.getFace(9, 10, 22), graph.getEdge(20, 21), null, null),
+                new Operand(graph.getFace(9, 10, 22), graph.getEdge(10, 22), null, null)
         );
         final List<Operand> operandsF = provider.getOperandsF();
         assertEquals(4, operandsF.size());
@@ -517,7 +515,7 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
 
         final List<Operand> operandsH = provider.getOperandsH();
         assertEquals(1, operandsH.size());
-        assertTrue(operandsH.contains(new Operand(graph.getFace(19, 20, 21), graph.getEdge(16, 17), null)));
+        assertTrue(operandsH.contains(new Operand(graph.getFace(19, 20, 21), graph.getEdge(16, 17), null, null)));
     }
 
     @Test
@@ -526,13 +524,13 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
         final NoLadderC4ECOperandProvider provider = new NoLadderC4ECOperandProvider(graph, new CachingCoder(graph));
 
         assertTrue(provider.getOperandsA().isEmpty());
-        assertEquals(4, provider.getOperandsB().size());
+        assertEquals(3, provider.getOperandsB().size());
         assertTrue(provider.getOperandsC().isEmpty());
         assertEquals(2, provider.getOperandsD().size());
 
         final List<Operand> expectedOperandsE = List.of(
-                new Operand(null, graph.getEdge(2, 3), null),
-                new Operand(null, graph.getEdge(3, 19), null)
+                new Operand(null, graph.getEdge(2, 3), null, null),
+                new Operand(null, graph.getEdge(3, 19), null, null)
         );
         final List<Operand> operandsE = provider.getOperandsE();
         assertEquals(1, operandsE.size());
@@ -543,7 +541,7 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
 
         final List<Operand> operandsG = provider.getOperandsG();
         assertEquals(1, operandsG.size());
-        assertEquals(new Operand(null, graph.getEdge(10, 11), null), operandsG.get(0));
+        assertEquals(new Operand(null, graph.getEdge(10, 11), null, null), operandsG.get(0));
 
         assertTrue(provider.getOperandsH().isEmpty());
     }
@@ -558,9 +556,9 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
         assertTrue(provider.getOperandsC().isEmpty());
 
         final List<Operand> expectedOperandsD = List.of(
-                new Operand(null, graph.getEdge(6, 18),null),
-                new Operand(null, graph.getEdge(8, 19),null),
-                new Operand(null, graph.getEdge(10, 23),null)
+                new Operand(null, graph.getEdge(6, 18), null,null),
+                new Operand(null, graph.getEdge(8, 19), null,null),
+                new Operand(null, graph.getEdge(10, 23), null,null)
         );
         final List<Operand> operandsD = provider.getOperandsD();
         assertEquals(3, operandsD.size());
@@ -569,8 +567,8 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
         }
 
         final List<Operand> expectedOperandsE = List.of(
-                new Operand(null, graph.getEdge(21, 22),null),
-                new Operand(null, graph.getEdge(21, 20),null)
+                new Operand(null, graph.getEdge(21, 22), null,null),
+                new Operand(null, graph.getEdge(21, 20), null,null)
         );
         final List<Operand> operandsE = provider.getOperandsE();
         assertEquals(2, operandsE.size());
@@ -579,13 +577,13 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
         }
 
         final List<Operand> expectedOperandsF = List.of(
-                new Operand(graph.getFace(5, 6, 18), graph.getEdge(16, 17),null),
-                new Operand(graph.getFace(6, 7, 8), graph.getEdge(6, 18),null),
-                new Operand(graph.getFace(6, 7, 8), graph.getEdge(8, 19),null),
-                new Operand(graph.getFace(8, 9, 21), graph.getEdge(8, 19),null),
-                new Operand(graph.getFace(8, 9, 21), graph.getEdge(20, 21),null),
-                new Operand(graph.getFace(9, 10, 23), graph.getEdge(10, 23),null),
-                new Operand(graph.getFace(9, 10, 23), graph.getEdge(21, 22),null)
+                new Operand(graph.getFace(5, 6, 18), graph.getEdge(16, 17), null,null),
+                new Operand(graph.getFace(6, 7, 8), graph.getEdge(6, 18), null,null),
+                new Operand(graph.getFace(6, 7, 8), graph.getEdge(8, 19), null,null),
+                new Operand(graph.getFace(8, 9, 21), graph.getEdge(8, 19), null,null),
+                new Operand(graph.getFace(8, 9, 21), graph.getEdge(20, 21), null,null),
+                new Operand(graph.getFace(9, 10, 23), graph.getEdge(10, 23), null,null),
+                new Operand(graph.getFace(9, 10, 23), graph.getEdge(21, 22), null,null)
         );
         final List<Operand> operandsF = provider.getOperandsF();
         assertEquals(7, operandsF.size());
@@ -595,7 +593,7 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
 
         final List<Operand> operandsG = provider.getOperandsG();
         assertEquals(1, operandsG.size());
-        assertTrue(operandsG.contains(new Operand(null, graph.getEdge(8, 9), null)));
+        assertTrue(operandsG.contains(new Operand(null, graph.getEdge(8, 9), null, null)));
 
         assertTrue(provider.getOperandsH().isEmpty());
     }
@@ -610,8 +608,8 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
         assertTrue(provider.getOperandsC().isEmpty());
 
         final List<Operand> expectedOperandsD = List.of(
-                new Operand(null, graph.getEdge(12, 13), null),
-                new Operand(null, graph.getEdge(14, 13), null)
+                new Operand(null, graph.getEdge(12, 13), null, null),
+                new Operand(null, graph.getEdge(14, 13), null, null)
         );
         final List<Operand> operandsD = provider.getOperandsD();
         assertEquals(2, operandsD.size());
@@ -620,8 +618,8 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
         }
 
         final List<Operand> expectedOperandsE = List.of(
-                new Operand(null, graph.getEdge(10, 15), null),
-                new Operand(null, graph.getEdge(8, 11), null)
+                new Operand(null, graph.getEdge(10, 15), null, null),
+                new Operand(null, graph.getEdge(8, 11), null, null)
         );
         final List<Operand> operandsE = provider.getOperandsE();
         assertEquals(2, operandsE.size());
@@ -634,7 +632,7 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
 
         final List<Operand> operandsG = provider.getOperandsG();
         assertEquals(1, operandsG.size());
-        assertTrue(operandsG.contains(new Operand(null, graph.getEdge(9, 13), null)));
+        assertTrue(operandsG.contains(new Operand(null, graph.getEdge(9, 13), null, null)));
 
         assertTrue(provider.getOperandsH().isEmpty());
     }
@@ -649,8 +647,8 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
         assertTrue(provider.getOperandsC().isEmpty());
 
         final List<Operand> expectedOperandsD = List.of(
-                new Operand(null, graph.getEdge(12, 13), null),
-                new Operand(null, graph.getEdge(21, 22), null)
+                new Operand(null, graph.getEdge(12, 13), null, null),
+                new Operand(null, graph.getEdge(21, 22), null, null)
         );
         final List<Operand> operandsD = provider.getOperandsD();
         assertEquals(2, operandsD.size());
@@ -659,10 +657,10 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
         }
 
         final List<Operand> expectedOperandsE = List.of(
-                new Operand(null, graph.getEdge(8, 11), null),
-                new Operand(null, graph.getEdge(19, 20), null),
-                new Operand(null, graph.getEdge(14, 15), null),
-                new Operand(null, graph.getEdge(23, 27), null)
+                new Operand(null, graph.getEdge(8, 11), null, null),
+                new Operand(null, graph.getEdge(19, 20), null, null),
+                new Operand(null, graph.getEdge(14, 15), null, null),
+                new Operand(null, graph.getEdge(23, 27), null, null)
         );
         final List<Operand> operandsE = provider.getOperandsE();
         assertEquals(4, operandsE.size());
@@ -673,8 +671,8 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
         assertFalse(provider.getOperandsF().isEmpty());
 
         final List<Operand> expectedOperandsG = List.of(
-                new Operand(null, graph.getEdge(13, 14), null),
-                new Operand(null, graph.getEdge(20, 21), null)
+                new Operand(null, graph.getEdge(13, 14), null, null),
+                new Operand(null, graph.getEdge(20, 21), null, null)
         );
         final List<Operand> operandsG = provider.getOperandsG();
         assertEquals(2, operandsG.size());
@@ -694,11 +692,11 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
         assertEquals(2, provider.getOperandsB().size());
         assertTrue(provider.getOperandsC().isEmpty());
         assertEquals(1, provider.getOperandsD().size());
-        assertTrue(provider.getOperandsD().contains(new Operand(null, graph.getEdge(15, 20), null)));
+        assertTrue(provider.getOperandsD().contains(new Operand(null, graph.getEdge(15, 20), null, null)));
 
         final List<Operand> expectedOperandsE = List.of(
-                new Operand(null, graph.getEdge(13, 19), null),
-                new Operand(null, graph.getEdge(22, 23), null)
+                new Operand(null, graph.getEdge(13, 19), null, null),
+                new Operand(null, graph.getEdge(22, 23), null, null)
         );
         final List<Operand> operandsE = provider.getOperandsE();
         assertEquals(2, operandsE.size());
@@ -707,12 +705,12 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
         }
 
         final List<Operand> expectedOperandsG = List.of(
-                new Operand(null, graph.getEdge(9, 13), null),
-                new Operand(null, graph.getEdge(11, 14), null),
-                new Operand(null, graph.getEdge(15, 16), null),
-                new Operand(null, graph.getEdge(15, 14), null),
-                new Operand(null, graph.getEdge(16, 17), null),
-                new Operand(null, graph.getEdge(23, 34), null)
+                new Operand(null, graph.getEdge(9, 13), null, null),
+                new Operand(null, graph.getEdge(11, 14), null, null),
+                new Operand(null, graph.getEdge(15, 16), null, null),
+                new Operand(null, graph.getEdge(15, 14), null, null),
+                new Operand(null, graph.getEdge(16, 17), null, null),
+                new Operand(null, graph.getEdge(23, 34), null, null)
         );
         final List<Operand> operandsG = provider.getOperandsG();
         assertEquals(6, operandsG.size());
@@ -721,10 +719,10 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
         }
 
         final List<Operand> expectedOperandsH = List.of(
-                new Operand(graph.getFace(21, 22, 23), graph.getEdge(21, 22), null),
-                new Operand(graph.getFace(21, 22, 23), graph.getEdge(35, 34), null),
-                new Operand(graph.getFace(8, 9, 13), graph.getEdge(8, 9), null),
-                new Operand(graph.getFace(8, 9, 13), graph.getEdge(19, 21), null)
+                new Operand(graph.getFace(21, 22, 23), graph.getEdge(21, 22), null, null),
+                new Operand(graph.getFace(21, 22, 23), graph.getEdge(35, 34), null, null),
+                new Operand(graph.getFace(8, 9, 13), graph.getEdge(8, 9), null, null),
+                new Operand(graph.getFace(8, 9, 13), graph.getEdge(19, 21), null, null)
         );
         final List<Operand> operandsH = provider.getOperandsH();
         assertEquals(4, operandsH.size());
@@ -739,7 +737,7 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
         final NoLadderC4ECOperandProvider provider = new NoLadderC4ECOperandProvider(graph, new CachingCoder(graph));
 
         assertEquals(1, provider.getOperandsH().size());
-        assertTrue(provider.getOperandsH().contains(new Operand(graph.getFace(21, 22, 23), graph.getEdge(35, 36), null)));
+        assertTrue(provider.getOperandsH().contains(new Operand(graph.getFace(21, 22, 23), graph.getEdge(35, 36), null, null)));
     }
 
     @Test
@@ -748,8 +746,7 @@ public class NoLadderC4ECOperandProviderTest implements ResourceDependent {
         final NoLadderC4ECOperandProvider provider = new NoLadderC4ECOperandProvider(graph, new CachingCoder(graph));
 
         assertTrue(provider.getOperandsA().isEmpty());
-        //TODO fix addOperandsB - should be only one
-        assertEquals(2, provider.getOperandsB().size());
+        assertEquals(1, provider.getOperandsB().size());
         assertTrue(provider.getOperandsC().isEmpty());
         assertTrue(provider.getOperandsD().isEmpty());
         assertTrue(provider.getOperandsE().isEmpty());

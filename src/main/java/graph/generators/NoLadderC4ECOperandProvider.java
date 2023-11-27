@@ -6,6 +6,7 @@ import graph.components.Edge;
 import graph.components.Face;
 import graph.components.NoLadderC4ECGraph;
 import graph.components.Vertex;
+import graph.utils.Pair;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -48,6 +49,8 @@ public class NoLadderC4ECOperandProvider {
     public static class Operand {
         private Face face;
         private Edge edge;
+
+        private Vertex vertex;
         private Edge.OrientedEdge orientedEdge;
 
         @Override
@@ -65,7 +68,7 @@ public class NoLadderC4ECOperandProvider {
 
         @Override
         public String toString() {
-            return "Operand:\n" + face + edge + orientedEdge;
+            return "Operand:\n" + face + "\n" + edge + "\n" + vertex + "\n" + orientedEdge;
         }
     }
 
@@ -231,10 +234,10 @@ public class NoLadderC4ECOperandProvider {
                         indexOfOperandG = indexOfOppositeEdgeInA + 3;
                         indexOfAdditionalOrientationF = indexOfOppositeEdgeInA + 2;
                     }
-                    potentialOperandsF.add(new Operand(faceA, oppositeEdge, null));
+                    potentialOperandsF.add(new Operand(faceA, oppositeEdge, null, null));
                     if (faceA.getEdge(indexOfAdditionalOrientationF + 2).getOppositeFace(faceA).size() != 4 &&
                             faceA.getEdge(indexOfAdditionalOrientationF + 3).getOppositeFace(faceA).size() != 4) {
-                        potentialOperandsF.add(new Operand(faceA, faceA.getEdge(indexOfAdditionalOrientationF), null));
+                        potentialOperandsF.add(new Operand(faceA, faceA.getEdge(indexOfAdditionalOrientationF), null, null));
                     }
 
                     final Edge operandG = faceA.getEdge(indexOfOperandG);
@@ -395,7 +398,7 @@ public class NoLadderC4ECOperandProvider {
                         final Edge nextEdge = endVertex.getAdjacentEdges().get((indexOfExtruding + 1) % 3);
                         final int indexOfNext = oppositeFace.getIndexOfE(nextEdge);
                         final Edge oppositeEdge = oppositeFace.getEdge(indexOfNext + 2);
-                        potentialOperandsF.add(new Operand(oppositeFace, oppositeEdge, null));
+                        potentialOperandsF.add(new Operand(oppositeFace, oppositeEdge, null, null));
                     }
                 }
             }
@@ -756,7 +759,7 @@ public class NoLadderC4ECOperandProvider {
                 final LexCode lexCode = coder.getLexCode(potentialEdge);
                 if (!operandOrbits.get("A").contains(lexCode)) {
                     operandOrbits.get("A").add(lexCode);
-                    operands.get("A").add(new Operand(null, null, potentialEdge.getOriented(from)));
+                    operands.get("A").add(new Operand(null, null, null, potentialEdge.getOriented(from)));
                 }
             }
         }
@@ -767,32 +770,37 @@ public class NoLadderC4ECOperandProvider {
                 final LexCode lexCode = coder.getLexCode(potentialEdge);
                 if (!operandOrbits.get("A").contains(lexCode)) {
                     operandOrbits.get("A").add(lexCode);
-                    operands.get("A").add(new Operand(null, null, potentialEdge.getOriented(to)));
+                    operands.get("A").add(new Operand(null, null, null, potentialEdge.getOriented(to)));
                 }
             }
         }
     }
 
     private void addOperandsB(final Face face) {
-        final Edge orientation1 = face.getEdge(0);
-        final Edge orientation2 = face.getEdge(1);
-        final LexCode lexCode1 =
-                coder.getLexCode(face, orientation1).compareTo(coder.getLexCode(face, face.getEdge(2))) < 0
-                        ? coder.getLexCode(face, orientation1)
-                        : coder.getLexCode(face, face.getEdge(2));
-        final LexCode lexCode2 =
-                coder.getLexCode(face, orientation2).compareTo(coder.getLexCode(face, face.getEdge(3))) < 0
-                        ? coder.getLexCode(face, orientation2)
-                        : coder.getLexCode(face, face.getEdge(3));
+        final Set<Vertex> canonicalVertexSet = coder.getCanonicalEdgeAndVertex(face);
+        final Vertex canonicalVertex =  canonicalVertexSet.stream().findAny().orElseThrow();
 
-        if (!operandOrbits.get("B").contains(lexCode1)) {
-            operandOrbits.get("B").add(lexCode1);
-            operands.get("B").add(new Operand(face, orientation1, null));
+        final List<Vertex> incidentVertices = canonicalVertex.getAdjacentEdges().stream()
+                .filter(edge -> edge.getRightFace() == face || edge.getLeftFace() == face)
+                .map(edge -> edge.getOppositeVertex(canonicalVertex))
+                .collect(Collectors.toList());
+
+        if (canonicalVertexSet.contains(incidentVertices.get(0)) || canonicalVertexSet.contains(incidentVertices.get(1))) {
+            addOperandB(face, canonicalVertex, coder.getLexCode(face));
+        } else {
+            final Pair<Vertex, LexCode> otherCode = incidentVertices.stream()
+                    .map(vertex -> new Pair<>(vertex, coder.getLexCode(face, vertex)))
+                    .min(Comparator.comparing(Pair::getValue))
+                    .orElseThrow();
+            addOperandB(face, otherCode.getKey(), otherCode.getValue());
+            addOperandB(face, canonicalVertex, coder.getLexCode(face));
         }
+    }
 
-        if (!operandOrbits.get("B").contains(lexCode2)) {
-            operandOrbits.get("B").add(lexCode2);
-            operands.get("B").add(new Operand(face, orientation2, null));
+    private void addOperandB(final Face face, final Vertex vertex, final LexCode lexCode) {
+        if (!operandOrbits.get("B").contains(lexCode)) {
+            operandOrbits.get("B").add(lexCode);
+            operands.get("B").add(new Operand(face, null, vertex, null));
         }
     }
 
@@ -800,7 +808,7 @@ public class NoLadderC4ECOperandProvider {
         final LexCode lexCode = coder.getLexCode(edge);
         if (!operandOrbits.get("C").contains(lexCode)) {
             operandOrbits.get("C").add(lexCode);
-            operands.get("C").add(new Operand(null, edge, null));
+            operands.get("C").add(new Operand(null, edge, null, null));
         }
     }
 
@@ -808,7 +816,7 @@ public class NoLadderC4ECOperandProvider {
         final LexCode lexCode = coder.getLexCode(edge);
         if (!operandOrbits.get("D").contains(lexCode)) {
             operandOrbits.get("D").add(lexCode);
-            operands.get("D").add(new Operand(null, edge, null));
+            operands.get("D").add(new Operand(null, edge, null,null));
         }
     }
 
@@ -816,7 +824,7 @@ public class NoLadderC4ECOperandProvider {
         final LexCode lexCode = coder.getLexCode(edge);
         if (!operandOrbits.get("E").contains(lexCode)) {
             operandOrbits.get("E").add(lexCode);
-            operands.get("E").add(new Operand(null, edge, null));
+            operands.get("E").add(new Operand(null, edge, null,null));
         }
     }
 
@@ -829,7 +837,7 @@ public class NoLadderC4ECOperandProvider {
                 final LexCode lexCode = coder.getLexCode(face, edge);
                 if (!operandOrbits.get("F").contains(lexCode)) {
                     operandOrbits.get("F").add(lexCode);
-                    operands.get("F").add(new Operand(face, edge, null));
+                    operands.get("F").add(new Operand(face, edge, null,null));
                 }
             }
         }
@@ -839,7 +847,7 @@ public class NoLadderC4ECOperandProvider {
         final LexCode lexCode = coder.getLexCode(edge);
         if (!operandOrbits.get("G").contains(lexCode)) {
             operandOrbits.get("G").add(lexCode);
-            operands.get("G").add(new Operand(null, edge, null));
+            operands.get("G").add(new Operand(null, edge, null,null));
         }
     }
 
@@ -848,7 +856,7 @@ public class NoLadderC4ECOperandProvider {
         final LexCode lexCode = coder.getLexCode(face, symmetryVertex);
         if (!operandOrbits.get("H").contains(lexCode)) {
             operandOrbits.get("H").add(lexCode);
-            operands.get("H").add(new Operand(face, edge, null));
+            operands.get("H").add(new Operand(face, edge, null,null));
         }
     }
 

@@ -2,17 +2,20 @@ import graph.canoniccoders.CachingCoder;
 import graph.canoniccoders.CanonicalCoder;
 import graph.canoniccoders.LexCode;
 import graph.components.*;
+import graph.generators.NoLadderC4ECOperandProvider;
 import graph.utils.EasyList;
 import mock.FacedTutteFragmentMock;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
-public class LexCodeTest {
+public class LexCodeTest implements ResourceDependent {
     private static final AbstractGraph graph = new FacedTutteFragmentMock();
     private static LexCode lexCode;
     private static LexCode withoutExtendedLexCode;
@@ -147,16 +150,20 @@ public class LexCodeTest {
     }
 
     @Test
-    public void testCanonicalMaps() {
+    public void testCanonicalSets() throws FileNotFoundException {
         final CachingCoder cachingCoder = new CachingCoder(graph);
-        final Map<Edge, Vertex> canonicalMap = cachingCoder.getCanonicalEdgeAndVertex(graph.getFace(0));
+        final Set<Vertex> canonicalSet = cachingCoder.getCanonicalEdgeAndVertex(graph.getFace(0));
 
-        assertEquals(2, canonicalMap.size());
-        final Edge firstCanonicalEdge = graph.getEdge(0, 2);
-        final Edge secondCanonicalEdge = graph.getEdge(1, 3);
-        assertTrue(canonicalMap.containsKey(firstCanonicalEdge));
-        assertTrue(canonicalMap.containsKey(secondCanonicalEdge));
-        assertEquals(graph.getVertex(2), canonicalMap.get(firstCanonicalEdge));
-        assertEquals(graph.getVertex(3), canonicalMap.get(secondCanonicalEdge));
+        assertEquals(2, canonicalSet.size());
+        assertTrue(canonicalSet.contains(graph.getVertex(2)));
+        assertTrue(canonicalSet.contains(graph.getVertex(3)));
+
+
+        final NoLadderC4ECGraph graphAA = NoLadderC4ECGraph.loadFromFile(loadResourceAsStream("gadgetA/gadgetAv1.txt"));
+        final CachingCoder coder = new CachingCoder(graphAA);
+        final Face canonicalFace = graphAA.getFace(12, 13, 18);
+        final Set<Vertex> canonicalSetAA = coder.getCanonicalEdgeAndVertex(canonicalFace);
+        assertEquals(coder.getGraphCode(), coder.getLexCode(canonicalFace));
+        System.out.println(canonicalSetAA.size());
     }
 }

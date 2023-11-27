@@ -7,9 +7,8 @@ import graph.components.Vertex;
 import graph.utils.EasyList;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CachingCoder {
@@ -193,17 +192,15 @@ public class CachingCoder {
         return faceEdgeNode.isVertexTransitive();
     }
 
-    public Map<Edge, Vertex> getCanonicalEdgeAndVertex(final Face face) {
-        final Map<Edge, Vertex> resultMap = new HashMap<>();
+    public Set<Vertex> getCanonicalEdgeAndVertex(final Face face) {
+        final Set<Vertex> resultSet = new HashSet<>();
         final List<Edge> canonicalEdges = faceRootedMap.get(face).getCanonicalEdges();
         final Map<Edge, FaceEdgeNode> subElements = faceRootedMap.get(face).subElements;
 
         for (final Edge edge : canonicalEdges) {
             final List<Vertex> canonicalVertices = subElements.get(edge).getCanonicalVertices();
-            for (final Vertex canonicalVertex : canonicalVertices) {
-                resultMap.put(edge, canonicalVertex);
-            }
+            resultSet.addAll(canonicalVertices);
         }
-        return resultMap;
+        return resultSet;
     }
 }

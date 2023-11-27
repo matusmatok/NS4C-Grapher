@@ -253,7 +253,12 @@ public class NoLadderC4ECGraph extends AbstractGraph{
         undoOp5(getEdge(getEdges().size() - 3));
     }
 
-    public void operationB(final Face square, final Edge orientation) {
+    public void operationB(final Face square, final Vertex direction) {
+        final Edge orientation = direction.getAdjacentEdges().stream()
+                .filter(edge -> edge.getRightFromPOV(direction) == square)
+                .findAny()
+                .orElseThrow();
+
         final List<Vertex> vertices = new ArrayList<>(4);
         final List<Edge> internalEdges = new ArrayList<>(4);
         final List<Edge> extrudingEdges = new ArrayList<>(4);
@@ -356,7 +361,12 @@ public class NoLadderC4ECGraph extends AbstractGraph{
         getFaces().addAll(EasyList.of(f2, f3, f4));
     }
 
-    public void reductionB(final Face square, final Edge orientation) {
+    public void reductionB(final Face square, final Vertex direction) {
+        final Edge orientation = direction.getAdjacentEdges().stream()
+                .filter(edge -> edge.getRightFromPOV(direction) == square)
+                .findAny()
+                .orElseThrow();
+
         final List<Vertex> vertices = new ArrayList<>(4);
         final List<Edge> internalEdges = new ArrayList<>(4);
         final List<Edge> extrudingEdges = new ArrayList<>(4);

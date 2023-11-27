@@ -51,11 +51,10 @@ public class NoLadderC4CCGraphTest implements ResourceDependent{
     @Test
     public void testOperationA() {
         final Face setupParameterFace = graph.getFace(3);
-        final Edge setupParameterEdge = setupParameterFace.getEdge(2);
-        graph.operationB(setupParameterFace, setupParameterEdge);
+        final Vertex setupParameterVertex = graph.getVertex(6);
+        graph.operationB(setupParameterFace, setupParameterVertex);
         final LexCode preOperationACode = CanonicalCoder.getCodeForGraph(graph);
 
-        final Face newSquare = graph.getFace(graph.getFaces().size() - 1);
         final Edge leftEdge = graph.getEdge(graph.getEdges().size() - 1);
         final Vertex originVertex = graph.getVertex(graph.getVertices().size() - 1);
         final Edge.OrientedEdge orientedEdge = leftEdge.getOriented(originVertex);
@@ -71,13 +70,13 @@ public class NoLadderC4CCGraphTest implements ResourceDependent{
     @Test
     public void testOperationB() {
         final Face parameterFace = graph.getFace(3);
-        final Edge parameterEdge = parameterFace.getAdjacentEdges().get(2);
+        final Vertex parameterVertex = graph.getVertex(6);
 
-        graph.operationB(parameterFace, parameterEdge);
+        graph.operationB(parameterFace, parameterVertex);
         final LexCode postOperationCode = CanonicalCoder.getCodeForGraph(graph);
         assertEquals("4 5 5 6", postOperationCode.toString().substring(0,7));
 
-        graph.reductionB(parameterFace, parameterEdge);
+        graph.reductionB(parameterFace, parameterVertex);
         final LexCode postReductionCode = CanonicalCoder.getCodeForGraph(graph);
         assertEquals(baseGraphString, graph.toString());
         assertEquals(lexCode, postReductionCode);
@@ -86,16 +85,16 @@ public class NoLadderC4CCGraphTest implements ResourceDependent{
     @Test
     public void testOperationC() {
         final Face parameterFace = graph.getFace(3);
-        final Edge parameterEdge = parameterFace.getEdge(0);
+        final Vertex parameterVertex = graph.getVertex(2);
 
-        graph.operationB(parameterFace, parameterEdge);
+        graph.operationB(parameterFace, parameterVertex);
         graph.operationC(graph.getEdge(graph.getEdges().size() - 8));
 
         final LexCode postOperationCode = CanonicalCoder.getCodeForGraph(graph);
         assertEquals("4 5 5 5 5", postOperationCode.toString().substring(0,9));
 
         graph.reductionC();
-        graph.reductionB(parameterFace, parameterEdge);
+        graph.reductionB(parameterFace, parameterVertex);
         final LexCode postReductionCode = CanonicalCoder.getCodeForGraph(graph);
         assertEquals(lexCode, postReductionCode);
     }
@@ -103,9 +102,9 @@ public class NoLadderC4CCGraphTest implements ResourceDependent{
     @Test
     public void testOperationD() {
         final Face parameterFace = graph.getFace(7);
-        final Edge parameterEdge = parameterFace.getEdge(0);
+        final Vertex parameterVertex = graph.getVertex(7);
 
-        graph.operationB(parameterFace, parameterEdge);
+        graph.operationB(parameterFace, parameterVertex);
         graph.operationC(graph.getEdge(graph.getEdges().size() - 8));
 
         final LexCode preOperationECode = CanonicalCoder.getCodeForGraph(graph);
