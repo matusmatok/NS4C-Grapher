@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class CanonicalCoder {
 
-    public static boolean noLadderExtension = false;
+    public static boolean noLadderExtension = true;
     public static final int CODE_FOR_VISITED = 0;
 
     public static LexCode getNoLadderCodeWithSetup(final AbstractGraph g, final Face origin, final Face neigh, final int direction) {

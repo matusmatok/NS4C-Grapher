@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-public class NoLadderC4ECGraph extends AbstractGraph{
+public class NoLadderC4ECGraph extends AbstractGraph {
     public NoLadderC4ECGraph() {
-        super();
+        init();
     }
 
     public static NoLadderC4ECGraph loadFromFile(final InputStreamReader stream) throws FileNotFoundException {
