@@ -2,7 +2,6 @@ import graph.canoniccoders.CachingCoder;
 import graph.canoniccoders.CanonicalCoder;
 import graph.canoniccoders.LexCode;
 import graph.components.*;
-import graph.generators.NoLadderC4ECOperandProvider;
 import graph.utils.EasyList;
 import mock.FacedTutteFragmentMock;
 import org.junit.BeforeClass;
@@ -10,7 +9,6 @@ import org.junit.Test;
 
 import java.io.FileNotFoundException;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import static org.junit.Assert.*;
@@ -152,7 +150,7 @@ public class LexCodeTest implements ResourceDependent {
     @Test
     public void testCanonicalSets() throws FileNotFoundException {
         final CachingCoder cachingCoder = new CachingCoder(graph);
-        final Set<Vertex> canonicalSet = cachingCoder.getCanonicalEdgeAndVertex(graph.getFace(0));
+        final Set<Vertex> canonicalSet = cachingCoder.getCanonicalVertices(graph.getFace(0));
 
         assertEquals(2, canonicalSet.size());
         assertTrue(canonicalSet.contains(graph.getVertex(2)));
@@ -162,7 +160,7 @@ public class LexCodeTest implements ResourceDependent {
         final NoLadderC4ECGraph graphAA = NoLadderC4ECGraph.loadFromFile(loadResourceAsStream("gadgetA/gadgetAv1.txt"));
         final CachingCoder coder = new CachingCoder(graphAA);
         final Face canonicalFace = graphAA.getFace(12, 13, 18);
-        final Set<Vertex> canonicalSetAA = coder.getCanonicalEdgeAndVertex(canonicalFace);
+        final Set<Vertex> canonicalSetAA = coder.getCanonicalVertices(canonicalFace);
         assertEquals(coder.getGraphCode(), coder.getLexCode(canonicalFace));
         System.out.println(canonicalSetAA.size());
     }

@@ -192,7 +192,7 @@ public class CachingCoder {
         return faceEdgeNode.isVertexTransitive();
     }
 
-    public Set<Vertex> getCanonicalEdgeAndVertex(final Face face) {
+    public Set<Vertex> getCanonicalVertices(final Face face) {
         final Set<Vertex> resultSet = new HashSet<>();
         final List<Edge> canonicalEdges = faceRootedMap.get(face).getCanonicalEdges();
         final Map<Edge, FaceEdgeNode> subElements = faceRootedMap.get(face).subElements;
@@ -202,5 +202,13 @@ public class CachingCoder {
             resultSet.addAll(canonicalVertices);
         }
         return resultSet;
+    }
+
+    public Set<Vertex> getCanonicalVertices(final Face face, final Edge edge) {
+        return new HashSet<>(faceRootedMap.get(face).subElements.get(edge).canonicalVertices);
+    }
+
+    public Set<Edge> getCanonicalEdges(final Face face) {
+        return new HashSet<>(faceRootedMap.get(face).getCanonicalEdges());
     }
 }

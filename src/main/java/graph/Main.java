@@ -5,9 +5,8 @@
  */
 package graph;
 
-import graph.components.AbstractGraph;
 import graph.components.SimpleGraph;
-import graph.generators.TopVerifyingGenerator;
+import graph.generators.cubicplanar.TopVerifyingGenerator;
 import graph.processors.UnavoidableEdgeProcessor;
 
 /**

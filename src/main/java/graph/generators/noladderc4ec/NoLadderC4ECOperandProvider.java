@@ -1,4 +1,4 @@
-package graph.generators;
+package graph.generators.noladderc4ec;
 
 import graph.canoniccoders.CachingCoder;
 import graph.canoniccoders.LexCode;
@@ -527,7 +527,7 @@ public class NoLadderC4ECOperandProvider {
                 potentialFacesF.retainAll(extendedSurroundingsD2);
                 potentialFacesF.retainAll(extendedSurroundingsD3);
 
-                if (!potentialFacesF.isEmpty()) System.out.print("3-D destructible: " + graph);
+                //if (!potentialFacesF.isEmpty()) System.out.print("3-D destructible: " + graph);
 
                 for (final Face f : potentialFacesF) {
                     for (final Edge e : f.getAdjacentEdges()) {
@@ -777,7 +777,7 @@ public class NoLadderC4ECOperandProvider {
     }
 
     private void addOperandsB(final Face face) {
-        final Set<Vertex> canonicalVertexSet = coder.getCanonicalEdgeAndVertex(face);
+        final Set<Vertex> canonicalVertexSet = coder.getCanonicalVertices(face);
         final Vertex canonicalVertex =  canonicalVertexSet.stream().findAny().orElseThrow();
 
         final List<Vertex> incidentVertices = canonicalVertex.getAdjacentEdges().stream()

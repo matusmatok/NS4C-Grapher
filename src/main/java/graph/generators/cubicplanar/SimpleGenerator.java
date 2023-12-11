@@ -1,4 +1,4 @@
-package graph.generators;
+package graph.generators.cubicplanar;
 
 import graph.canoniccoders.obsolete.AbstractCanonicCoder;
 import graph.canoniccoders.obsolete.BFSCoder;
@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import graph.generators.AbstractGenerator;
 import graph.processors.AbstractProcessor;
 
 public class SimpleGenerator extends AbstractGenerator {

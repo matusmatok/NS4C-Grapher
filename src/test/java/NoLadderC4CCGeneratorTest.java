@@ -1,11 +1,10 @@
 import graph.canoniccoders.CachingCoder;
 import graph.canoniccoders.LexCode;
 import graph.components.NoLadderC4ECGraph;
-import graph.generators.NoLadderC4ECGenerator;
+import graph.generators.noladderc4ec.NoLadderC4ECGenerator;
 import graph.processors.AbstractProcessor;
 import graph.utils.EasyList;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -94,5 +93,21 @@ public class NoLadderC4CCGeneratorTest {
         }, 0);
         generator.generate();
         assertEquals(6, resultCodes.stream().distinct().count());
+    }
+
+    @Test
+    public void testGeneration() {
+        final NoLadderC4ECGraph noLadderC4ECGraph = new NoLadderC4ECGraph();
+        final int depth = 24;
+        final NoLadderC4ECGenerator generator = new NoLadderC4ECGenerator(noLadderC4ECGraph, new AbstractProcessor(noLadderC4ECGraph, null, null, null) {
+            @Override
+            public boolean hasProperty() {
+                if (graph.getVertices().size() == depth) {
+                    System.out.println(noLadderC4ECGraph.toShortString());
+                }
+                return true;
+            }
+        }, depth);
+        generator.generate();
     }
 }

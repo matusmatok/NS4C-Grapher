@@ -1,4 +1,4 @@
-package graph.generators;
+package graph.generators.cubicplanar;
 
 import graph.canoniccoders.obsolete.AbstractCanonicCoder;
 import graph.canoniccoders.obsolete.BFSCoder;
@@ -6,9 +6,9 @@ import graph.canoniccoders.CanonicalCoder;
 import graph.canoniccoders.LexCode;
 import graph.components.Edge;
 import graph.components.Face;
-import graph.components.AbstractGraph;
 import graph.components.SimpleGraph;
-import graph.generators.OperandProvider.Operand;
+import graph.generators.AbstractGenerator;
+import graph.generators.cubicplanar.OperandProvider.Operand;
 import graph.processors.AbstractProcessor;
 import lombok.Getter;
 
@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class TopVerifyingGenerator extends AbstractGenerator{
+public class TopVerifyingGenerator extends AbstractGenerator {
 
     private static final OperandProvider operandProvider = new OperandProvider();
     private static final AbstractCanonicCoder coder = new BFSCoder();

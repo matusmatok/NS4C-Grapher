@@ -1,4 +1,4 @@
-package graph.generators;
+package graph.generators.cubicplanar;
 
 import graph.components.Edge;
 import graph.components.Face;

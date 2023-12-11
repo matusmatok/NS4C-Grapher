@@ -1,9 +1,8 @@
 import graph.canoniccoders.obsolete.BFSCoder;
 import graph.canoniccoders.LexCode;
 import graph.components.Face;
-import graph.components.AbstractGraph;
 import graph.components.SimpleGraph;
-import graph.generators.TopVerifyingGenerator;
+import graph.generators.cubicplanar.TopVerifyingGenerator;
 import injections.LexCodeCollectingProcessor;
 import mock.ExtendedTutteFragmentMock;
 import mock.FacedTutteFragmentMock;

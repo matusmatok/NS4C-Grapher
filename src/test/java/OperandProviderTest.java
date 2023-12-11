@@ -1,6 +1,6 @@
 import graph.components.AbstractGraph;
 import graph.components.SimpleGraph;
-import graph.generators.OperandProvider;
+import graph.generators.cubicplanar.OperandProvider;
 import mock.TutteFragmentMock;
 import org.junit.Test;
 

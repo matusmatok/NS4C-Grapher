@@ -2,6 +2,7 @@ package graph.components;
 
 import graph.components.Edge.OrientedEdge;
 import graph.utils.EasyList;
+import graph.utils.Pair;
 
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class NoLadderC4ECGraph extends AbstractGraph {
     public NoLadderC4ECGraph() {
@@ -70,6 +72,17 @@ public class NoLadderC4ECGraph extends AbstractGraph {
         }
 
         return graph;
+    }
+
+    public String toShortString() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append(vertices.size()).append("\n");
+        for (final Vertex vertex : vertices) {
+            builder.append(vertex.getAdjacentEdges().get(0).getOppositeVertex(vertex).getId()).append(" ");
+            builder.append(vertex.getAdjacentEdges().get(1).getOppositeVertex(vertex).getId()).append(" ");
+            builder.append(vertex.getAdjacentEdges().get(2).getOppositeVertex(vertex).getId()).append("\n");
+        }
+        return builder.toString();
     }
 
     @Override
