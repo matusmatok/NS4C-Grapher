@@ -82,6 +82,8 @@ public class NoLadderC4CCGeneratorTest {
         final Set<LexCode> resultCodes = new HashSet<>();
 
         final NoLadderC4ECGraph graph = new NoLadderC4ECGraph();
+        graph.init();
+
         final NoLadderC4ECGenerator generator = new NoLadderC4ECGenerator(graph, new AbstractProcessor(graph, null, null, null) {
             @Override
             public boolean hasProperty() {
@@ -98,6 +100,7 @@ public class NoLadderC4CCGeneratorTest {
     @Test
     public void testGeneration() {
         final NoLadderC4ECGraph noLadderC4ECGraph = new NoLadderC4ECGraph();
+        noLadderC4ECGraph.init();
         final int depth = 24;
         final NoLadderC4ECGenerator generator = new NoLadderC4ECGenerator(noLadderC4ECGraph, new AbstractProcessor(noLadderC4ECGraph, null, null, null) {
             @Override

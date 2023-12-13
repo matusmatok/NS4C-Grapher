@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 
 public class NoLadderC4ECGraph extends AbstractGraph {
     public NoLadderC4ECGraph() {
-        init();
     }
 
     public static NoLadderC4ECGraph loadFromFile(final InputStreamReader stream) throws FileNotFoundException {
@@ -77,10 +76,14 @@ public class NoLadderC4ECGraph extends AbstractGraph {
     public String toShortString() {
         final StringBuilder builder = new StringBuilder();
         builder.append(vertices.size()).append("\n");
-        for (final Vertex vertex : vertices) {
-            builder.append(vertex.getAdjacentEdges().get(0).getOppositeVertex(vertex).getId()).append(" ");
-            builder.append(vertex.getAdjacentEdges().get(1).getOppositeVertex(vertex).getId()).append(" ");
-            builder.append(vertex.getAdjacentEdges().get(2).getOppositeVertex(vertex).getId()).append("\n");
+        try {
+            for (final Vertex vertex : vertices) {
+                builder.append(vertex.getAdjacentEdges().get(0).getOppositeVertex(vertex).getId()).append(" ");
+                builder.append(vertex.getAdjacentEdges().get(1).getOppositeVertex(vertex).getId()).append(" ");
+                builder.append(vertex.getAdjacentEdges().get(2).getOppositeVertex(vertex).getId()).append("\n");
+            }
+        } catch (Exception e) {
+            System.out.println("CHYBA");
         }
         return builder.toString();
     }
