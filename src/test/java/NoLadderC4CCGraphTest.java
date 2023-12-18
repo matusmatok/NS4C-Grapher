@@ -1,4 +1,5 @@
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import graph.canoniccoders.CanonicalCoder;
 import graph.canoniccoders.LexCode;
@@ -18,11 +19,12 @@ public class NoLadderC4CCGraphTest implements ResourceDependent{
     @BeforeClass
     public static void setup() {
         final List<Integer> extendedCode = List.of(4,
-                5, 5, 5, 5,
-                0, 0, 4, 5, 0,
-                0, 0, 0, 4, 0,
-                0, 0, 0, 5, 0);
-        final List<Integer> shortCode = List.of(4,5,5,5,5,4,5,4,5);
+                5, 5, 4, 5, 5,
+                0, 0, 5, 0, 0,
+                0, 0, 0, 5, 0,
+                0, 0, 0, 0,
+                0, 0, 0, 4, 0);
+        final List<Integer> shortCode = List.of(4,5,5,4,5,5,5,5,4);
         lexCode = LexCode.builder().shortAddAll(shortCode).extendedAddAll(extendedCode).build();
 
         final AbstractGraph baseGraph = new NoLadderC4ECGraph();
@@ -61,7 +63,7 @@ public class NoLadderC4CCGraphTest implements ResourceDependent{
         graph.operationA(orientedEdge);
 
         final LexCode newLexCode = CanonicalCoder.getCodeForFace(graph, graph.getFace(graph.getFaces().size() - 2));
-        assertEquals("4 5 5 5 7", newLexCode.toString().substring(0, 9));
+        assertTrue(newLexCode.shortStartsAs(4,5,5,4,5,7));
 
         graph.reductionA();
         assertEquals(preOperationACode, CanonicalCoder.getCodeForGraph(graph));
@@ -74,12 +76,25 @@ public class NoLadderC4CCGraphTest implements ResourceDependent{
 
         graph.operationB(parameterFace, parameterVertex);
         final LexCode postOperationCode = CanonicalCoder.getCodeForGraph(graph);
-        assertEquals("4 5 5 6", postOperationCode.toString().substring(0,7));
+        assertTrue(postOperationCode.shortStartsAs(4,5,5,4,6));
 
         graph.reductionB(parameterFace, parameterVertex);
         final LexCode postReductionCode = CanonicalCoder.getCodeForGraph(graph);
         assertEquals(baseGraphString, graph.toString());
         assertEquals(lexCode, postReductionCode);
+
+
+        final Face parameterFace1 = graph.getFace(3);
+        final Vertex parameterVertex1 = graph.getVertex(3);
+
+        graph.operationB(parameterFace1, parameterVertex1);
+        final LexCode postOperationCode1 = CanonicalCoder.getCodeForGraph(graph);
+        assertTrue(postOperationCode1.shortStartsAs(4,5,5,4,6));
+
+        graph.reductionB(parameterFace1, parameterVertex1);
+        final LexCode postReductionCode1 = CanonicalCoder.getCodeForGraph(graph);
+        assertEquals(baseGraphString, graph.toString());
+        assertEquals(lexCode, postReductionCode1);
     }
 
     @Test
@@ -89,9 +104,10 @@ public class NoLadderC4CCGraphTest implements ResourceDependent{
 
         graph.operationB(parameterFace, parameterVertex);
         graph.operationC(graph.getEdge(graph.getEdges().size() - 8));
+        final Face lastFace = graph.getFace(graph.getFaces().size() - 1);
 
-        final LexCode postOperationCode = CanonicalCoder.getCodeForGraph(graph);
-        assertEquals("4 5 5 5 5", postOperationCode.toString().substring(0,9));
+        final LexCode postOperationCode = CanonicalCoder.getCodeForFace(graph, lastFace);
+        assertTrue(postOperationCode.shortStartsAs(4,5,5,5,5));
 
         graph.reductionC();
         graph.reductionB(parameterFace, parameterVertex);
@@ -112,7 +128,7 @@ public class NoLadderC4CCGraphTest implements ResourceDependent{
         final Edge operandEdge = graph.getEdge(28);
         graph.operationD(operandEdge);
         final LexCode newLexCode = CanonicalCoder.getCodeForFace(graph, graph.getFace(graph.getFaces().size() - 1));
-        assertEquals("4 5 5 5 7", newLexCode.toString().substring(0, 9));
+        assertTrue(newLexCode.shortStartsAs(4,5,5,5,7));
 
         graph.reductionD();
         assertEquals(preOperationECode, CanonicalCoder.getCodeForGraph(graph));
@@ -124,6 +140,7 @@ public class NoLadderC4CCGraphTest implements ResourceDependent{
         final LexCode newLexCode = CanonicalCoder.getCodeForFace(graph, graph.getFace(graph.getFaces().size() - 1));
 
         assertEquals("4 5 5 6 6", newLexCode.toString().substring(0, 9));
+        assertTrue(newLexCode.shortStartsAs(4,5,5,6,6));
         assertEquals(6, graph.getFace(6).size());
 
         graph.reductionF();
