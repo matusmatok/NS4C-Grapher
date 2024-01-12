@@ -7,12 +7,12 @@ import graph.utils.EasyList;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 
 public class NoLadderC4CCGeneratorTest {
@@ -112,5 +112,27 @@ public class NoLadderC4CCGeneratorTest {
             }
         }, depth);
         generator.generate();
+    }
+
+
+    @Test
+    public void testSingularity() {
+        final NoLadderC4ECGraph noLadderC4ECGraph = new NoLadderC4ECGraph();
+        noLadderC4ECGraph.init();
+
+        final Set<LexCode> lexCodes = new HashSet<>();
+        final CachingCoder coder = new CachingCoder(noLadderC4ECGraph);
+        final NoLadderC4ECGenerator generator = new NoLadderC4ECGenerator(noLadderC4ECGraph, new AbstractProcessor(noLadderC4ECGraph, null, null, null) {
+            @Override
+            public boolean hasProperty() {
+                final LexCode currentCode = coder.getGraphCode();
+                if (lexCodes.contains(currentCode)) {
+                    fail();
+                } else {
+                    lexCodes.add(currentCode);
+                }
+                return true;
+            }
+        }, 28);
     }
 }

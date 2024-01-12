@@ -34,7 +34,7 @@ public class ReducibleConfigurationFinder {
     }
 
     public boolean containsPolarIndependentReducibleConfig() {
-        return containsTriangle() || containsLadder();
+        return containsTriangle() || containsLadderConfig();
     }
 
     public void buildCache(Set<Vertex> ambiguousVertices) {
@@ -68,13 +68,17 @@ public class ReducibleConfigurationFinder {
         return graph.getFaces().stream().filter(face -> face.size() == 3).findAny().isPresent();
     }
 
-    private boolean containsLadder() {
+    private boolean containsLadderConfig() {
+        return containsLadder(graph);
+    }
+
+    public static boolean containsLadder(final AbstractGraph graph) {
         for (Edge edge : graph.getEdges()) {
             final Face leftFace = edge.getLeftFace();
             final Face rightFace = edge.getRightFace();
             if (leftFace.size() == 4 && rightFace.size() == 4) {
                 if (edge.getVTo().getThirdFace(leftFace, rightFace).size() >4
-                 && edge.getVFrom().getThirdFace(leftFace,rightFace).size() >4)
+                        && edge.getVFrom().getThirdFace(leftFace,rightFace).size() >4)
                     return true;
             }
         }
