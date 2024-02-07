@@ -1,10 +1,12 @@
 import graph.builders.UnavoidableBuilder;
 import graph.components.Edge;
 import graph.components.AbstractGraph;
+import graph.components.NoLadderC4ECGraph;
 import graph.components.Vertex;
 import graph.preprocessors.HamUnavoidableEdgeGetter;
 import graph.preprocessors.UnavoidableAmbiguousVertexGetter;
 import graph.preprocessors.VertexPolarityDistributor;
+import graph.processors.HamiltonianProcessor;
 import graph.processors.ProcessorTypeDEF;
 import graph.processors.UnavoidableEdgeProcessor;
 import graph.processors.UntouchableEdgeProcessor;
@@ -14,12 +16,13 @@ import mock.FacedTutteFragmentMock;
 import mock.TenTuttovTotoMock;
 import org.junit.Test;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class ProcessorsTest {
+public class ProcessorsTest implements ResourceDependent {
     private static final AbstractGraph badGraph = new FacedTutteFragmentMock();
     private static final AbstractGraph goodGraph = new ExtendedTutteFragmentMock();
 
@@ -64,6 +67,18 @@ public class ProcessorsTest {
         final ProcessorTypeDEF processorForGoodGraph = new ProcessorTypeDEF(goodGraph);
         assertFalse(processorForBadGraph.findGoodEdges());
         assertTrue(processorForGoodGraph.findGoodEdges());
+    }
+
+    @Test
+    public void testHamiltonianProcessor() throws FileNotFoundException {
+        final NoLadderC4ECGraph nonHamiltonian = NoLadderC4ECGraph.loadFromFile(loadResourceAsStream("nonHamiltonianGraph.txt"));
+        final HamiltonianProcessor processorN = new HamiltonianProcessor(nonHamiltonian);
+        assertFalse(processorN.hasProperty());
+
+        final NoLadderC4ECGraph hamiltonian = new NoLadderC4ECGraph();
+        hamiltonian.init();
+        final HamiltonianProcessor processorH = new HamiltonianProcessor(hamiltonian);
+        assertTrue(processorH.hasProperty());
     }
 
 }
