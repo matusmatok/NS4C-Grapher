@@ -18,16 +18,13 @@ public class PlantriComparisonTest implements ResourceDependent {
 
     @Parameterized.Parameters
     public static Collection<Integer> data() {
-        return Arrays.asList(20, 22);
+        return Arrays.asList(20,22,24,26,28);
     }
 
-    private final int depth;
     private final HashSet<LexCode> generatedGraphs;
     private final NoLadderFilter filter;
 
     public PlantriComparisonTest(final int depth) {
-        this.depth = depth;
-
         generatedGraphs = new HashSet<>();
         final NoLadderC4ECGraph graph = new NoLadderC4ECGraph();
         graph.init();
@@ -50,6 +47,7 @@ public class PlantriComparisonTest implements ResourceDependent {
             final LexCode plantriCode = CanonicalCoder.getCodeForGraph(graph);
             if (!generatedGraphs.contains(plantriCode)) {
                 all = false;
+                System.out.print(plantriCode);
                 System.out.print(graph.toShortString());
             }
         }

@@ -78,7 +78,7 @@ public class NoLadderC4ECGenerator {
             final Face square = orientedEdge.getCorrespondingEdge().getLeftFace().size() == 4 ?
                     orientedEdge.getCorrespondingEdge().getLeftFace() :
                     orientedEdge.getCorrespondingEdge().getRightFace();
-            if (childCoder.getGraphCode().equals(childCoder.getLexCode(square, orientedEdge.getCorrespondingEdge(), orientedEdge.getOrigin()))) {
+            if (childCoder.getGraphCode().equals(childCoder.getLexCode(square))) {
                 recursiveGenerate(childCoder);
             }
             graph.reductionA();

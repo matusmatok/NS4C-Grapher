@@ -5,8 +5,12 @@
  */
 package graph;
 
+import graph.canoniccoders.CanonicalCoder;
+import graph.components.NoLadderC4ECGraph;
 import graph.components.SimpleGraph;
 import graph.generators.cubicplanar.TopVerifyingGenerator;
+import graph.generators.noladderc4ec.NoLadderC4ECGenerator;
+import graph.processors.AbstractProcessor;
 import graph.processors.UnavoidableEdgeProcessor;
 
 /**
@@ -19,14 +23,17 @@ public class Main {
     
     
     public static void main(String[] args){
-        
-        SimpleGraph g = new SimpleGraph();
-        g.init();
-        g.op3(0);
-        g.getFaces().get(0).toNormalForm();
-        TopVerifyingGenerator generator = new TopVerifyingGenerator(g, new UnavoidableEdgeProcessor(g), 24 );
+
+
+        final NoLadderC4ECGraph graph = new NoLadderC4ECGraph();
+        graph.init();
+        final NoLadderC4ECGenerator generator = new NoLadderC4ECGenerator(graph, new AbstractProcessor(graph, null, null, null) {
+            @Override
+            public boolean hasProperty() {
+                return true;
+            }
+        }, 36);
         generator.generate();
-        System.out.println(generator.getTopLevelGraphs());
       
     }
     
