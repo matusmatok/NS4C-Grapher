@@ -10,8 +10,10 @@ import graph.components.NoLadderC4ECGraph;
 import graph.components.SimpleGraph;
 import graph.generators.cubicplanar.TopVerifyingGenerator;
 import graph.generators.noladderc4ec.NoLadderC4ECGenerator;
+import graph.preprocessors.HamUntouchableEdgeGetter;
 import graph.processors.AbstractProcessor;
 import graph.processors.UnavoidableEdgeProcessor;
+import graph.processors.ham.HamEdgeProcessor;
 
 /**
  *
@@ -23,18 +25,23 @@ public class Main {
     
     
     public static void main(String[] args){
+        runNoLadderC4ECGenerator1(26);
+    }
 
-
+    /**
+     * This method runs the
+     * @link NoLadderC4ECGenerator.java
+     *
+     * and verifies whether the graphs contain an untouchable edge.
+     *
+     * @param depth is the depth of the generator. At 26, we get the first positive result
+     * */
+    private static void runNoLadderC4ECGenerator1(final int depth) {
         final NoLadderC4ECGraph graph = new NoLadderC4ECGraph();
         graph.init();
-        final NoLadderC4ECGenerator generator = new NoLadderC4ECGenerator(graph, new AbstractProcessor(graph, null, null, null) {
-            @Override
-            public boolean hasProperty() {
-                return true;
-            }
-        }, 36);
+
+        final NoLadderC4ECGenerator generator = new NoLadderC4ECGenerator(graph, new HamEdgeProcessor(graph, new HamUntouchableEdgeGetter(graph)), depth);
         generator.generate();
-      
     }
-    
+
 }

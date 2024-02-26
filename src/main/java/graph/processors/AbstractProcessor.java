@@ -14,7 +14,7 @@ public abstract class AbstractProcessor {
 
     protected final AbstractGraph graph;
 
-    private final HamEdgeGetter potentialEdgeGetter;
+    protected final HamEdgeGetter potentialEdgeGetter;
 
     private final AmbiguousVertexGetter ambiguousVertexGetter;
     private final AbstractTwoFactorBuilder builder;

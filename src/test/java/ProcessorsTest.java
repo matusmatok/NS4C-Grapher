@@ -6,7 +6,7 @@ import graph.components.Vertex;
 import graph.preprocessors.HamUnavoidableEdgeGetter;
 import graph.preprocessors.UnavoidableAmbiguousVertexGetter;
 import graph.preprocessors.VertexPolarityDistributor;
-import graph.processors.HamiltonianProcessor;
+import graph.processors.ham.HamiltonianProcessor;
 import graph.processors.ProcessorTypeDEF;
 import graph.processors.UnavoidableEdgeProcessor;
 import graph.processors.UntouchableEdgeProcessor;

@@ -128,7 +128,7 @@ public class Vertex {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Vertex ").append(id).append(" : ");
-        for (Edge e: adjacentEdges) sb.append(e.getId()).append(" ");
+        for (Edge e: adjacentEdges) sb.append(e.getOppositeVertex(this).getId()).append(" ");
         if (consistentTwoFactorState != null) sb.append(weight == 0 ? " N" : " P");
         sb.append("\n");
         return sb.toString();

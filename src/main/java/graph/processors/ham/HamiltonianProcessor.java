@@ -1,10 +1,11 @@
-package graph.processors;
+package graph.processors.ham;
 
 import graph.components.AbstractGraph;
 import graph.preprocessors.HamiltonianPreProcessor;
+import graph.processors.AbstractProcessor;
 import graph.utils.SimpleUnionFindSet;
 
-public class HamiltonianProcessor extends AbstractProcessor{
+public class HamiltonianProcessor extends AbstractProcessor {
     private HamiltonianPreProcessor hamPreProcess;
 
     public HamiltonianProcessor(AbstractGraph graph) {
