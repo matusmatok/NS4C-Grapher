@@ -26,7 +26,7 @@ public class HamUnavoidableEdgeGetter extends HamEdgeGetter{
         for (Edge e: graph.getEdges()) {
             if (!badEdges.contains(e)) {
                 excludeEdge(e);
-                if (!cycleConstructible())  goodEdges.add(e);
+                if (!cycleConstructable())  goodEdges.add(e);
                 undoExcludeEdge(e);
             }
         }

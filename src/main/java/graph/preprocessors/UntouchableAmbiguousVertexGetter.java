@@ -25,7 +25,7 @@ public class UntouchableAmbiguousVertexGetter extends AmbiguousVertexGetter {
             }
             else if (includeEdge(potentialEdge)) {
                 unionFindSet.union(potentialEdge.getVTo(), potentialEdge.getVFrom());
-                if (!cycleConstructible()) ambiguousVertices.add(v);
+                if (!cycleConstructable(v.getAdjacentEdges().get(0).getOppositeVertex(v))) ambiguousVertices.add(v);
                 unionFindSet.disunion();
                 undoIncludeEdge(potentialEdge);
             }

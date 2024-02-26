@@ -24,10 +24,10 @@ public class UnavoidableAmbiguousVertexGetter extends AmbiguousVertexGetter {
         for (Vertex v : graph.getVertices()) {
             for (Edge e : v.getAdjacentEdges()) excludeOmittedEdge(e, v);
             if (v.getAdjacentEdges().contains(goodEdge)) {
-                if (!cycleConstructible()) ambiguousVertices.add(v);
+                if (!cycleConstructable(v.getAdjacentEdges().get(0).getOppositeVertex(v))) ambiguousVertices.add(v);
             }
             else if (excludeEdge(goodEdge)) {
-                if (!cycleConstructible()) ambiguousVertices.add(v);
+                if (!cycleConstructable(v.getAdjacentEdges().get(0).getOppositeVertex(v))) ambiguousVertices.add(v);
                 undoExcludeEdge(goodEdge);
             }
             else {

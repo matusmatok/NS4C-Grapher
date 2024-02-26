@@ -317,7 +317,7 @@ public abstract class AbstractGraph {
 
     public void printHamCycleStates() {
         for (Vertex v: vertices) System.out.println("Vertex " + v.getId() + " State: " + v.getCycleState());
-        for (Edge e: edges) System.out.println("Edge " + e.getId() + " State: " + e.getHamCycleState());
+        for (Edge e: edges) System.out.println("Edge " + e.getId() + " From " + e.getVFrom().getId() + " To " + e.getVTo().getId() + " State: " + e.getHamCycleState());
     }
 
     public int minimalFaceSize(){

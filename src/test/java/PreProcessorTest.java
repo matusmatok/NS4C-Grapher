@@ -1,21 +1,25 @@
 import graph.components.Edge;
 import graph.components.AbstractGraph;
+import graph.components.NoLadderC4ECGraph;
 import graph.components.Vertex;
 import graph.preprocessors.HamUnavoidableEdgeGetter;
 import graph.preprocessors.HamUntouchableEdgeGetter;
 import graph.preprocessors.UnavoidableAmbiguousVertexGetter;
 import graph.preprocessors.UntouchableAmbiguousVertexGetter;
+import graph.preprocessors.util.VertexSetOmittingHamUtil;
 import mock.ExtendedTenTuttovTotoMock;
 import mock.TutteFragmentMock;
 import org.junit.Test;
 
+import java.io.FileNotFoundException;
 import java.util.List;
+import java.util.Set;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class PreProcessorTest {
+public class PreProcessorTest implements ResourceDependent{
 
     private static final AbstractGraph TUTTE_FRAGMENT_MOCK = new TutteFragmentMock();
     private static final AbstractGraph EXTENDED_TEN_TUTTOV_TOTO_MOCK = new ExtendedTenTuttovTotoMock();
@@ -63,5 +67,31 @@ public class PreProcessorTest {
         final UntouchableAmbiguousVertexGetter untouchableAmbiguousVertexGetter = new UntouchableAmbiguousVertexGetter(EXTENDED_TEN_TUTTOV_TOTO_MOCK);
         final List<Vertex> untouchableResult = untouchableAmbiguousVertexGetter.getResult(EXTENDED_TEN_TUTTOV_TOTO_MOCK.getEdges().get(48));
         assertEquals(37, untouchableResult.size());
+    }
+
+    @Test
+    public void testVertexSetOmittingHamUtil() throws FileNotFoundException {
+        assertFalse(VertexSetOmittingHamUtil.isUnavoidConstructable(TUTTE_FRAGMENT_MOCK, Set.of(TUTTE_FRAGMENT_MOCK.getVertex(1)), TUTTE_FRAGMENT_MOCK.getEdge(0)));
+        assertFalse(VertexSetOmittingHamUtil.isUnavoidConstructable(TUTTE_FRAGMENT_MOCK, Set.of(TUTTE_FRAGMENT_MOCK.getVertex(6)), TUTTE_FRAGMENT_MOCK.getEdge(0)));
+        assertTrue(VertexSetOmittingHamUtil.isUnavoidConstructable(TUTTE_FRAGMENT_MOCK, Set.of(TUTTE_FRAGMENT_MOCK.getVertex(0)), TUTTE_FRAGMENT_MOCK.getEdge(0)));
+
+        final AbstractGraph nonHamiltonian = NoLadderC4ECGraph.loadFromFile(loadResourceAsStream("nonHamiltonianGraph.txt"));
+        assertTrue(VertexSetOmittingHamUtil.isUnavoidConstructable(nonHamiltonian,
+                Set.of(nonHamiltonian.getVertex(10),
+                        nonHamiltonian.getVertex(41),
+                        nonHamiltonian.getVertex(0),
+                        nonHamiltonian.getVertex(31)), nonHamiltonian.getEdge(5, 36)));
+
+        assertFalse(VertexSetOmittingHamUtil.isUnavoidConstructable(nonHamiltonian,
+                Set.of(nonHamiltonian.getVertex(10),
+                        nonHamiltonian.getVertex(41),
+                        nonHamiltonian.getVertex(0),
+                        nonHamiltonian.getVertex(31)), nonHamiltonian.getEdge(8,9)));
+
+        assertTrue(VertexSetOmittingHamUtil.isUntouchConstructable(nonHamiltonian,
+                Set.of(nonHamiltonian.getVertex(10),
+                        nonHamiltonian.getVertex(41),
+                        nonHamiltonian.getVertex(0),
+                        nonHamiltonian.getVertex(31)), nonHamiltonian.getEdge(8,9)));
     }
 }

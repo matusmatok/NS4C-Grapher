@@ -20,12 +20,12 @@ public class HamiltonianPreProcessor extends AbstractPreProcessor{
         final Edge randomEdge = graph.getEdge(0);
         includeEdge(randomEdge);
         unionFindSet.union(randomEdge.getVFrom(), randomEdge.getVTo());
-        if (!cycleConstructible()) {
+        if (!cycleConstructable()) {
             unionFindSet.disunion();
             undoIncludeEdge(randomEdge);
 
             excludeEdge(randomEdge);
-            if (!cycleConstructible()) {
+            if (!cycleConstructable()) {
                 undoExcludeEdge(randomEdge);
                 return false;
             } else {

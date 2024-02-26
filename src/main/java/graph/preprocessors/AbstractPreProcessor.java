@@ -51,6 +51,7 @@ public abstract class AbstractPreProcessor<T> {
 
     protected final AbstractUnionFindSet unionFindSet;
     protected final AbstractGraph graph;
+    protected Vertex includedVertex;
 
     public AbstractPreProcessor(AbstractGraph g, AbstractUnionFindSet unionFindSet) {
         graph = g;
@@ -59,8 +60,19 @@ public abstract class AbstractPreProcessor<T> {
     }
 
     protected abstract boolean canCloseCycle(Vertex color);
-    protected boolean cycleConstructible(){
-        if (canCloseCycle(unionFindSet.find(graph.getVertices().get(0)))) {
+
+    protected boolean cycleConstructable() {
+        includedVertex = graph.getVertex(0);
+        return cycleConstructableRecursive();
+    }
+
+    protected boolean cycleConstructable(final Vertex includedVertex) {
+        this.includedVertex = includedVertex;
+        return cycleConstructableRecursive();
+    }
+
+    private boolean cycleConstructableRecursive(){
+        if (canCloseCycle(unionFindSet.find(includedVertex))) {
             finalTask();
             return true;
         }
@@ -69,7 +81,7 @@ public abstract class AbstractPreProcessor<T> {
         if (deterministicVertices.size() > 0) vertex = deterministicVertices.stream().findAny().get();
         else if (choiceVertices.size() > 0) vertex = choiceVertices.stream().findAny().get();
         else {
-            System.out.print(unionFindSet.find(graph.getVertices().get(0)).getSubtreeSize());
+            System.out.println("ID " + includedVertex.getId() + " subtreeSize " + unionFindSet.find(includedVertex).getSubtreeSize());
             graph.printHamCycleStates();
             throw new RuntimeException("No operand, preprocessor failed.");
         }
@@ -87,7 +99,7 @@ public abstract class AbstractPreProcessor<T> {
             case DETERMINISTIC_EXCLUDE_REMAINING:
                 if (otherVertexPostExcludeState != null) {
                     excludeEdge(edge);
-                    final boolean result = cycleConstructible();
+                    final boolean result = cycleConstructableRecursive();
                     undoExcludeEdge(edge);
                     return result;
                 }
@@ -105,7 +117,7 @@ public abstract class AbstractPreProcessor<T> {
                     else {
                         unionFindSet.union(unionFindSet.find(vertex), unionFindSet.find(otherVertex));
                         includeEdge(edge);
-                        final boolean result = cycleConstructible();
+                        final boolean result = cycleConstructableRecursive();
                         undoIncludeEdge(edge);
                         unionFindSet.disunion();
                         return result;
@@ -116,7 +128,7 @@ public abstract class AbstractPreProcessor<T> {
                 boolean result = false;
                 if (otherVertexPostExcludeState != null) {
                     excludeEdge(edge);
-                    result = cycleConstructible();
+                    result = cycleConstructableRecursive();
                     undoExcludeEdge(edge);
                     if (result) return true;
                 }
@@ -131,7 +143,7 @@ public abstract class AbstractPreProcessor<T> {
                     else {
                         unionFindSet.union(unionFindSet.find(vertex), unionFindSet.find(otherVertex));
                         includeEdge(edge);
-                        result = cycleConstructible();
+                        result = cycleConstructableRecursive();
                         undoIncludeEdge(edge);
                         unionFindSet.disunion();
                     }

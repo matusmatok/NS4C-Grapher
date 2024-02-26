@@ -22,7 +22,7 @@ public class HamUntouchableEdgeGetter extends HamEdgeGetter {
             if (!badEdges.contains(e)) {
                 includeEdge(e);
                 unionFindSet.union(e.getVFrom(), e.getVTo());
-                if (!cycleConstructible()) {
+                if (!cycleConstructable()) {
                     goodEdges.add(e);
                 }
                 unionFindSet.disunion();
