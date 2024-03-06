@@ -307,11 +307,11 @@ public abstract class AbstractGraph {
        StringBuilder sb = new StringBuilder();
        sb.append("--BEGIN--\n").append("VERTICES:\n");
        for (Vertex v: vertices) sb.append(v.toString());
-       sb.append("EDGES:\n");
-       for (Edge e: edges) sb.append(e.toString());
-       sb.append("FACES:\n");
-       for (Face f: faces) sb.append(f.toString());
-       sb.append("--END--\n");
+//       sb.append("EDGES:\n");
+//       for (Edge e: edges) sb.append(e.toString());
+//       sb.append("FACES:\n");
+//       for (Face f: faces) sb.append(f.toString());
+//       sb.append("--END--\n");
        return sb.toString();
     }
 

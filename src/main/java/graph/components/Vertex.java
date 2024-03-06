@@ -30,6 +30,12 @@ public class Vertex {
     private int subtreeSize = 1;
     /*------*/
 
+    public enum Type {
+        POSITIVE,
+        NEGATIVE,
+        CUBE
+    }
+
     public enum CycleVertexState {
         UNDISCOVERED,
         CHOICE,
@@ -62,6 +68,8 @@ public class Vertex {
     private ConsistentTwoFactorState consistentTwoFactorState;
     @Getter @Setter
     private int weight;
+    @Getter @Setter
+    private Type type;
 
     public Vertex(int id){
         this.id = id;
@@ -108,16 +116,19 @@ public class Vertex {
     public void setSelfPositive() {
         this.weight = 1;
         this.consistentTwoFactorState = ConsistentTwoFactorState.P_UNDISCOVERED;
+        this.type = Type.POSITIVE;
     }
 
     public void setSelfNegative() {
         this.weight = 0;
         this.consistentTwoFactorState = ConsistentTwoFactorState.N_UNDISCOVERED;
+        this.type = Type.NEGATIVE;
     }
 
     public void setSelfPseudoNegative() {
         this.weight = 0;
         this.consistentTwoFactorState = ConsistentTwoFactorState.P_UNDISCOVERED;
+        this.type = Type.CUBE;
     }
 
     public void print(){
@@ -129,7 +140,13 @@ public class Vertex {
         StringBuilder sb = new StringBuilder();
         sb.append("Vertex ").append(id).append(" : ");
         for (Edge e: adjacentEdges) sb.append(e.getOppositeVertex(this).getId()).append(" ");
-        if (consistentTwoFactorState != null) sb.append(weight == 0 ? " N" : " P");
+        if (type != null) {
+            switch (type) {
+                case POSITIVE -> sb.append("P");
+                case NEGATIVE -> sb.append("N");
+                case CUBE -> sb.append("C");
+            }
+        }
         sb.append("\n");
         return sb.toString();
     }

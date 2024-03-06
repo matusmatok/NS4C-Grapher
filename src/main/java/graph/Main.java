@@ -25,7 +25,7 @@ public class Main {
     
     
     public static void main(String[] args){
-        runNoLadderC4ECGenerator1(26);
+        System.out.println(2^(0));
     }
 
     /**
@@ -43,5 +43,4 @@ public class Main {
         final NoLadderC4ECGenerator generator = new NoLadderC4ECGenerator(graph, new HamEdgeProcessor(graph, new HamUntouchableEdgeGetter(graph)), depth);
         generator.generate();
     }
-
 }
