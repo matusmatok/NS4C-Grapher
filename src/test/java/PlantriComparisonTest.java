@@ -26,16 +26,19 @@ public class PlantriComparisonTest implements ResourceDependent {
 
     public PlantriComparisonTest(final int depth) {
         generatedGraphs = new HashSet<>();
+        final int[] counter = {0};
         final NoLadderC4ECGraph graph = new NoLadderC4ECGraph();
         graph.init();
         final NoLadderC4ECGenerator generator = new NoLadderC4ECGenerator(graph, new Processor(graph, null, null, null) {
             @Override
             public boolean hasProperty() {
                 generatedGraphs.add(CanonicalCoder.getCodeForGraph(graph));
+                counter[0]++;
                 return true;
             }
         }, depth);
         generator.generate();
+        System.out.println(counter[0]);
 
         filter = new NoLadderFilter(loadResourceAsStream("/plantriOutputs/" + depth + "vertices.txt"));
     }

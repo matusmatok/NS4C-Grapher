@@ -8,6 +8,7 @@ import graph.components.NoLadderC4ECGraph;
 import graph.components.Vertex;
 import graph.generators.noladderc4ec.NoLadderC4ECOperandProvider.Operand;
 import graph.processors.Processor;
+import graph.utils.GlobalProgressBar;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -32,6 +33,7 @@ public class NoLadderC4ECGenerator {
     }
 
     public void generate() {
+        GlobalProgressBar.startProgressBar();
         if (graph.getVertices().size() != 14) throw new IllegalArgumentException();
 
         graph.operationB(graph.getFace(3), graph.getVertex(2));
@@ -59,12 +61,17 @@ public class NoLadderC4ECGenerator {
         graph.operationF(graph.getFace(4), graph.getEdge(12));
         recursiveGenerate(new CachingCoder(graph));
         graph.reductionF();
+        GlobalProgressBar.terminate();
     }
 
     private void recursiveGenerate(final CachingCoder coder) {
         if (graph.getVertices().size() >= depth) {
             processor.hasProperty();
             return;
+        }
+
+        if (graph.getVertices().size() == 28) {
+            GlobalProgressBar.step();
         }
 
         graph.toNormalForm();

@@ -13,6 +13,7 @@ import graph.preprocessors.ambiguous.UntouchableAmbiguousVertexGetter;
 import graph.preprocessors.distributors.NoLadderC4ECPolarityDistributor;
 import graph.processors.Processor;
 import graph.processors.ham.HamEdgeProcessor;
+import graph.utils.GlobalProgressBar;
 
 /**
  *
@@ -24,7 +25,7 @@ public class Main {
     private static int MAX_DEPTH = 48;
     
     public static void main(String[] args){
-        runNoLadderGeneratorWithProcessing(38);
+        runNoLadderGeneratorWithProcessing(34);
     }
 
     /**
@@ -48,6 +49,7 @@ public class Main {
      * @param depth is the depth of the generator
      * */
     private static void runNoLadderGeneratorWithProcessing(final int depth) {
+        GlobalProgressBar.setEnabled(true);
         final NoLadderC4ECGraph graph = new NoLadderC4ECGraph();
         graph.init();
 
