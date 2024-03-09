@@ -3,11 +3,11 @@ package graph.processors.ham;
 import graph.components.Edge;
 import graph.components.NoLadderC4ECGraph;
 import graph.preprocessors.HamEdgeGetter;
-import graph.processors.AbstractProcessor;
+import graph.processors.Processor;
 
 import java.util.List;
 
-public class HamEdgeProcessor extends AbstractProcessor {
+public class HamEdgeProcessor extends Processor {
     public HamEdgeProcessor(NoLadderC4ECGraph graph, HamEdgeGetter potentialEdgeGetter) {
         super(graph, potentialEdgeGetter, null, null);
     }

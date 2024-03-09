@@ -3,10 +3,7 @@ import static org.junit.Assert.assertEquals;
 import graph.components.NoLadderC4ECGraph;
 import java.util.Iterator;
 
-import graph.generators.noladderc4ec.NoLadderC4ECGenerator;
-import graph.processors.AbstractProcessor;
 import org.junit.Test;
-import plantri.NoLadderFilter;
 import plantri.PlantriOutputReader;
 
 public class PlantriSetupTest implements ResourceDependent {

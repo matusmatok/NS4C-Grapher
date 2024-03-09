@@ -4,7 +4,7 @@ import graph.canoniccoders.CanonicalCoder;
 import graph.canoniccoders.LexCode;
 import graph.components.NoLadderC4ECGraph;
 import graph.generators.noladderc4ec.NoLadderC4ECGenerator;
-import graph.processors.AbstractProcessor;
+import graph.processors.Processor;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -28,7 +28,7 @@ public class PlantriComparisonTest implements ResourceDependent {
         generatedGraphs = new HashSet<>();
         final NoLadderC4ECGraph graph = new NoLadderC4ECGraph();
         graph.init();
-        final NoLadderC4ECGenerator generator = new NoLadderC4ECGenerator(graph, new AbstractProcessor(graph, null, null, null) {
+        final NoLadderC4ECGenerator generator = new NoLadderC4ECGenerator(graph, new Processor(graph, null, null, null) {
             @Override
             public boolean hasProperty() {
                 generatedGraphs.add(CanonicalCoder.getCodeForGraph(graph));

@@ -4,10 +4,10 @@ import graph.builders.AbstractTwoFactorBuilder;
 import graph.components.Edge;
 import graph.components.AbstractGraph;
 import graph.components.Vertex;
-import graph.preprocessors.AmbiguousVertexGetter;
+import graph.preprocessors.ambiguous.AmbiguousVertexGetter;
 import graph.preprocessors.HamEdgeGetter;
-import graph.preprocessors.ReducibleConfigurationFinder;
-import graph.preprocessors.VertexPolarityDistributor;
+import graph.preprocessors.reducible.ReducibleConfigurationFinder;
+import graph.preprocessors.distributors.VertexPolarityDistributor;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -3,7 +3,7 @@ package graph.processors;
 import graph.builders.UnavoidableBuilder;
 import graph.components.AbstractGraph;
 import graph.preprocessors.HamUnavoidableEdgeGetter;
-import graph.preprocessors.UnavoidableAmbiguousVertexGetter;
+import graph.preprocessors.ambiguous.UnavoidableAmbiguousVertexGetter;
 
 public class ProcessorTypeDEF extends AbstractProcessorV2 {
 

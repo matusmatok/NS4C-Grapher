@@ -2,12 +2,11 @@ import graph.canoniccoders.CachingCoder;
 import graph.canoniccoders.LexCode;
 import graph.components.NoLadderC4ECGraph;
 import graph.generators.noladderc4ec.NoLadderC4ECGenerator;
-import graph.processors.AbstractProcessor;
+import graph.processors.Processor;
 import graph.utils.EasyList;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
@@ -84,7 +83,7 @@ public class NoLadderC4CCGeneratorTest {
         final NoLadderC4ECGraph graph = new NoLadderC4ECGraph();
         graph.init();
 
-        final NoLadderC4ECGenerator generator = new NoLadderC4ECGenerator(graph, new AbstractProcessor(graph, null, null, null) {
+        final NoLadderC4ECGenerator generator = new NoLadderC4ECGenerator(graph, new Processor(graph, null, null, null) {
             @Override
             public boolean hasProperty() {
                 final CachingCoder coder = new CachingCoder(graph);
@@ -102,7 +101,7 @@ public class NoLadderC4CCGeneratorTest {
         final NoLadderC4ECGraph noLadderC4ECGraph = new NoLadderC4ECGraph();
         noLadderC4ECGraph.init();
         final int depth = 24;
-        final NoLadderC4ECGenerator generator = new NoLadderC4ECGenerator(noLadderC4ECGraph, new AbstractProcessor(noLadderC4ECGraph, null, null, null) {
+        final NoLadderC4ECGenerator generator = new NoLadderC4ECGenerator(noLadderC4ECGraph, new Processor(noLadderC4ECGraph, null, null, null) {
             @Override
             public boolean hasProperty() {
                 if (graph.getVertices().size() == depth) {
@@ -122,7 +121,7 @@ public class NoLadderC4CCGeneratorTest {
 
         final Set<LexCode> lexCodes = new HashSet<>();
         final CachingCoder coder = new CachingCoder(noLadderC4ECGraph);
-        final NoLadderC4ECGenerator generator = new NoLadderC4ECGenerator(noLadderC4ECGraph, new AbstractProcessor(noLadderC4ECGraph, null, null, null) {
+        final NoLadderC4ECGenerator generator = new NoLadderC4ECGenerator(noLadderC4ECGraph, new Processor(noLadderC4ECGraph, null, null, null) {
             @Override
             public boolean hasProperty() {
                 final LexCode currentCode = coder.getGraphCode();

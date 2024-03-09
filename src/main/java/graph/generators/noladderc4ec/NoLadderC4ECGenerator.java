@@ -7,7 +7,7 @@ import graph.components.Face;
 import graph.components.NoLadderC4ECGraph;
 import graph.components.Vertex;
 import graph.generators.noladderc4ec.NoLadderC4ECOperandProvider.Operand;
-import graph.processors.AbstractProcessor;
+import graph.processors.Processor;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,10 +17,10 @@ import java.util.Set;
 public class NoLadderC4ECGenerator {
 
     private final NoLadderC4ECGraph graph;
-    private final AbstractProcessor processor;
+    private final Processor processor;
     private final int depth;
 
-    public NoLadderC4ECGenerator(NoLadderC4ECGraph graph, AbstractProcessor processor, int depth) {
+    public NoLadderC4ECGenerator(NoLadderC4ECGraph graph, Processor processor, int depth) {
         if (depth % 2 != 0) throw new IllegalArgumentException("Depth must be an even number.");
         this.graph = graph;
         this.processor = processor;

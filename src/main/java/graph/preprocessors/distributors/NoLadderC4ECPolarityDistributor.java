@@ -1,4 +1,4 @@
-package graph.preprocessors;
+package graph.preprocessors.distributors;
 
 import graph.components.AbstractGraph;
 import graph.components.Vertex;
@@ -8,12 +8,26 @@ import graph.utils.SubsetIterator;
 import java.util.Iterator;
 import java.util.List;
 
-public class NoLadderC4ECPolarityDistributor implements Iterable<AbstractGraph> {
+public class NoLadderC4ECPolarityDistributor extends AbstractDistributor {
 
     private final int maxGraphSize;
 
     private final AbstractGraph graph;
     private final List<Vertex> ambiguousVertices;
+
+    public static class NoLadderDistributorFactory extends DistributorFactory {
+        private final int depth;
+        public NoLadderDistributorFactory(final int depth) {
+            this.depth = depth;
+        }
+        public AbstractDistributor produceDistributor(final AbstractGraph g, final List<Vertex> ambiguousVertices) {
+            return new NoLadderC4ECPolarityDistributor(g, ambiguousVertices, depth);
+        }
+    }
+
+    public static DistributorFactory getFactory(final int depth) {
+        return new NoLadderDistributorFactory(depth);
+    }
 
     public NoLadderC4ECPolarityDistributor(final AbstractGraph graph, final List<Vertex> ambiguousVertices,
                                            final int maxGraphSize) {

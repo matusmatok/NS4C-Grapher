@@ -5,14 +5,13 @@
  */
 package graph;
 
-import graph.canoniccoders.CanonicalCoder;
+import graph.builders.UntouchableBuilder;
 import graph.components.NoLadderC4ECGraph;
-import graph.components.SimpleGraph;
-import graph.generators.cubicplanar.TopVerifyingGenerator;
 import graph.generators.noladderc4ec.NoLadderC4ECGenerator;
 import graph.preprocessors.HamUntouchableEdgeGetter;
-import graph.processors.AbstractProcessor;
-import graph.processors.UnavoidableEdgeProcessor;
+import graph.preprocessors.ambiguous.UntouchableAmbiguousVertexGetter;
+import graph.preprocessors.distributors.NoLadderC4ECPolarityDistributor;
+import graph.processors.Processor;
 import graph.processors.ham.HamEdgeProcessor;
 
 /**
@@ -22,17 +21,15 @@ import graph.processors.ham.HamEdgeProcessor;
 
 
 public class Main {
-    
+    private static int MAX_DEPTH = 48;
     
     public static void main(String[] args){
-        System.out.println(2^(0));
+        runNoLadderGeneratorWithProcessing(38);
     }
 
     /**
-     * This method runs the
-     * @link NoLadderC4ECGenerator.java
-     *
-     * and verifies whether the graphs contain an untouchable edge.
+     * This method runs the {@link NoLadderC4ECGenerator}
+     * and verifies whether the graphs contain a hamiltonian-untouchable edge.
      *
      * @param depth is the depth of the generator. At 26, we get the first positive result
      * */
@@ -41,6 +38,26 @@ public class Main {
         graph.init();
 
         final NoLadderC4ECGenerator generator = new NoLadderC4ECGenerator(graph, new HamEdgeProcessor(graph, new HamUntouchableEdgeGetter(graph)), depth);
+        generator.generate();
+    }
+
+    /**
+     * This method uses {@link NoLadderC4ECGenerator} and a custom {@link Processor} setup
+     * to find the smallest gadget containing an untouchable edge.
+     *
+     * @param depth is the depth of the generator
+     * */
+    private static void runNoLadderGeneratorWithProcessing(final int depth) {
+        final NoLadderC4ECGraph graph = new NoLadderC4ECGraph();
+        graph.init();
+
+        final NoLadderC4ECGenerator generator = new NoLadderC4ECGenerator(graph,
+                new Processor(graph,
+                        new HamUntouchableEdgeGetter(graph),
+                        new UntouchableAmbiguousVertexGetter(graph),
+                        new NoLadderC4ECPolarityDistributor.NoLadderDistributorFactory(MAX_DEPTH),
+                        new UntouchableBuilder(graph)),
+                depth);
         generator.generate();
     }
 }

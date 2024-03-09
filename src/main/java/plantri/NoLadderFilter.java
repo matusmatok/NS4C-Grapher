@@ -1,7 +1,7 @@
 package plantri;
 
 import graph.components.NoLadderC4ECGraph;
-import graph.preprocessors.ReducibleConfigurationFinder;
+import graph.preprocessors.reducible.ReducibleConfigurationFinder;
 
 import java.io.InputStreamReader;
 

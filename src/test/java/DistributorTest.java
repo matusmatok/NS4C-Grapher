@@ -1,6 +1,6 @@
 import graph.components.AbstractGraph;
 import graph.components.Vertex;
-import graph.preprocessors.VertexPolarityDistributor;
+import graph.preprocessors.distributors.VertexPolarityDistributor;
 import mock.FacedTutteFragmentMock;
 import org.junit.Test;
 

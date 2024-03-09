@@ -9,7 +9,7 @@ import graph.components.Face;
 import graph.components.SimpleGraph;
 import graph.generators.AbstractGenerator;
 import graph.generators.cubicplanar.OperandProvider.Operand;
-import graph.processors.AbstractProcessor;
+import graph.processors.Processor;
 import lombok.Getter;
 
 import java.util.HashSet;
@@ -24,7 +24,7 @@ public class TopVerifyingGenerator extends AbstractGenerator {
     @Getter
     private int topLevelGraphs = 0;
 
-    public TopVerifyingGenerator(SimpleGraph graph, AbstractProcessor processor, int depth) {
+    public TopVerifyingGenerator(SimpleGraph graph, Processor processor, int depth) {
         super(graph, processor, depth);
     }
 

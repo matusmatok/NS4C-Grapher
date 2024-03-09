@@ -4,7 +4,6 @@ import graph.canoniccoders.obsolete.AbstractCanonicCoder;
 import graph.canoniccoders.obsolete.BFSCoder;
 import graph.canoniccoders.LexCode;
 import graph.components.Face;
-import graph.components.AbstractGraph;
 import graph.components.SimpleGraph;
 import graph.components.Vertex;
 import java.util.ArrayList;
@@ -13,14 +12,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import graph.generators.AbstractGenerator;
-import graph.processors.AbstractProcessor;
+import graph.processors.Processor;
 
 public class SimpleGenerator extends AbstractGenerator {
     private final Map<String, Boolean> discoveredGraphs = new HashMap<>();
 
     private static final AbstractCanonicCoder coder = new BFSCoder();
 
-    public SimpleGenerator(SimpleGraph graph, AbstractProcessor processor) {
+    public SimpleGenerator(SimpleGraph graph, Processor processor) {
         super(graph, processor, 22);
     }
 

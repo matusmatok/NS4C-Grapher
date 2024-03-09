@@ -1,16 +1,15 @@
 package graph.generators;
 
-import graph.components.AbstractGraph;
 import graph.components.SimpleGraph;
-import graph.processors.AbstractProcessor;
+import graph.processors.Processor;
 
 public abstract class AbstractGenerator {
 
-    protected final AbstractProcessor processor;
+    protected final Processor processor;
     protected final SimpleGraph graph;
     protected final int depth;
 
-    public AbstractGenerator(SimpleGraph graph, AbstractProcessor processor, int depth) {
+    public AbstractGenerator(SimpleGraph graph, Processor processor, int depth) {
         this.processor = processor;
         this.graph = graph;
         this.depth = depth;

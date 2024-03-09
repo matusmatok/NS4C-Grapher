@@ -4,7 +4,7 @@ import static org.junit.Assert.assertTrue;
 import graph.builders.UnavoidableBuilder;
 import graph.components.AbstractGraph;
 import graph.components.Vertex;
-import graph.preprocessors.NoLadderC4ECPolarityDistributor;
+import graph.preprocessors.distributors.NoLadderC4ECPolarityDistributor;
 import graph.utils.SubsetIterator;
 import mock.FacedTutteFragmentMock;
 import org.junit.Test;

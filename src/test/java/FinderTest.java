@@ -1,6 +1,6 @@
 import graph.components.AbstractGraph;
 import graph.components.Vertex;
-import graph.preprocessors.ReducibleConfigurationFinder;
+import graph.preprocessors.reducible.ReducibleConfigurationFinder;
 import mock.FacedTutteFragmentMock;
 import org.junit.Ignore;
 import org.junit.Test;

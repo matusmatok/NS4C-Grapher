@@ -1,4 +1,4 @@
-package graph.preprocessors;
+package graph.preprocessors.distributors;
 
 import graph.components.CubeTripole;
 import graph.components.AbstractGraph;
@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class VertexPolarityDistributor implements Iterable<AbstractGraph> {
+public class VertexPolarityDistributor extends AbstractDistributor {
 
     private final AbstractGraph graph;
     private final List<Vertex> ambiguousVertices;
@@ -24,6 +24,16 @@ public class VertexPolarityDistributor implements Iterable<AbstractGraph> {
 
     private int currentDistributionNumber = 0;
     private final int maxDistributionNumber;
+
+    public static class VertexPolarityDistributorFactory extends DistributorFactory {
+        public AbstractDistributor produceDistributor(final AbstractGraph g, final List<Vertex> ambiguousVertices) {
+            return new VertexPolarityDistributor(g, ambiguousVertices);
+        }
+    }
+
+    public static DistributorFactory getFactory() {
+        return new VertexPolarityDistributorFactory();
+    }
 
     public VertexPolarityDistributor(AbstractGraph g, List<Vertex> ambiguousVertices) {
         this(g, ambiguousVertices, new ArrayList<>(), new int[] {});

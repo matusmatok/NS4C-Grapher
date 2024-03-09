@@ -1,4 +1,4 @@
-package graph.preprocessors;
+package graph.preprocessors.reducible;
 
 import graph.components.Edge;
 import graph.components.Face;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ReducibleConfigurationFinder {
+public class ReducibleConfigurationFinder extends AbstractFinder{
 
     private final AbstractGraph graph;
     private List<FaceAdjacentAmbiguousVertices> cachedFaces;
