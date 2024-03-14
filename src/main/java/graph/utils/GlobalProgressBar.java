@@ -13,6 +13,10 @@ public class GlobalProgressBar {
     @Getter @Setter
     private static boolean enabled = false;
 
+    public static void setEnabled(final boolean value) {
+        enabled = value;
+    }
+
     private static ProgressBar progressBar;
 
     public static void startProgressBar() {

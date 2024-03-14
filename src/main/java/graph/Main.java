@@ -25,7 +25,7 @@ public class Main {
     private static int MAX_DEPTH = 48;
     
     public static void main(String[] args){
-        runNoLadderGeneratorWithProcessing(34);
+        runNoLadderGeneratorWithProcessing(30);
     }
 
     /**
