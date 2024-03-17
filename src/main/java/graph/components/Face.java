@@ -5,10 +5,12 @@
  */
 package graph.components;
 
+import graph.utils.Pair;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,7 +30,7 @@ public class Face {
     @Getter @Setter
     private int priority = 0;
     
-    public Face(int id){
+    public Face(int id) {
         this.id = id;
     }
 
@@ -37,11 +39,11 @@ public class Face {
         adjacentEdges = edges;
     }
     
-    public void addEdge(Edge e){
+    public void addEdge(Edge e) {
         this.adjacentEdges.add(e);
     }
     
-    public int getIndexOfE(Edge e){
+    public int getIndexOfE(Edge e) {
         for (int i = 0; i<adjacentEdges.size(); i++){
             if (adjacentEdges.get(i) == e) return i;
         }
@@ -52,11 +54,11 @@ public class Face {
         return adjacentEdges.stream().min(Comparator.comparingInt(Edge::getId)).orElseThrow();
     }
     
-    public int size(){
+    public int size() {
         return this.adjacentEdges.size();
     }
 
-    public Edge getEdge(int index){
+    public Edge getEdge(int index) {
         return this.adjacentEdges.get((index + this.size()) % this.size());
     }
 
@@ -66,11 +68,11 @@ public class Face {
                 .collect(Collectors.toList());
     }
     
-    public ArrayList<Edge> getAdjacentEdgesCOPY(){
+    public ArrayList<Edge> getAdjacentEdgesCOPY() {
         return new ArrayList<>(this.adjacentEdges);
     }
     
-    public void addEdgeAfter(Edge currentEdge, Edge newEdge){
+    public void addEdgeAfter(Edge currentEdge, Edge newEdge) {
         List<Edge> newList = new ArrayList<>();
         for(Edge e: this.adjacentEdges){
             newList.add(e);
@@ -88,7 +90,7 @@ public class Face {
         this.adjacentEdges = newList;
     }
     
-    public void print(){
+    public void print() {
         System.out.print(this);
     }
 
@@ -101,7 +103,7 @@ public class Face {
         return sb.toString();
     }
     
-    public int getVertexOfSmallestId(){
+    public int getVertexOfSmallestId() {
         Vertex v1 = adjacentEdges.get(0).getVFrom();
         Vertex v2 = adjacentEdges.get(0).getVTo();
         Vertex v3 = (adjacentEdges.get(1).getVFrom() != v1 && adjacentEdges.get(1).getVFrom() != v2) ? adjacentEdges.get(1).getVFrom() : adjacentEdges.get(1).getVTo();
@@ -114,11 +116,19 @@ public class Face {
         }
     }
 
-    public List<Face> getIncidentFaces(){
+    public List<Face> getIncidentFaces() {
         return adjacentEdges.stream().map((e) -> {return e.getOppositeFace(this);}).collect(Collectors.toList());
     }
 
-    public int getIndexOfIncidentFace(Face f){
+    public List<Vertex> getAdjacentVertices() {
+        return adjacentEdges.stream()
+                .map(edge -> List.of(edge.getVTo(), edge.getVFrom()))
+                .flatMap(Collection::stream)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public int getIndexOfIncidentFace(Face f) {
         List<Face> incidentFaces = getIncidentFaces();
         for (int i=0; i<incidentFaces.size(); i++){
             if (incidentFaces.get(i) == f) return i;
@@ -126,7 +136,7 @@ public class Face {
         throw new RuntimeException("Face not found");
     }
 
-    public void removeEdge(Edge e){
+    public void removeEdge(Edge e) {
         adjacentEdges.remove(e);
     }
 

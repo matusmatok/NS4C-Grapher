@@ -1,7 +1,6 @@
 package graph.utils;
 
 import lombok.Getter;
-import lombok.Setter;
 import me.tongfei.progressbar.ProgressBar;
 import me.tongfei.progressbar.ProgressBarBuilder;
 
@@ -10,8 +9,12 @@ public class GlobalProgressBar {
     private final static int NO_LADDERS_AT_TD = 2277;
     @Getter
     private final static int TRACKING_DEPTH = 28;
-    @Getter @Setter
+    @Getter
     private static boolean enabled = false;
+
+    public static void setEnabled(final boolean value) {
+        enabled = value;
+    }
 
     private static ProgressBar progressBar;
 

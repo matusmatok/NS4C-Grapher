@@ -71,25 +71,25 @@ public class PreProcessorTest implements ResourceDependent{
 
     @Test
     public void testVertexSetOmittingHamUtil() throws FileNotFoundException {
-        assertFalse(VertexSetOmittingHamUtil.isUnavoidConstructable(TUTTE_FRAGMENT_MOCK, Set.of(TUTTE_FRAGMENT_MOCK.getVertex(1)), TUTTE_FRAGMENT_MOCK.getEdge(0)));
-        assertFalse(VertexSetOmittingHamUtil.isUnavoidConstructable(TUTTE_FRAGMENT_MOCK, Set.of(TUTTE_FRAGMENT_MOCK.getVertex(6)), TUTTE_FRAGMENT_MOCK.getEdge(0)));
-        assertTrue(VertexSetOmittingHamUtil.isUnavoidConstructable(TUTTE_FRAGMENT_MOCK, Set.of(TUTTE_FRAGMENT_MOCK.getVertex(0)), TUTTE_FRAGMENT_MOCK.getEdge(0)));
+        assertFalse(VertexSetOmittingHamUtil.isUnavoidConstructable(TUTTE_FRAGMENT_MOCK, List.of(TUTTE_FRAGMENT_MOCK.getVertex(1)), TUTTE_FRAGMENT_MOCK.getEdge(0)));
+        assertFalse(VertexSetOmittingHamUtil.isUnavoidConstructable(TUTTE_FRAGMENT_MOCK, List.of(TUTTE_FRAGMENT_MOCK.getVertex(6)), TUTTE_FRAGMENT_MOCK.getEdge(0)));
+        assertTrue(VertexSetOmittingHamUtil.isUnavoidConstructable(TUTTE_FRAGMENT_MOCK, List.of(TUTTE_FRAGMENT_MOCK.getVertex(0)), TUTTE_FRAGMENT_MOCK.getEdge(0)));
 
         final AbstractGraph nonHamiltonian = NoLadderC4ECGraph.loadFromFile(loadResourceAsStream("nonHamiltonianGraph.txt"));
         assertTrue(VertexSetOmittingHamUtil.isUnavoidConstructable(nonHamiltonian,
-                Set.of(nonHamiltonian.getVertex(10),
+                List.of(nonHamiltonian.getVertex(10),
                         nonHamiltonian.getVertex(41),
                         nonHamiltonian.getVertex(0),
                         nonHamiltonian.getVertex(31)), nonHamiltonian.getEdge(5, 36)));
 
         assertFalse(VertexSetOmittingHamUtil.isUnavoidConstructable(nonHamiltonian,
-                Set.of(nonHamiltonian.getVertex(10),
+                List.of(nonHamiltonian.getVertex(10),
                         nonHamiltonian.getVertex(41),
                         nonHamiltonian.getVertex(0),
                         nonHamiltonian.getVertex(31)), nonHamiltonian.getEdge(8,9)));
 
         assertTrue(VertexSetOmittingHamUtil.isUntouchConstructable(nonHamiltonian,
-                Set.of(nonHamiltonian.getVertex(10),
+                List.of(nonHamiltonian.getVertex(10),
                         nonHamiltonian.getVertex(41),
                         nonHamiltonian.getVertex(0),
                         nonHamiltonian.getVertex(31)), nonHamiltonian.getEdge(8,9)));

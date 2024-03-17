@@ -66,6 +66,8 @@ public abstract class AbstractPreProcessor<T> {
         return cycleConstructableRecursive();
     }
 
+    /**
+     * */
     protected boolean cycleConstructable(final Vertex includedVertex) {
         this.includedVertex = includedVertex;
         return cycleConstructableRecursive();

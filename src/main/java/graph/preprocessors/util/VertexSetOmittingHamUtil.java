@@ -7,13 +7,14 @@ import graph.preprocessors.AbstractPreProcessor;
 import graph.utils.SimpleUnionFindSet;
 
 import java.rmi.UnexpectedException;
+import java.util.List;
 import java.util.Set;
 
 public abstract class VertexSetOmittingHamUtil extends AbstractPreProcessor<Vertex> {
-    protected final Set<Vertex> omittedVertices;
+    protected final List<Vertex> omittedVertices;
     protected final Edge specialEdge;
 
-    private VertexSetOmittingHamUtil(final AbstractGraph g, final Set<Vertex> omittedVertices, final Edge specialEdge) {
+    private VertexSetOmittingHamUtil(final AbstractGraph g, final List<Vertex> omittedVertices, final Edge specialEdge) {
         super(g, new SimpleUnionFindSet());
         this.omittedVertices = omittedVertices;
         this.specialEdge = specialEdge;
@@ -71,14 +72,14 @@ public abstract class VertexSetOmittingHamUtil extends AbstractPreProcessor<Vert
         }
     }
 
-    public static Vertex getIncludedVertex(final AbstractGraph graph, final Set<Vertex> omittedVertices) {
+    public static Vertex getIncludedVertex(final AbstractGraph graph, final List<Vertex> omittedVertices) {
         for (final Vertex vertex : graph.getVertices()) {
             if (!omittedVertices.contains(vertex)) return vertex;
         }
         throw new RuntimeException("Seems like you omitted all the vertices.");
     }
 
-    public static boolean isUnavoidConstructable(final AbstractGraph graph, final Set<Vertex> omittedVertices, final Edge unavoidableEdge) {
+    public static boolean isUnavoidConstructable(final AbstractGraph graph, final List<Vertex> omittedVertices, final Edge unavoidableEdge) {
         final VertexSetOmittingHamUtil util = new VertexSetOmittingHamUtil(graph, omittedVertices, unavoidableEdge) {
 
             @Override
@@ -111,7 +112,7 @@ public abstract class VertexSetOmittingHamUtil extends AbstractPreProcessor<Vert
         return util.hasHamProperty();
     }
 
-    public static boolean isUntouchConstructable(final AbstractGraph graph, final Set<Vertex> omittedVertices, final Edge untouchableEdge) {
+    public static boolean isUntouchConstructable(final AbstractGraph graph, final List<Vertex> omittedVertices, final Edge untouchableEdge) {
         final VertexSetOmittingHamUtil util = new VertexSetOmittingHamUtil(graph, omittedVertices, untouchableEdge) {
             @Override
             public boolean hasHamProperty() {
