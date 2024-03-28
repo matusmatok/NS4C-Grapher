@@ -304,15 +304,26 @@ public abstract class AbstractGraph {
 
     @Override
     public String toString() {
-       StringBuilder sb = new StringBuilder();
-       sb.append("--BEGIN--\n").append("VERTICES:\n");
-       for (Vertex v: vertices) sb.append(v.toString());
-//       sb.append("EDGES:\n");
-//       for (Edge e: edges) sb.append(e.toString());
-//       sb.append("FACES:\n");
-//       for (Face f: faces) sb.append(f.toString());
-//       sb.append("--END--\n");
-       return sb.toString();
+        return toLongString();
+    }
+
+    public String toLongString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("--BEGIN--\n").append("VERTICES:\n");
+        for (Vertex v: vertices) sb.append(v.toAdjacentEdgesString());
+        sb.append("EDGES:\n");
+        for (Edge e: edges) sb.append(e.toString());
+        sb.append("FACES:\n");
+        for (Face f: faces) sb.append(f.toString());
+        sb.append("--END--\n");
+        return sb.toString();
+    }
+
+    public String toShortString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("--BEGIN--\n").append("VERTICES:\n");
+        for (Vertex v: vertices) sb.append(v.toString());
+        return sb.toString();
     }
 
     public void printHamCycleStates() {

@@ -25,7 +25,7 @@ public class Main {
     private static int MAX_DEPTH = 48;
     
     public static void main(String[] args){
-        runNoLadderGeneratorWithProcessing(30);
+        runNoLadderC4ECGenerator1(38);
     }
 
     /**
@@ -35,6 +35,7 @@ public class Main {
      * @param depth is the depth of the generator. At 26, we get the first positive result
      * */
     private static void runNoLadderC4ECGenerator1(final int depth) {
+        GlobalProgressBar.setEnabled(true);
         final NoLadderC4ECGraph graph = new NoLadderC4ECGraph();
         graph.init();
 

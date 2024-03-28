@@ -137,9 +137,28 @@ public class Vertex {
 
     @Override
     public String toString() {
+        return toIncidentVerticesString();
+    }
+
+    public String toIncidentVerticesString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Vertex ").append(id).append(" : ");
         for (Edge e: adjacentEdges) sb.append(e.getOppositeVertex(this).getId()).append(" ");
+        if (type != null) {
+            switch (type) {
+                case POSITIVE -> sb.append("P");
+                case NEGATIVE -> sb.append("N");
+                case CUBE -> sb.append("C");
+            }
+        }
+        sb.append("\n");
+        return sb.toString();
+    }
+
+    public String toAdjacentEdgesString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Vertex ").append(id).append(" : ");
+        for (Edge e: adjacentEdges) sb.append(e.getId()).append(" ");
         if (type != null) {
             switch (type) {
                 case POSITIVE -> sb.append("P");
