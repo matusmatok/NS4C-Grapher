@@ -6,14 +6,27 @@
 package graph;
 
 import graph.builders.UntouchableBuilder;
+import graph.components.AbstractGraph;
+import graph.components.Edge;
 import graph.components.NoLadderC4ECGraph;
+import graph.components.Vertex;
 import graph.generators.noladderc4ec.NoLadderC4ECGenerator;
+import graph.preprocessors.HamUnavoidableEdgeGetter;
 import graph.preprocessors.HamUntouchableEdgeGetter;
+import graph.preprocessors.ambiguous.UnavoidableAmbiguousVertexGetter;
 import graph.preprocessors.ambiguous.UntouchableAmbiguousVertexGetter;
 import graph.preprocessors.distributors.NoLadderC4ECPolarityDistributor;
 import graph.processors.Processor;
 import graph.processors.ham.HamEdgeProcessor;
 import graph.utils.GlobalProgressBar;
+import plantri.PlantriOutputReader;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  *
@@ -62,5 +75,27 @@ public class Main {
                         new UntouchableBuilder(graph)),
                 depth);
         generator.generate();
+    }
+
+    private static void runPlantriStatistics(final int depth) throws FileNotFoundException {
+        final File file = null;
+        final InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(file));
+        final PlantriOutputReader reader = new PlantriOutputReader(null);
+        final Iterator<NoLadderC4ECGraph> iterator = reader.iterator();
+        int numberOfHamEdges = 0;
+        int totalNumberOfAmbig = 0;
+
+        while (iterator.hasNext()) {
+            NoLadderC4ECGraph graph = iterator.next();
+            HamUnavoidableEdgeGetter hamGetter = new HamUnavoidableEdgeGetter(graph);
+            List<Edge> hamEdges = hamGetter.getResult();
+            numberOfHamEdges += hamEdges.size();
+
+            for (final Edge e : hamEdges) {
+                final UnavoidableAmbiguousVertexGetter ambigGetter = new UnavoidableAmbiguousVertexGetter(graph);
+                final List<Vertex> ambigVertices = ambigGetter.getResult(e);
+                totalNumberOfAmbig += ambigVertices.size();
+            }
+        }
     }
 }
