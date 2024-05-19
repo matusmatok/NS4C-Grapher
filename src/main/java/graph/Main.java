@@ -20,10 +20,7 @@ import graph.processors.ham.HamEdgeProcessor;
 import graph.utils.GlobalProgressBar;
 import plantri.PlantriOutputReader;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -52,7 +49,7 @@ public class Main {
     }
     private static int MAX_DEPTH = 48;
     
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
         runPlantriWithProcessing(30, new File("C:\\Users\\ASUS\\Downloads\\output_dual17.txt"));
         //runNoLadderC4ECGenerator1(38);
     }
@@ -93,13 +90,13 @@ public class Main {
         generator.generate();
     }
 
-    private static void runPlantriWithProcessing(final int depth, final File file) throws FileNotFoundException {
+    private static void runPlantriWithProcessing(final int depth, final File file) throws FileNotFoundException, UnsupportedEncodingException {
         final int graphCount = GRAPH_COUNTS.get(depth);
         GlobalProgressBar.setEnabled(true);
         GlobalProgressBar.setMAX(graphCount);
         GlobalProgressBar.setTASK_NAME("PROCESSING");
 
-        final PlantriOutputReader reader = new PlantriOutputReader(new InputStreamReader(new FileInputStream(file)));
+        final PlantriOutputReader reader = new PlantriOutputReader(file);
         GlobalProgressBar.startProgressBar();
 
         for (NoLadderC4ECGraph graph : reader) {
@@ -116,7 +113,7 @@ public class Main {
     private static void runPlantriStatistics(final int depth) throws FileNotFoundException {
         final File file = null;
         final InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(file));
-        final PlantriOutputReader reader = new PlantriOutputReader(null);
+        final PlantriOutputReader reader = new PlantriOutputReader((InputStreamReader) null);
         final Iterator<NoLadderC4ECGraph> iterator = reader.iterator();
         int numberOfHamEdges = 0;
         int totalNumberOfAmbig = 0;

@@ -15,6 +15,10 @@ public class PlantriOutputReader implements Iterable<NoLadderC4ECGraph>{
         this.scanner = new Scanner(reader);
     }
 
+    public PlantriOutputReader(final File file) throws FileNotFoundException, UnsupportedEncodingException {
+        this(new InputStreamReader(new FileInputStream(file), "ISO-8859-15"));
+    }
+
     @Override
     public Iterator<NoLadderC4ECGraph> iterator() {
         return new Iterator<>() {
