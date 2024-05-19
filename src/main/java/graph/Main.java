@@ -6,7 +6,6 @@
 package graph;
 
 import graph.builders.UntouchableBuilder;
-import graph.components.AbstractGraph;
 import graph.components.Edge;
 import graph.components.NoLadderC4ECGraph;
 import graph.components.Vertex;
@@ -25,8 +24,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -35,10 +36,25 @@ import java.util.List;
 
 
 public class Main {
+    private static final Map<Integer, Integer> GRAPH_COUNTS = new HashMap<>();
+    static {
+        GRAPH_COUNTS.put(20, 12);
+        GRAPH_COUNTS.put(22, 32);
+        GRAPH_COUNTS.put(24, 123);
+        GRAPH_COUNTS.put(26, 497);
+        GRAPH_COUNTS.put(28, 2242);
+        GRAPH_COUNTS.put(30, 10488);
+        GRAPH_COUNTS.put(32, 51111);
+        GRAPH_COUNTS.put(34, 253382);
+        GRAPH_COUNTS.put(36, 1276891);
+        GRAPH_COUNTS.put(44, 902238391);
+
+    }
     private static int MAX_DEPTH = 48;
     
-    public static void main(String[] args){
-        runNoLadderC4ECGenerator1(38);
+    public static void main(String[] args) throws FileNotFoundException {
+        runPlantriWithProcessing(30, new File("C:\\Users\\ASUS\\Downloads\\output_dual17.txt"));
+        //runNoLadderC4ECGenerator1(38);
     }
 
     /**
@@ -75,6 +91,26 @@ public class Main {
                         new UntouchableBuilder(graph)),
                 depth);
         generator.generate();
+    }
+
+    private static void runPlantriWithProcessing(final int depth, final File file) throws FileNotFoundException {
+        final int graphCount = GRAPH_COUNTS.get(depth);
+        GlobalProgressBar.setEnabled(true);
+        GlobalProgressBar.setMAX(graphCount);
+        GlobalProgressBar.setTASK_NAME("PROCESSING");
+
+        final PlantriOutputReader reader = new PlantriOutputReader(new InputStreamReader(new FileInputStream(file)));
+        GlobalProgressBar.startProgressBar();
+
+        for (NoLadderC4ECGraph graph : reader) {
+            GlobalProgressBar.step();
+            final Processor processor = new Processor(graph,
+                    new HamUntouchableEdgeGetter(graph),
+                    new UntouchableAmbiguousVertexGetter(graph),
+                    new NoLadderC4ECPolarityDistributor.NoLadderDistributorFactory(MAX_DEPTH),
+                    new UntouchableBuilder(graph));
+            if (processor.hasProperty()) graph.print();
+        }
     }
 
     private static void runPlantriStatistics(final int depth) throws FileNotFoundException {

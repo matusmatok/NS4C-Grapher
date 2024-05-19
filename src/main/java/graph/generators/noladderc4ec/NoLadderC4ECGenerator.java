@@ -33,6 +33,7 @@ public class NoLadderC4ECGenerator {
     }
 
     public void generate() {
+        GlobalProgressBar.setMAX(2277);
         GlobalProgressBar.startProgressBar();
         if (graph.getVertices().size() != 14) throw new IllegalArgumentException();
 
