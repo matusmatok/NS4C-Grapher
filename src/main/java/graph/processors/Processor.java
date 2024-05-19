@@ -72,6 +72,7 @@ public class Processor {
             for (AbstractGraph polarisedGraph : distributor) {
                 if (!builder.canBuild(potentiallyGoodEdge)) {
                     System.out.println("GOOD EDGE " + potentiallyGoodEdge.getId() + ":");
+                    graph.print();
                     return true;
                 }
             }

@@ -1,11 +1,16 @@
 import graph.builders.UnavoidableBuilder;
+import graph.builders.UntouchableBuilder;
 import graph.components.Edge;
 import graph.components.AbstractGraph;
 import graph.components.NoLadderC4ECGraph;
 import graph.components.Vertex;
 import graph.preprocessors.HamUnavoidableEdgeGetter;
+import graph.preprocessors.HamUntouchableEdgeGetter;
 import graph.preprocessors.ambiguous.UnavoidableAmbiguousVertexGetter;
+import graph.preprocessors.ambiguous.UntouchableAmbiguousVertexGetter;
+import graph.preprocessors.distributors.NoLadderC4ECPolarityDistributor;
 import graph.preprocessors.distributors.VertexPolarityDistributor;
+import graph.processors.Processor;
 import graph.processors.ham.HamiltonianProcessor;
 import graph.processors.ProcessorTypeDEF;
 import graph.processors.UnavoidableEdgeProcessor;
@@ -81,4 +86,14 @@ public class ProcessorsTest implements ResourceDependent {
         assertTrue(processorH.hasProperty());
     }
 
+    @Test
+    public void testProcessorWithUntouchableConfig() throws FileNotFoundException {
+        final NoLadderC4ECGraph graph = NoLadderC4ECGraph.loadFromFile(loadResourceAsStream("hamUntouch.txt"));
+        final Processor processor = new Processor(graph,
+                new HamUntouchableEdgeGetter(graph),
+                new UntouchableAmbiguousVertexGetter(graph),
+                new NoLadderC4ECPolarityDistributor.NoLadderDistributorFactory(48),
+                new UntouchableBuilder(graph));
+        assertTrue(processor.hasProperty());
+    }
 }
