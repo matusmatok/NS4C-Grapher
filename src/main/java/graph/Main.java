@@ -44,14 +44,20 @@ public class Main {
         GRAPH_COUNTS.put(32, 51111);
         GRAPH_COUNTS.put(34, 253382);
         GRAPH_COUNTS.put(36, 1276891);
+        GRAPH_COUNTS.put(38, 6494287);
+        GRAPH_COUNTS.put(40, 33413508);
+        GRAPH_COUNTS.put(42, 173029490);
         GRAPH_COUNTS.put(44, 902238391);
 
     }
     private static int MAX_DEPTH = 48;
     
     public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
-        runPlantriWithProcessing(30, new File("C:\\Users\\ASUS\\Downloads\\output_dual17.txt"));
-        //runNoLadderC4ECGenerator1(38);
+        /*absolute path to the plantri output file to be processed*/
+        final String path = "";
+        /*number of graphs in the file - necessary for progress bar*/
+        final int number = 0;
+        runPlantriWithProcessing(new File(path), number);
     }
 
     /**
@@ -90,8 +96,14 @@ public class Main {
         generator.generate();
     }
 
-    private static void runPlantriWithProcessing(final int depth, final File file) throws FileNotFoundException, UnsupportedEncodingException {
-        final int graphCount = GRAPH_COUNTS.get(depth);
+    /**
+     * This method uses outputs produced by plantri generator and processes them with a custom
+     * {@link Processor} setup.
+     *
+     * @param file is the plantri output file.
+     * @param graphCount is the number of graphs in the file
+     * */
+    private static void runPlantriWithProcessing(final File file, final int graphCount) throws FileNotFoundException, UnsupportedEncodingException {
         GlobalProgressBar.setEnabled(true);
         GlobalProgressBar.setMAX(graphCount);
         GlobalProgressBar.setTASK_NAME("PROCESSING");
@@ -108,6 +120,18 @@ public class Main {
                     new UntouchableBuilder(graph));
             if (processor.hasProperty()) graph.print();
         }
+    }
+
+    /**
+     * This method uses outputs produced by plantri generator and processes them with a custom
+     * {@link Processor} setup.
+     *
+     * @param depth is the order of graphs.
+     * @param file is the plantri output file.
+     * */
+    private static void runPlantriWithProcessing(final int depth, final File file) throws FileNotFoundException, UnsupportedEncodingException {
+        final int graphCount = GRAPH_COUNTS.get(depth);
+        runPlantriWithProcessing(file, graphCount);
     }
 
     private static void runPlantriStatistics(final int depth) throws FileNotFoundException {
