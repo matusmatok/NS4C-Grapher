@@ -16,14 +16,14 @@ public class Processor {
 
     protected final AbstractGraph graph;
 
-    protected final HamEdgeGetter potentialEdgeGetter;
+    protected final HamEdgeGetter<Edge> potentialEdgeGetter;
 
     private final AmbiguousVertexGetter ambiguousVertexGetter;
     private final AbstractTwoFactorBuilder builder;
     private final AbstractFinder finder;
     private final AbstractDistributor.DistributorFactory distributorFactory;
 
-    public Processor(AbstractGraph graph, HamEdgeGetter potentialEdgeGetter,
+    public Processor(AbstractGraph graph, HamEdgeGetter<Edge> potentialEdgeGetter,
                      AmbiguousVertexGetter ambiguousVertexGetter, AbstractTwoFactorBuilder builder) {
         this.graph = graph;
         this.potentialEdgeGetter = potentialEdgeGetter;

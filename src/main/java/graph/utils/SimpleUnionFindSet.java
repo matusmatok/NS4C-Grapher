@@ -16,22 +16,26 @@ public class SimpleUnionFindSet implements AbstractUnionFindSet {
     protected final Stack<LogEntry> unionLog = new Stack<>();
     @Override
     public void union(Vertex element1, Vertex element2) {
-        if (element1.getParent() != null || element2.getParent() != null) throw new RuntimeException("Trying to unify two non-root elements.");
-        if (element1.getSubtreeDepth() > element2.getSubtreeDepth()) {
-            element2.setParent(element1);
-            unionLog.push(new LogEntry(element1, element2, element1.getSubtreeDepth()));
-            element1.setSubtreeSize(element1.getSubtreeSize() + element2.getSubtreeSize());
+        if (element1.getParent() != element1 && element2.getParent() != element2) throw new RuntimeException("Trying to unify two non-root elements.");
+
+        final Vertex root1 = element1.getParent();
+        final Vertex root2 = element2.getParent();
+
+        if (root1.getSubtreeDepth() > root2.getSubtreeDepth()) {
+            root2.setParent(root1);
+            unionLog.push(new LogEntry(root1, root2, root1.getSubtreeDepth()));
+            root1.setSubtreeSize(root2.getSubtreeSize() + root1.getSubtreeSize());
         }
-        else if (element2.getSubtreeDepth() > element1.getSubtreeDepth()) {
-            element1.setParent(element2);
-            unionLog.push(new LogEntry(element2, element1, element2.getSubtreeDepth()));
-            element2.setSubtreeSize(element1.getSubtreeSize() + element2.getSubtreeSize());
+        else if (root2.getSubtreeDepth() > root1.getSubtreeDepth()) {
+            root1.setParent(root2);
+            unionLog.push(new LogEntry(root2, root1, root2.getSubtreeDepth()));
+            root2.setSubtreeSize(root1.getSubtreeSize() + root2.getSubtreeSize());
         }
         else {
-            element2.setParent(element1);
-            unionLog.push(new LogEntry(element1, element2, element1.getSubtreeDepth()));
-            element1.setSubtreeDepth(element1.getSubtreeDepth() + 1);
-            element1.setSubtreeSize(element1.getSubtreeSize() + element2.getSubtreeSize());
+            root2.setParent(root1);
+            unionLog.push(new LogEntry(root1, root2, root1.getSubtreeDepth()));
+            root1.setSubtreeDepth(root1.getSubtreeDepth() + 1);
+            root1.setSubtreeSize(root1.getSubtreeSize() + root2.getSubtreeSize());
         }
     }
 
@@ -39,7 +43,7 @@ public class SimpleUnionFindSet implements AbstractUnionFindSet {
     public void disunion() {
         final LogEntry logEntry = unionLog.pop();
         logEntry.root.setSubtreeDepth(logEntry.rootFormerSubtreeDepth);
-        logEntry.subordinate.setParent(null);
+        logEntry.subordinate.setParent(logEntry.subordinate);
         logEntry.root.setSubtreeSize(logEntry.root.getSubtreeSize() - logEntry.subordinate.getSubtreeSize());
     }
 }

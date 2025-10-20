@@ -14,13 +14,13 @@ import java.util.List;
 public abstract class AbstractProcessorV2 {
     protected final AbstractGraph graph;
 
-    private final HamEdgeGetter potentialEdgeGetter;
+    private final HamEdgeGetter<Edge> potentialEdgeGetter;
 
     private final AmbiguousVertexGetter ambiguousVertexGetter;
     private final AbstractTwoFactorBuilder builder;
     private final ReducibleConfigurationFinder finder;
 
-    public AbstractProcessorV2(AbstractGraph graph, HamEdgeGetter potentialEdgeGetter,
+    public AbstractProcessorV2(AbstractGraph graph, HamEdgeGetter<Edge> potentialEdgeGetter,
                                AmbiguousVertexGetter ambiguousVertexGetter, AbstractTwoFactorBuilder builder) {
         this.graph = graph;
         this.potentialEdgeGetter = potentialEdgeGetter;
@@ -31,6 +31,7 @@ public abstract class AbstractProcessorV2 {
     public boolean findGoodEdges() {
         if (finder.containsPolarIndependentReducibleConfig()) return false;
         final List<Edge> potentiallyGoodEdges = potentialEdgeGetter.getResult();
+        System.out.println(potentiallyGoodEdges);
         final int[][] potentialEdgePolarities = {{0,0},{0,1},{1,0},{1,1}};
 
         boolean finalResult = false;

@@ -6,7 +6,7 @@ import graph.components.Vertex;
 import graph.utils.SimpleUnionFindSet;
 import java.util.List;
 
-public abstract class HamEdgeGetter extends AbstractPreProcessor<Edge> {
+public abstract class HamEdgeGetter<T> extends AbstractPreProcessor<T> {
 
     public HamEdgeGetter(AbstractGraph g) {
         super(g, new SimpleUnionFindSet());
@@ -17,5 +17,5 @@ public abstract class HamEdgeGetter extends AbstractPreProcessor<Edge> {
         return color.getSubtreeSize() == graph.getVertices().size();
     }
 
-    public abstract List<Edge> getResult();
+    public abstract List<T> getResult();
 }

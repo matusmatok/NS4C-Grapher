@@ -54,9 +54,9 @@ public class Main {
     
     public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
         /*absolute path to the plantri output file to be processed*/
-        final String path = "";
+        final String path = "/home/matok/Downloads/plantri54/outputs/nl/d20.txt";
         /*number of graphs in the file - necessary for progress bar*/
-        final int number = 0;
+        final int number = 190161731;
         runPlantriWithProcessing(new File(path), number);
     }
 

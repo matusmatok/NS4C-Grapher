@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public abstract class AbstractPreProcessor<T> {
+    protected boolean print = false;
 
     protected static final EnumMap<CycleVertexState, CycleVertexState> INCLUDE_EDGE_MAP = new EnumMap<>(CycleVertexState.class);
     static {
@@ -74,18 +75,20 @@ public abstract class AbstractPreProcessor<T> {
     }
 
     private boolean cycleConstructableRecursive(){
-        if (canCloseCycle(unionFindSet.find(includedVertex))) {
-            finalTask();
-            return true;
-        }
+
 
         final Vertex vertex;
         if (deterministicVertices.size() > 0) vertex = deterministicVertices.stream().findAny().get();
         else if (choiceVertices.size() > 0) vertex = choiceVertices.stream().findAny().get();
         else {
-            System.out.println("ID " + includedVertex.getId() + " subtreeSize " + unionFindSet.find(includedVertex).getSubtreeSize());
-            graph.printHamCycleStates();
-            throw new RuntimeException("No operand, preprocessor failed.");
+            if (canCloseCycle(unionFindSet.find(includedVertex))) {
+                if (print) System.out.println("Recursive");
+                finalTask();
+                return true;
+            } else return false;
+//            System.out.println("ID " + includedVertex.getId() + " subtreeSize " + unionFindSet.find(includedVertex).getSubtreeSize());
+//            graph.printHamCycleStates();
+//            throw new RuntimeException("No operand, preprocessor failed.");
         }
 
         final Edge edge = vertex.getAnyUndiscoveredEdge();
@@ -111,6 +114,7 @@ public abstract class AbstractPreProcessor<T> {
                 if (otherVertexPostIncludeState != null) {
                     if (unionFindSet.find(vertex) == unionFindSet.find(otherVertex)) {
                             if (canCloseCycle(unionFindSet.find(vertex))) {
+                                if (print) System.out.println("Post incl: " + edge);
                                 finalTask();
                                 return true;
                             }
@@ -135,8 +139,10 @@ public abstract class AbstractPreProcessor<T> {
                     if (result) return true;
                 }
                 if (otherVertexPostIncludeState != null) {
-                    if (unionFindSet.find(vertex) == unionFindSet.find(otherVertex)) {
+                    if (unionFindSet.find(vertex) ==
+                            unionFindSet.find(otherVertex)) {
                         if (canCloseCycle(unionFindSet.find(vertex))) {
+                            if (print) System.out.println("Post incl: " + edge);
                             finalTask();
                             return true;
                         }
@@ -156,7 +162,8 @@ public abstract class AbstractPreProcessor<T> {
         return false;
     }
 
-    protected void finalTask(){}
+    protected void finalTask(){
+    }
 
     protected boolean includeEdge(Edge e) {
         e.setHamCycleState(hamCycleEdgeState.INCLUDED);

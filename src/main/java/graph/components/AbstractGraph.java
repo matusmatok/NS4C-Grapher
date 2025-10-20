@@ -327,7 +327,7 @@ public abstract class AbstractGraph {
     }
 
     public void printHamCycleStates() {
-        for (Vertex v: vertices) System.out.println("Vertex " + v.getId() + " State: " + v.getCycleState());
+        for (Vertex v: vertices) System.out.println("Vertex " + v.getId() + " State: " + v.getCycleState() + " Subtree size: " + v.getSubtreeSize() + " Parent: " + (v.getParent() == null ? "null" : v.getParent().getId()));
         for (Edge e: edges) System.out.println("Edge " + e.getId() + " From " + e.getVFrom().getId() + " To " + e.getVTo().getId() + " State: " + e.getHamCycleState());
     }
 

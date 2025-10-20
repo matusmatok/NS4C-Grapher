@@ -9,7 +9,7 @@ public interface AbstractUnionFindSet {
 
     default public Vertex find(Vertex element) {
         Vertex parent = element.getParent();
-        while (parent != null) {
+        while (parent != element) {
             element = parent;
             parent = element.getParent();
         }

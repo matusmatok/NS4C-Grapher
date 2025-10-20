@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class HamUntouchableEdgeGetter extends HamEdgeGetter {
+public class HamUntouchableEdgeGetter extends HamEdgeGetter<Edge> {
 
     private final Set<Edge> badEdges = new HashSet<>();
     public HamUntouchableEdgeGetter(AbstractGraph g) {

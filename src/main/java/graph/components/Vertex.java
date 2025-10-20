@@ -23,7 +23,7 @@ public class Vertex {
 
     /*UNION FIND variables*/
     @Getter @Setter
-    private Vertex parent = null;
+    private Vertex parent = this;
     @Getter @Setter
     private int subtreeDepth = 0;
     @Getter @Setter
