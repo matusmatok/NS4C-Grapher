@@ -28,16 +28,6 @@ public class HamUntouchablePairGetter extends HamEdgeGetter<EdgePair> {
                 final Edge e2 = graph.getEdge(j);
                 final EdgePair ep = new EdgePair(e1, e2);
 
-                final Set<EdgePair> expectedSet = Set.of(
-                        new EdgePair(graph.getEdge(1), graph.getEdge(6)),
-                        new EdgePair(graph.getEdge(1), graph.getEdge(8)),
-                        new EdgePair(graph.getEdge(4), graph.getEdge(8)),
-                        new EdgePair(graph.getEdge(4), graph.getEdge(9)),
-                        new EdgePair(graph.getEdge(6), graph.getEdge(9))
-                );
-
-                print = expectedSet.contains(ep);
-
                 if (!badPairs.contains(ep)) {
                     includeEdge(e1);
                     unionFindSet.union(e1.getVFrom(), e1.getVTo());
@@ -45,10 +35,7 @@ public class HamUntouchablePairGetter extends HamEdgeGetter<EdgePair> {
                     includeEdge(e2);
                     unionFindSet.union(e2.getVFrom(), e2.getVTo());
 
-//                    graph.printHamCycleStates();
-
                     if (!cycleConstructable(e1.getVTo())) {
-                        System.out.println("FAIL");
                         goodPairs.add(ep);
                     }
 
@@ -65,18 +52,15 @@ public class HamUntouchablePairGetter extends HamEdgeGetter<EdgePair> {
 
     @Override
     protected void finalTask() {
-        if (print) {
-            graph.printHamCycleStates();
+        for (int i = 0; i < graph.getEdges().size(); i++) {
+            for (int j = i + 1; j < graph.getEdges().size(); j++) {
+                final Edge e1 = graph.getEdge(i);
+                final Edge e2 = graph.getEdge(j);
+                if (e1.getHamCycleState() == Edge.hamCycleEdgeState.INCLUDED &&
+                        e2.getHamCycleState() == Edge.hamCycleEdgeState.INCLUDED) {
+                    badPairs.add(new EdgePair(e1, e2));
+                }
+            }
         }
-//        for (int i = 0; i < graph.getEdges().size(); i++) {
-//            for (int j = i + 1; j < graph.getEdges().size(); j++) {
-//                final Edge e1 = graph.getEdge(i);
-//                final Edge e2 = graph.getEdge(j);
-//                if (e1.getHamCycleState() == Edge.hamCycleEdgeState.INCLUDED &&
-//                        e2.getHamCycleState() == Edge.hamCycleEdgeState.INCLUDED) {
-//                    badPairs.add(new EdgePair(e1, e2));
-//                }
-//            }
-//        }
     }
 }

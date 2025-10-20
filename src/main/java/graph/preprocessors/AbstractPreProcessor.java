@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 public abstract class AbstractPreProcessor<T> {
-    protected boolean print = false;
 
     protected static final EnumMap<CycleVertexState, CycleVertexState> INCLUDE_EDGE_MAP = new EnumMap<>(CycleVertexState.class);
     static {
@@ -82,7 +81,6 @@ public abstract class AbstractPreProcessor<T> {
         else if (choiceVertices.size() > 0) vertex = choiceVertices.stream().findAny().get();
         else {
             if (canCloseCycle(unionFindSet.find(includedVertex))) {
-                if (print) System.out.println("Recursive");
                 finalTask();
                 return true;
             } else return false;
@@ -114,7 +112,6 @@ public abstract class AbstractPreProcessor<T> {
                 if (otherVertexPostIncludeState != null) {
                     if (unionFindSet.find(vertex) == unionFindSet.find(otherVertex)) {
                             if (canCloseCycle(unionFindSet.find(vertex))) {
-                                if (print) System.out.println("Post incl: " + edge);
                                 finalTask();
                                 return true;
                             }
@@ -142,7 +139,6 @@ public abstract class AbstractPreProcessor<T> {
                     if (unionFindSet.find(vertex) ==
                             unionFindSet.find(otherVertex)) {
                         if (canCloseCycle(unionFindSet.find(vertex))) {
-                            if (print) System.out.println("Post incl: " + edge);
                             finalTask();
                             return true;
                         }

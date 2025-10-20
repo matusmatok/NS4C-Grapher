@@ -45,7 +45,6 @@ public class EdgePairProcessingTest implements ResourceDependent{
         final NoLadderC4ECGraph graph = NoLadderC4ECGraph.loadFromFile(loadResourceAsStream("5prism.txt"));
         final HamUntouchablePairGetter getter = new HamUntouchablePairGetter(graph);
 
-        final List<Edge> rungs = List.of(graph.getEdge(1), graph.getEdge(4), graph.getEdge(6), graph.getEdge(8), graph.getEdge(9));
         final List<EdgePair> goodPairs = getter.getResult();
         final Set<EdgePair> expectedSet = Set.of(
                 new EdgePair(graph.getEdge(1), graph.getEdge(6)),
