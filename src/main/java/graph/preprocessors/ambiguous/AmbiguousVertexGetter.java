@@ -39,4 +39,58 @@ public abstract class AmbiguousVertexGetter extends AbstractPreProcessor<Vertex>
         undiscoveredVertices.add(otherVertex);
         edge.setHamCycleState(Edge.hamCycleEdgeState.UNDISCOVERED);
     }
+
+    protected void excludeOmittedVertex(final Vertex vertex) {
+        for (Edge e : vertex.getAdjacentEdges()) excludeOmittedEdge(e, vertex);
+    }
+
+    protected void undoExcludeOmittedVertex(final Vertex vertex) {
+        for (Edge e : vertex.getAdjacentEdges()) undoExcludeOmittedEdge(e, vertex);
+    }
+
+    protected boolean isAmbiguousExcludeEdge(final Vertex vertex, final Edge edge) {
+        excludeOmittedVertex(vertex);
+
+        boolean returnValue = false;
+
+        if (vertex.getAdjacentEdges().contains(edge)) {
+            if (!cycleConstructable(vertex.getAdjacentEdges().get(0).getOppositeVertex(vertex))) returnValue = true;
+        }
+        else if (excludeEdge(edge)) {
+            if (!cycleConstructable(vertex.getAdjacentEdges().get(0).getOppositeVertex(vertex))) returnValue = true;
+            undoExcludeEdge(edge);
+        }
+        else {
+            returnValue = true;
+        }
+
+        undoExcludeOmittedVertex(vertex);
+
+        return returnValue;
+    }
+
+    protected boolean isAmbiguousIncludeEdge(final Vertex vertex, final Edge edge) {
+        excludeOmittedVertex(vertex);
+
+        boolean returnValue = false;
+
+        if (vertex.getAdjacentEdges().contains(edge)) {
+            returnValue = true;
+        }
+        else if (includeEdge(edge)) {
+            unionFindSet.union(edge.getVTo(), edge.getVFrom());
+            if (!cycleConstructable(vertex.getAdjacentEdges().get(0).getOppositeVertex(vertex))) {
+                returnValue = true;
+            }
+            unionFindSet.disunion();
+            undoIncludeEdge(edge);
+        }
+        else {
+            returnValue = true;
+        }
+
+        undoExcludeOmittedVertex(vertex);
+
+        return returnValue;
+    }
 }
