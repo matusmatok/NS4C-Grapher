@@ -7,7 +7,9 @@ package graph.components;
 
 import lombok.Getter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public abstract class AbstractGraph {
@@ -288,6 +290,23 @@ public abstract class AbstractGraph {
                 .count() == 3)
                 .map(CubeTripole::new).collect(Collectors.toList());
     }
+
+    public List<Set<Edge>> getLadderEdges() {
+        return this.edges.stream().filter(
+                edge -> {
+                    if (edge.getLeftFace().size() == 4 && edge.getRightFace().size() == 4) {
+                        return edge.getVFrom().getThirdFace(edge.getLeftFace(), edge.getRightFace()).size() != 4 &&
+                                edge.getVTo().getThirdFace(edge.getLeftFace(), edge.getRightFace()).size() != 4;
+                    }
+                    return false;
+                }
+        ).map(edge -> {
+            final Set<Edge> ladderEdges = new HashSet<>();
+            ladderEdges.addAll(edge.getLeftFace().getAdjacentEdges());
+            ladderEdges.addAll(edge.getRightFace().getAdjacentEdges());
+            return ladderEdges;
+        }).collect(Collectors.toList());
+    }
     
     public void untagFaces(){
         for (Face f: faces) f.setTagged(false);
@@ -313,8 +332,8 @@ public abstract class AbstractGraph {
         for (Vertex v: vertices) sb.append(v.toAdjacentEdgesString());
         sb.append("EDGES:\n");
         for (Edge e: edges) sb.append(e.toString());
-        sb.append("FACES:\n");
-        for (Face f: faces) sb.append(f.toString());
+        //sb.append("FACES:\n");
+        //for (Face f: faces) sb.append(f.toString());
         sb.append("--END--\n");
         return sb.toString();
     }

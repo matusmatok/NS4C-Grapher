@@ -7,11 +7,13 @@ package graph;
 
 import graph.builders.UntouchableBuilder;
 import graph.components.Edge;
+import graph.components.EdgePair;
 import graph.components.NoLadderC4ECGraph;
 import graph.components.Vertex;
 import graph.generators.noladderc4ec.NoLadderC4ECGenerator;
 import graph.preprocessors.HamUnavoidableEdgeGetter;
 import graph.preprocessors.HamUntouchableEdgeGetter;
+import graph.preprocessors.HamUntouchablePairGetter;
 import graph.preprocessors.ambiguous.UnavoidableAmbiguousVertexGetter;
 import graph.preprocessors.ambiguous.UntouchableAmbiguousVertexGetter;
 import graph.preprocessors.distributors.NoLadderC4ECPolarityDistributor;
@@ -21,10 +23,7 @@ import graph.utils.GlobalProgressBar;
 import plantri.PlantriOutputReader;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -54,10 +53,8 @@ public class Main {
     
     public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
         /*absolute path to the plantri output file to be processed*/
-        final String path = "/home/matok/Downloads/plantri54/outputs/nl/d20.txt";
-        /*number of graphs in the file - necessary for progress bar*/
-        final int number = 190161731;
-        runPlantriWithProcessing(new File(path), number);
+        final String path = "/home/matok/Downloads/plantri54/outputs/c4/22.txt";
+        runPlantriWithHamUntouchablePairProcessing(new File(path));
     }
 
     /**
@@ -132,6 +129,40 @@ public class Main {
     private static void runPlantriWithProcessing(final int depth, final File file) throws FileNotFoundException, UnsupportedEncodingException {
         final int graphCount = GRAPH_COUNTS.get(depth);
         runPlantriWithProcessing(file, graphCount);
+    }
+
+
+    /**
+     * This method filters out graphs from plantri outputs with a property that the graph contains a Hamilton-untouchable edge pair.
+     *
+     * @param file is the plantri output file.
+     * */
+    private static void runPlantriWithHamUntouchablePairProcessing(final File file) throws FileNotFoundException, UnsupportedEncodingException {
+        final PlantriOutputReader reader = new PlantriOutputReader(file);
+
+        for (NoLadderC4ECGraph graph : reader) {
+            final HamUntouchablePairGetter pairGetter = new HamUntouchablePairGetter(graph);
+            final List<Set<Edge>> ladders = graph.getLadderEdges();
+
+            final List<EdgePair> result = pairGetter.getResult();
+
+            final List<EdgePair> filteredResult = new ArrayList<>(result);
+            for (final EdgePair ep : result) {
+                for (final Set<Edge> ladder : ladders) {
+                    if (!ladder.contains(ep.getE1()) && !ladder.contains(ep.getE2())) {
+                        filteredResult.remove(ep);
+                        break;
+                    }
+                }
+            }
+
+            if (!filteredResult.isEmpty()) {
+
+                graph.print();
+                System.out.println(filteredResult);
+            }
+        }
+
     }
 
     private static void runPlantriStatistics(final int depth) throws FileNotFoundException {
