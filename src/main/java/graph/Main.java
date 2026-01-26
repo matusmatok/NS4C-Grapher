@@ -53,8 +53,10 @@ public class Main {
     
     public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
         /*absolute path to the plantri output file to be processed*/
-        final String path = "/home/matok/Downloads/plantri54/outputs/c4/22.txt";
-        runPlantriWithHamUntouchablePairProcessing(new File(path));
+        final String path = "";
+        /*number of graphs to be processed (necessary for progress bar)*/
+        final int count = 1;
+        runPlantriWithProcessing(new File(path), count);
     }
 
     /**

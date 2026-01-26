@@ -6,10 +6,8 @@
 package graph.components;
 
 import lombok.Getter;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class AbstractGraph {
@@ -37,6 +35,17 @@ public abstract class AbstractGraph {
         return edges.get(id);
     }
 
+    public boolean hasEdge(final Vertex v1, final Vertex v2) {
+        for (final Edge e : v1.getAdjacentEdges()) {
+            if (e.getOppositeVertex(v1) == v2) return true;
+        }
+        return false;
+    }
+
+    public boolean hasEdge(final int v1, final int v2)  {
+        return hasEdge(getVertex(v1), getVertex(v2));
+    }
+
     public Edge getEdge(final int vertexId1, final int vertexId2) {
         return getEdge(getVertex(vertexId1), getVertex(vertexId2));
     }
@@ -47,6 +56,19 @@ public abstract class AbstractGraph {
         }
         throw new IllegalArgumentException("Vertices " + v1.getId() + " " + v2.getId() + " are not incident.");
     }
+
+    public Boolean areAdjacent(final Vertex v1, final Vertex v2) {
+        for (final Edge e : v1.getAdjacentEdges()) {
+            if (e.getOppositeVertex(v1) == v2) return true;
+        }
+        return false;
+    }
+
+    public Boolean areAdjacent(final int v1, final int v2) {
+        return areAdjacent(vertices.get(v1), vertices.get(v2));
+    }
+
+
 
     public Face getFace(int id) {
         return faces.get(id);
@@ -328,7 +350,7 @@ public abstract class AbstractGraph {
 
     public String toLongString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("--BEGIN--\n").append("VERTICES:\n");
+        sb.append("Graph: ").append(toGraph6()).append("\n").append("VERTICES:\n");
         for (Vertex v: vertices) sb.append(v.toAdjacentEdgesString());
         sb.append("EDGES:\n");
         for (Edge e: edges) sb.append(e.toString());
@@ -342,6 +364,38 @@ public abstract class AbstractGraph {
         StringBuilder sb = new StringBuilder();
         sb.append("--BEGIN--\n").append("VERTICES:\n");
         for (Vertex v: vertices) sb.append(v.toString());
+        return sb.toString();
+    }
+
+    public String toGraph6() {
+        if (vertices.size() > 63) {
+            throw new IllegalStateException("too many vertices");
+        }
+
+        int acc = 0;
+        int sextupletCounter = 0;
+        final StringBuilder sb = new StringBuilder();
+        sb.appendCodePoint (vertices.size() + 63);
+
+        for (int i = 1; i < getVertices().size(); i++) {
+            for (int j = 0; j < i; j++) {
+                if (hasEdge(j,i)) {
+                    acc += (32 >> sextupletCounter);
+                }
+                 sextupletCounter++;
+
+                if (sextupletCounter > 5) {
+                    sextupletCounter = 0;
+
+                    sb.appendCodePoint(acc + 63);
+                    acc = 0;
+                }
+            }
+        }
+
+        if (sextupletCounter > 0) {
+            sb.appendCodePoint(acc + 63);
+        }
         return sb.toString();
     }
 

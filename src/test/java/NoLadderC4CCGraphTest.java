@@ -39,6 +39,11 @@ public class NoLadderC4CCGraphTest implements ResourceDependent{
     }
 
     @Test
+    public void testToGraph6() {
+        assertEquals("MpS_gCH@?A_D_CO@_", graph.toGraph6());
+    }
+
+    @Test
     public void testLoadFromFile() throws FileNotFoundException {
         final NoLadderC4ECGraph loadedGraph = NoLadderC4ECGraph.loadFromFile(loadResourceAsStream("base_graph.txt"));
         final LexCode lexCode1 = CanonicalCoder.getCodeForGraph(loadedGraph);
@@ -50,6 +55,7 @@ public class NoLadderC4CCGraphTest implements ResourceDependent{
         final LexCode code = CanonicalCoder.getCodeForGraph(graph);
         assertEquals(lexCode, code);
     }
+
     @Test
     public void testOperationA() {
         final Face setupParameterFace = graph.getFace(3);
